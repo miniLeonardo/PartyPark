@@ -1,0 +1,20 @@
+# Einheitliche Zeilenenden zwischen Windows und Linux
+* text=auto eol=lf
+
+# Windows-spezifische Skripte behalten CRLF
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+# Binärdateien (später ggf. auf Git LFS umstellen, siehe docs/DECISIONS.md)
+*.png binary
+*.jpg binary
+*.webp binary
+*.glb binary
+*.blend binary
+*.fbx binary
+*.ogg binary
+*.wav binary
+*.mp3 binary
+*.ttf binary
+*.otf binary
+*.zip binary

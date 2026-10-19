@@ -1,0 +1,22 @@
+# Godot 4 Cache und Editor-Daten (werden lokal neu erzeugt)
+.godot/
+*.tmp
+
+# Export-Ergebnisse
+builds/*
+!builds/.gdignore
+
+# Betriebssystem
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editoren / IDEs (projektweite KI-Regeln wie AGENTS.md bleiben versioniert)
+.vscode/
+.idea/
+*.swp
+
+# Mono/C# (falls je genutzt)
+.mono/
+data_*/
+mono_crash.*.json
