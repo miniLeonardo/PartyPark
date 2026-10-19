@@ -1,16 +1,24 @@
 extends Node
-## Autoload Game: Szenenwechsel, Pause, Verbindungsabbrüche während eines Spiels.
+## Autoload Game: Szenenwechsel zwischen Titel, Beitritt, Hauptmenü und Spielarten (D29),
+## Pause-Menü und Verbindungs-Pause während eines Spiels.
 
 signal match_started
-signal returned_to_join
+signal returned_to_menu
 
+const TITLE_SCENE: String = "res://ui/title_screen/title_screen.tscn"
 const JOIN_SCENE: String = "res://ui/join_screen/join_screen.tscn"
+const MAIN_MENU_SCENE: String = "res://ui/main_menu/main_menu.tscn"
+const OPTIONS_SCENE: String = "res://ui/options_menu/options_menu.tscn"
 const ARENA_SCENE: String = "res://modes/test_arena/test_arena.tscn"
+const TOURNAMENT_SCENE: String = "res://modes/tournament/tournament.tscn"
+const FREE_PLAY_SCENE: String = "res://modes/free_play/free_play.tscn"
 const PAUSE_MENU_SCENE: PackedScene = preload("res://ui/pause_menu/pause_menu.tscn")
 const DISCONNECT_OVERLAY_SCENE: PackedScene = preload("res://ui/disconnect_overlay/disconnect_overlay.tscn")
 
-## Läuft gerade Gameplay (Arena oder Minispiel)? Nur dann gibt es Pause und Verbindungs-Pause.
+## Läuft gerade eine Spielart (Arena, Turnier, Freies Spiel)? Nur dann gibt es Pause und Verbindungs-Pause.
 var match_running: bool = false
+## Gewählte Rundenzahl für das nächste Schnellturnier.
+var tournament_rounds: int = 5
 
 var pause_menu: PauseMenu
 var disconnect_overlay: DisconnectOverlay
@@ -19,15 +27,20 @@ var _unpause_pending: bool = false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	tournament_rounds = Settings.tournament_rounds
 	pause_menu = PAUSE_MENU_SCENE.instantiate() as PauseMenu
 	add_child(pause_menu)
 	disconnect_overlay = DISCONNECT_OVERLAY_SCENE.instantiate() as DisconnectOverlay
 	add_child(disconnect_overlay)
 	PlayerRoster.player_disconnected.connect(_on_player_disconnected)
 	PlayerRoster.roster_changed.connect(_update_pause_state)
-	if OS.is_debug_build() and OS.get_cmdline_user_args().has("--smoke-m1"):
-		var smoke: Node = (load("res://tests/smoke/m1_smoke.gd") as GDScript).new()
-		add_child(smoke)
+	if OS.is_debug_build():
+		var args: PackedStringArray = OS.get_cmdline_user_args()
+		for arg: String in args:
+			if arg.begins_with("--smoke-"):
+				var path: String = "res://tests/smoke/%s_smoke.gd" % arg.trim_prefix("--smoke-")
+				if ResourceLoader.exists(path):
+					add_child((load(path) as GDScript).new())
 
 
 func _physics_process(_delta: float) -> void:
@@ -50,14 +63,77 @@ func _physics_process(_delta: float) -> void:
 	_update_pause_state()
 
 
-## Füllt ggf. Computergegner auf und lädt die Spielszene.
+# --- Szenenwechsel ---
+
+func goto_title() -> void:
+	_leave_match()
+	get_tree().change_scene_to_file(TITLE_SCENE)
+
+
+func goto_join() -> void:
+	_leave_match()
+	get_tree().change_scene_to_file(JOIN_SCENE)
+
+
+func goto_main_menu() -> void:
+	_leave_match()
+	get_tree().change_scene_to_file(MAIN_MENU_SCENE)
+	returned_to_menu.emit()
+
+
+func goto_options() -> void:
+	_leave_match()
+	get_tree().change_scene_to_file(OPTIONS_SCENE)
+
+
+func start_test_arena() -> void:
+	_start_mode(ARENA_SCENE)
+
+
+func start_tournament(rounds: int) -> void:
+	tournament_rounds = rounds
+	_start_mode(TOURNAMENT_SCENE)
+
+
+func start_free_play() -> void:
+	_start_mode(FREE_PLAY_SCENE)
+
+
+## Kompatibel zu M1: startet die Testarena.
 func start_match() -> void:
+	start_test_arena()
+
+
+## Pause-Menü „Zum Hauptmenü“.
+func return_to_main_menu() -> void:
+	goto_main_menu()
+
+
+func quit_game() -> void:
+	get_tree().quit()
+
+
+func _start_mode(scene_path: String) -> void:
 	if PlayerRoster.cpu_fill_enabled:
 		PlayerRoster.fill_with_cpu()
 	match_running = true
-	get_tree().change_scene_to_file(ARENA_SCENE)
+	get_tree().paused = false
+	get_tree().change_scene_to_file(scene_path)
 	match_started.emit()
 
+
+func _leave_match() -> void:
+	pause_menu.close()
+	match_running = false
+	Engine.time_scale = 1.0
+	for slot: PlayerSlot in PlayerRoster.get_disconnected_slots():
+		PlayerRoster.leave(slot)
+	PlayerRoster.clear_cpus()
+	_update_pause_state()
+	get_tree().paused = false
+
+
+# --- Pause ---
 
 func open_pause(by: PlayerSlot) -> void:
 	pause_menu.open(by)
@@ -67,22 +143,6 @@ func open_pause(by: PlayerSlot) -> void:
 func resume() -> void:
 	pause_menu.close()
 	_update_pause_state()
-
-
-func return_to_join() -> void:
-	pause_menu.close()
-	match_running = false
-	for slot: PlayerSlot in PlayerRoster.get_disconnected_slots():
-		PlayerRoster.leave(slot)
-	PlayerRoster.clear_cpus()
-	_update_pause_state()
-	get_tree().paused = false
-	get_tree().change_scene_to_file(JOIN_SCENE)
-	returned_to_join.emit()
-
-
-func quit_game() -> void:
-	get_tree().quit()
 
 
 func is_waiting_for_controller() -> bool:
@@ -109,6 +169,6 @@ func _unpause_deferred() -> void:
 
 func _on_player_disconnected(slot: PlayerSlot) -> void:
 	if not match_running:
-		# Im Beitrittsbildschirm verlässt ein getrennter Spieler einfach seinen Platz.
+		# In Menüs verlässt ein getrennter Spieler einfach seinen Platz.
 		PlayerRoster.leave(slot)
 	_update_pause_state()

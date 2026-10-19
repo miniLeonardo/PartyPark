@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="MinigameInfo" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/minigame/minigame_info.gd" id="1_info"]
+
+[resource]
+script = ExtResource("1_info")
+id = &"sheep_herding"
+display_name = "Schafe hüten"
+formats = Array[int]([0])
+min_players = 1
+max_players = 4
+duration_sec = 90.0
+goal_text = "Treibt 10 der 12 Schafe ins Gehege, bevor die Zeit abläuft! Schafe laufen vor euch weg. Später kommt ein Wolf, schubst ihn weg."
+controls = {
+"move": "Laufen",
+"jump": "Springen",
+"push": "Bellen und Schubsen"
+}
+solo_goal_text = ""
+solo_controls = {}
+solo_role_name = ""
+team_role_name = ""
+scene_path = "res://minigames/sheep_herding/sheep_herding.tscn"

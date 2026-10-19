@@ -3,7 +3,7 @@ extends CanvasLayer
 ## Pause-Menü (D21): jeder Spieler kann es öffnen, jeder kann navigieren und auswählen.
 ## Eigene Navigation über InputSource statt Godot-Fokus, damit jede Eingabe einem Spieler zugeordnet bleibt.
 
-const ITEMS: Array[String] = ["Weiter", "Zurück zum Beitritt", "Spiel beenden"]
+const ITEMS: Array[String] = ["Weiter", "Zum Hauptmenü", "Spiel beenden"]
 
 var is_open: bool = false
 var selected: int = 0
@@ -96,7 +96,7 @@ func _activate(index: int) -> void:
 		0:
 			Game.resume()
 		1:
-			Game.return_to_join()
+			Game.return_to_main_menu()
 		2:
 			Game.quit_game()
 

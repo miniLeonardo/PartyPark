@@ -7,7 +7,7 @@ Spalte „Von“: **L** = Leonardo, **KI** = technische Entscheidung eines Agent
 
 | ID | Datum | Entscheidung | Begründung | Von |
 |---|---|---|---|---|
-| D01 | 2026-10-19 | Engine Godot 4.6.x, GDScript, kein .NET | Open Source, nativer Export für Windows und Linux, Textdateien gut für KI-Arbeit | L |
+| D01 | 2026-10-19 | Engine Godot 4.6.x, GDScript, kein .NET (Version ersetzt durch D41) | Open Source, nativer Export für Windows und Linux, Textdateien gut für KI-Arbeit | L |
 | D02 | 2026-10-19 | 3D-Spiel | Wunsch von Leonardo | L |
 | D03 | 2026-10-19 | Bis zu 4 lokale Spieler mit Gamepads, ein Bildschirm, kein Splitscreen | Couch-Erlebnis, einfacher und performanter auf Handhelds | L |
 | D04 | 2026-10-19 | Zielplattformen Windows und Linux (Bazzite) | Wunsch von Leonardo | L |
@@ -35,6 +35,24 @@ Spalte „Von“: **L** = Leonardo, **KI** = technische Entscheidung eines Agent
 | D26 | 2026-10-19 | Menüs (Beitritt, Pause) navigieren über `InputSource` mit abgeleiteten Aktionen `nav_up/down/left/right`, nicht über Godot-Fokus und `ui_*`-Aktionen | Godots UI-Aktionen reagieren auf alle Geräte gleichzeitig und umgehen die Spielerzuordnung | KI (Claude, Cowork) |
 | D27 | 2026-10-19 | Automatischer Durchlauf `tests/smoke/m1_smoke.gd` mit simulierten Tastatur- und Gamepad-Ereignissen, Start über `-- --smoke-m1` | prüft Beitritt, Steuerung, Pause, Verbindungsabbruch ohne echte Controller | KI (Claude, Cowork) |
 | D28 | 2026-10-19 | Tastenhinweise passen sich dem Gerät an: jede Spielerkarte, die Pause und die Arena zeigen die Tasten des jeweiligen Geräts (Tastatur links/rechts, Controller); Controller-Beschriftung nach Familie aus dem Gerätenamen (Xbox A/B/X/Y, PlayStation Kreuz/Kreis/Viereck/Dreieck, Nintendo nach Position B/A/Y/X). Beim Tastaturspieler rechts steht jetzt die Haupttastatur-Taste vor der Ziffernblock-Taste | Wunsch von Leonardo nach erstem Test: Start war auf der Tastatur nicht auffindbar | L |
+| D29 | 2026-10-19 | Menüablauf: Titel („Drücke A“) → Beitritt → Hauptmenü mit Schnellturnier, Freies Spiel, Testarena, Optionen, Beenden; B im Hauptmenü führt zurück zum Beitritt | erst steht fest, wer mitspielt, dann passen Modi und Formate | L (Empfehlung angenommen) |
+| D30 | 2026-10-19 | Erste vier Minispiele (Q05): Autoscooter `bumper_cars` (Jeder gegen jeden), Tauziehen `tug_of_war` (2 gegen 2), Riese gegen Zwerge `giant_vs_dwarfs` (1 gegen 3), Schafe hüten `sheep_herding` (alle gegen Computer) | Wunsch „mehr Chaos“ | L |
+| D31 | 2026-10-19 | Punkte (Q06): Platz 1 bis 4 bekommen 3, 2, 1, 0 Punkte; Koop-Sieg gegen den Computer 2 Punkte für alle; Turnierlänge 5 oder 10 Runden vor dem Start wählbar | einfach, jede Runde zählt | L (Empfehlung angenommen) |
+| D32 | 2026-10-19 | Auslosung (Q07): Jeder gegen jeden 40 %, 2 gegen 2 25 %, 1 gegen 3 20 %, alle gegen Computer 15 %; Letztplatzierter wird Solo-Spieler im 1 gegen 3; 2v2-Paare nie zweimal hintereinander gleich; kein Minispiel zweimal hintereinander | Abwechslung und Aufholhilfe | L (Empfehlung angenommen) |
+| D33 | 2026-10-19 | Vor jedem Minispiel nur Regelbildschirm, keine Übung: Ziel in einem Satz, Tasten je Gerät, Teams; jeder Mensch drückt A für Bereit (Computer sofort bereit), dann Countdown 3, 2, 1, Los; am Ende kurze Zeitlupe und Ergebnis | Wunsch von Leonardo (abweichend von der Empfehlung mit Übung) | L |
+| D34 | 2026-10-19 | Autoscooter: runde Plattform mit Lücken in der Bande, Stick lenkt, A Gas, X Turbo-Rempler; 3 Leben, Rausfallen kostet eins; Letzter gewinnt, nach 90 s zählen die Leben | Empfehlung angenommen | L |
+| D35 | 2026-10-19 | Tauziehen: pulsierender Ring zeigt den Takt, A im Takt zieht, beide Teammitglieder im selben Takt geben Synchronbonus, Fehldruck lässt kurz ausrutschen; Markierung über die Linie gewinnt, max. 45 s | Empfehlung angenommen | L |
+| D36 | 2026-10-19 | Riese gegen Zwerge: Riese dreimal so groß und langsam, A stampft eine Schockwelle (Zwerge 2 Treffer, dann raus), Y schüttelt alle paar Sekunden ein Seil ab; jede volle Runde eines Zwergs eng um den Riesen wickelt ein Seil, bei 5 Seilen fällt er; Riese gewinnt, wenn alle Zwerge raus sind oder nach 75 s | Empfehlung angenommen | L |
+| D37 | 2026-10-19 | Schafe hüten: 12 Schafe fliehen vor Spielern, X bellt und scheucht stark; Ziel 10 Schafe in 90 s im Gehege; ab der Hälfte der Zeit jagt ein Computer-Wolf Schafe aus dem Gehege und muss weggeschubst werden | Empfehlung angenommen | L |
+| D38 | 2026-10-19 | Computergegner standardmäßig mittel, in den Optionen leicht, mittel, schwer | gemischte Runden | L (Empfehlung angenommen) |
+| D39 | 2026-10-19 | Optionen: Computer-Stärke, Vibration an/aus, Vollbild an/aus, Standard-Turnierlänge; gespeichert in `user://settings.cfg` | Wunsch von Leonardo | L |
+| D40 | 2026-10-19 | Freies Spiel: Minispiel aus Liste wählen, dann Teams bzw. Solo-Spieler selbst festlegen, danach zurück zur Liste ohne Gesamtpunkte | Wunsch von Leonardo (abweichend von der Empfehlung „auslosen“) | L |
+| D41 | 2026-10-19 | Engine-Version Godot 4.7.x (Leonardo nutzt 4.7, Projekt vom Editor umgestellt); ersetzt die Versionsangabe aus D01 | aktuelle stabile Version | L |
+| D42 | 2026-10-19 | Minispiel-Framework: `MinigameInfo` (info.tres mit `scene_path`), `MinigameCatalog` (statisch, testbar) plus Autoload `MinigameRegistry`, `MinigameContext`, `MinigameResult`, Basisklasse `Minigame`; `MatchFlow` ist eine reine Skriptklasse ohne eigene .tscn; Zeitlupe und Ablauf-Timer rechnen mit unskalierter Zeit | Minispiele kennen keine Menüs und lassen sich einzeln testen | KI (Claude, Cowork) |
+| D43 | 2026-10-19 | Pause-Menü: Eintrag „Zurück zum Beitritt“ heißt jetzt „Zum Hauptmenü“ (ergänzt D21); B im Hauptmenü führt zum Beitritt | passt zum neuen Menüablauf D29 | KI (Claude, Cowork), Platzhalter Q11 |
+| D44 | 2026-10-19 | Neues Autoload `Settings` (vor InputRouter) für Optionen; Vibration aus unterdrückt jede `rumble()`-Ausgabe zentral in `GamepadInput` | eine Stelle für alle Controller | KI (Claude, Cowork) |
+| D45 | 2026-10-19 | Computergegner: Kennwerte je Stärke zentral in `core/ai/ai_profile.gd` (Reaktionszeit, Zielfehler, Geschick, Taktstreuung, Tempo); jedes Minispiel steuert seine Computer in `_update_ai()` über dieselbe `AIInput`-Schnittstelle wie Menschen | Stärke an einer Stelle einstellbar | KI (Claude, Cowork) |
+| D46 | 2026-10-19 | Tests: `tests/run_tests.gd` mit `TestCase`-Basisklasse; Smoke-Tests `--smoke-m1`, `--smoke-m2` (komplettes Turnier und alle Minispiele), `--smoke-compile` (lädt alle Dateien); mit `--fixed-fps 60` laufen sie ohne Echtzeit in Sekunden | schnelle Prüfung ohne Controller | KI (Claude, Cowork) |
 
 ## Offene Fragen
 
@@ -46,11 +64,14 @@ Beim Klären in die Tabelle oben übernehmen und hier als erledigt markieren.
 | Q02 | Welche Spielfigur (Tier, Kartoffel, Roboter, Männchen …) und wie wackelig/physikalisch? | Beginn Prototyp | erledigt (D15, D16) |
 | Q03 | Thema und Grafikstil (Low-Poly mit Kenney/Quaternius vorgeschlagen) | Beginn Prototyp | erledigt (D17) |
 | Q04 | Tastenbelegung der abstrakten Aktionen | Beginn Prototyp | erledigt (D18) |
-| Q05 | Welche 4 Minispiele im Vertical Slice? (Vorschlag: Eisscholle, Ruderboot, Geisterhaus, Staubsauger-Boss) | Beginn Prototyp | offen |
-| Q06 | Punktesystem und Turnierlänge | Meilenstein Turnier | offen |
-| Q07 | Gewichtung der Teamformate und Aufholmechanik | Meilenstein Turnier | offen |
+| Q05 | Welche 4 Minispiele im Vertical Slice? (Vorschlag: Eisscholle, Ruderboot, Geisterhaus, Staubsauger-Boss) | Beginn Prototyp | erledigt (D30) |
+| Q06 | Punktesystem und Turnierlänge | Meilenstein Turnier | erledigt (D31) |
+| Q07 | Gewichtung der Teamformate und Aufholmechanik | Meilenstein Turnier | erledigt (D32) |
 | Q08 | Fehlende Spieler mit Computergegnern auffüllen? | Meilenstein Kern | erledigt (D19) |
 | Q09 | Privates Git-Repository (z. B. GitHub) als Austauschweg zwischen Arbeitsrechner, Spiele-PC/Bazzite und Antigravity? | vor erstem Test auf Bazzite | offen |
 | Q10 | Spielerfarben bestätigen (Platzhalter: Blau, Zinnoberrot, Gelb, Blaugrün aus der farbsehschwächen-sicheren Okabe-Ito-Palette) | nach Test M1 | offen |
 | Q11 | Platzhalter im Beitrittsbildschirm bestätigen: Titel „PARTYPARK“, Y schaltet Computergegner um, Texte der Hinweiszeile | nach Test M1 | offen |
 | Q12 | Bewegungswerte nach dem ersten Controllertest feinjustieren (Tempo 7 m/s, Sprunghöhe ca. 1,7 m, Schubsstärke 12 m/s, Kamera) | nach Test M1 | offen |
+| Q13 | Punkte in Teamformaten (Platzhalter): Siegerteam je 3, Verlierer 0, Unentschieden je 1. Passt das, oder sollen z. B. Solo-Sieger im 1 gegen 3 mehr bekommen? | nach erstem Turnier | offen |
+| Q14 | Teamfarben der Ringe unter den Figuren (Platzhalter Orange und Lila) und Teamnamen „Team Orange“, „Team Lila“ | nach erstem Turnier | offen |
+| Q15 | Balance der vier Minispiele nach dem ersten Spieleabend: Zeitlimits, Seilzahl, Stampfradius, Zugkraft im Tauziehen, Schafverhalten, Wolf | nach Test M3 | offen |

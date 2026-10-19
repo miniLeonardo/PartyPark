@@ -1,6 +1,6 @@
 # Partypark: Game Design
 
-Stand: 2026-10-19. Status je Abschnitt: **entschieden**, **Vorschlag** (noch nicht bestätigt) oder **offen**. Was hier als Vorschlag steht, darf erst nach Rückfrage bei Leonardo umgesetzt werden (siehe `AGENTS.md`).
+Stand: 2026-10-19 (nach M3). Status je Abschnitt: **entschieden**, **Vorschlag** (noch nicht bestätigt) oder **offen**. Was hier als Vorschlag steht, darf erst nach Rückfrage bei Leonardo umgesetzt werden (siehe `AGENTS.md`).
 
 ## 1. Vision (entschieden)
 
@@ -12,7 +12,7 @@ Kernerlebnis: „Noch eine Runde!“ Jedes Minispiel ist in unter 10 Sekunden er
 
 | Punkt | Festlegung |
 |---|---|
-| Spieler | 1 bis 4 lokal, fehlende Plätze optional mit Computergegnern auffüllen (Vorschlag) |
+| Spieler | 1 bis 4 lokal, fehlende Plätze mit Computergegnern auffüllen, im Beitritt abschaltbar (D19) |
 | Eingabe | Gamepads (Xbox, PlayStation, Steam Deck, Switch-Pro über Steam Input)(Tastatureingabe zum Testen des spiels) |
 | Plattformen | Windows, Linux (Bazzite, auch Handheld) |
 | Darstellung | 3D, ein gemeinsamer Bildschirm, kein Splitscreen |
@@ -34,38 +34,38 @@ Die Minispiele bilden einen gemeinsamen Pool. Darüber liegen Spielarten, die de
 
 | Spielart | Beschreibung | Status |
 |---|---|---|
-| Schnellturnier | 5 oder 10 zufällige Minispiele, Punkte am Ende. Ideal zum Testen | Vorschlag, wird zuerst gebaut |
+| Schnellturnier | 5 oder 10 zufällige Minispiele, 3/2/1/0 Punkte, Siegerehrung (D31, D32) | gebaut |
 | Freizeitpark-Hub | begehbares 3D-Gelände, Attraktionen sind Minispiele (wie Nintendo Land). Passt zum Namen Partypark | Vorschlag |
 | Brettspiel | Würfeln, Felder, Münzen, Sterne, Feldfarben bestimmen das Teamformat (wie Mario Party) | Idee, später |
 | Koop-Kampagne | Abfolge von 4vCPU-Spielen mit wiederkehrendem Endboss | Idee, später |
-| Freies Spiel | einzelnes Minispiel direkt auswählen | Vorschlag |
+| Freies Spiel | einzelnes Minispiel wählen, Teams selbst festlegen (D40) | gebaut |
 
 **Offene Frage:** Was ist langfristig das Herzstück, Hub oder Brettspiel?
 
-## 5. Teamzuweisung (Vorschlag)
+## 5. Teamzuweisung (entschieden, D32)
 
 1. Glücksrad oder Würfel vor jeder Runde, Formate gewichtet (1v3 seltener)
 2. Aufholmechanik: Der Letztplatzierte wird Solo-Spieler im 1v3 und bekommt die starke Rolle
 3. 2v2-Paarungen zufällig, aber nie zweimal hintereinander dieselbe
 4. Im Brettspielmodus später über Feldfarben
 
-## 6. Ablauf jedes Minispiels (Vorschlag, wichtig für Zugänglichkeit)
+## 6. Ablauf jedes Minispiels (entschieden, D33: ohne Übungsrunde)
 
 1. **Ankündigung:** Name, Teamformat, Teams farbig dargestellt
 2. **Regelbildschirm:** ein Satz Ziel, Steuerung mit Controller-Symbolen, kleine Vorschau
-3. **Übungsrunde:** jeder probiert frei, bis er „Bereit“ drückt; alle bereit, dann geht es los
+3. ~~Übungsrunde~~ entfällt (D33); stattdessen drückt jeder auf dem Regelbildschirm A für „Bereit“
 4. **Countdown** 3, 2, 1, Los
 5. **Spiel**
 6. **Ende:** kurze Zeitlupe beim entscheidenden Moment
 7. **Ergebnis:** Sieger-Pose, Verlierer-Animation, Punkte fliegen ins Gesamtergebnis
 
-## 7. Spielfigur (offen)
+## 7. Spielfigur (entschieden, D15, D16)
 
 Eine gemeinsame Figur für alle Minispiele, damit Steuerung und Animationen nur einmal gebaut werden. Grundfähigkeiten: Laufen, Springen, Schubsen, Aktionstaste. Pro Minispiel werden Fähigkeiten an- oder abgeschaltet oder ersetzt (Werfen, Tragen, Taschenlampe).
 
-**Offen:** Was für eine Figur (Tier, Kartoffel, Roboter, Männchen)? Wie wackelig oder physikalisch? Unterscheidung der Spieler über Farbe, Hut, Form?
+Entschieden: eigene runde Knubbelfigur, ganzer Körper in Spielerfarbe, präzise Steuerung mit optischem Wackeln. In Teamformaten zusätzlich ein farbiger Ring unter den Füßen (Q14).
 
-## 8. Grafik- und Tonstil (offen)
+## 8. Grafik- und Tonstil (Thema entschieden, D17)
 
 Vorschlag: einheitlicher Low-Poly-Stil mit freien Paketen von Kenney und Quaternius (CC0), kräftige Farben, jede Spielerfarbe klar unterscheidbar (auch für Farbsehschwäche prüfen). Thema und Tonalität sind offen.
 Wichtig: Performance muss stimmen, das Spiel muss auf einer Integrierten Radeon 780m mit 60fps laufen
@@ -112,16 +112,16 @@ Wichtig: Performance muss stimmen, das Spiel muss auf einer Integrierten Radeon 
 
 **Problem geheimer Informationen auf einem Bildschirm:** Nintendo Land nutzte dafür einen zweiten Bildschirm. Lösungsideen für uns: Vibration, Geräusche, kurzes Aufblitzen im Licht, Regeln, die auch mit offenen Karten funktionieren.
 
-## 10. Vertical Slice für den ersten Prototyp (Vorschlag)
+## 10. Vertical Slice für den ersten Prototyp (entschieden, D30, gebaut)
 
 Je ein Spiel pro Format, im Schnellturnier spielbar:
 
-1. FFA: Eisscholle (`ice_floe`)
-2. 2v2: Ruderboot (`rowing`)
-3. 1v3: Geisterhaus (`ghost_house`)
-4. 4vCPU: Staubsauger-Boss (`vacuum_boss`)
+1. FFA: Autoscooter (`bumper_cars`, D34)
+2. 2v2: Tauziehen (`tug_of_war`, D35)
+3. 1v3: Riese gegen Zwerge (`giant_vs_dwarfs`, D36)
+4. 4vCPU: Schafe hüten (`sheep_herding`, D37)
 
-Die endgültige Auswahl trifft Leonardo zu Beginn des Prototyps.
+Ursprünglicher Vorschlag (Eisscholle, Ruderboot, Geisterhaus, Staubsauger-Boss) bleibt im Pool für später.
 
 ## 11. „Juice“: Was das Spiel lustig macht (Vorschlag)
 

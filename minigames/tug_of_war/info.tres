@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="MinigameInfo" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/minigame/minigame_info.gd" id="1_info"]
+
+[resource]
+script = ExtResource("1_info")
+id = &"tug_of_war"
+display_name = "Tauziehen"
+formats = Array[int]([2])
+min_players = 4
+max_players = 4
+duration_sec = 45.0
+goal_text = "Zieht im Takt! Drückt, wenn der Ring sich schließt. Ziehen beide im selben Takt, gibt es einen Bonus. Zu früh oder zu spät lässt euch ausrutschen."
+controls = {
+"jump": "Im Takt ziehen"
+}
+solo_goal_text = ""
+solo_controls = {}
+solo_role_name = ""
+team_role_name = ""
+scene_path = "res://minigames/tug_of_war/tug_of_war.tscn"

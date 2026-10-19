@@ -85,7 +85,7 @@ func _read_move() -> Vector2:
 
 
 func rumble(weak: float, strong: float, duration: float) -> void:
-	if connected:
+	if connected and Settings.vibration_enabled:
 		Input.start_joy_vibration(device, clampf(weak, 0.0, 1.0), clampf(strong, 0.0, 1.0), duration)
 
 

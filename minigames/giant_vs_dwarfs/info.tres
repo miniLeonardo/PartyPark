@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="MinigameInfo" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/minigame/minigame_info.gd" id="1_info"]
+
+[resource]
+script = ExtResource("1_info")
+id = &"giant_vs_dwarfs"
+display_name = "Riese gegen Zwerge"
+formats = Array[int]([3])
+min_players = 4
+max_players = 4
+duration_sec = 75.0
+goal_text = "Zwerge: Lauft eng um den Riesen herum, jede volle Runde wickelt ein Seil. Bei 5 Seilen fällt er um! Springt über seine Schockwellen."
+controls = {
+"move": "Laufen",
+"jump": "Springen"
+}
+solo_goal_text = "Stampf die Zwerge weg! Zwei Treffer und ein Zwerg ist raus. Halte 75 Sekunden durch oder erwisch alle."
+solo_controls = {
+"move": "Laufen",
+"jump": "Stampfen",
+"special": "Seil abschütteln"
+}
+solo_role_name = "Riese"
+team_role_name = "Zwerge"
+scene_path = "res://minigames/giant_vs_dwarfs/giant_vs_dwarfs.tscn"

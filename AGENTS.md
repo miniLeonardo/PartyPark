@@ -4,7 +4,7 @@ Diese Datei ist die zentrale Arbeitsanweisung für jede KI, die an diesem Projek
 
 ## Projekt in einem Satz
 
-Partypark ist ein lokales 3D-Partyspiel im Stil der Nintendo-Minispielsammlungen (Mario Party, Wii Party, Nintendo Land) für bis zu 4 Spieler an einem Bildschirm mit Controllern, gebaut mit Godot 4.6 für Windows und Linux (Bazzite).
+Partypark ist ein lokales 3D-Partyspiel im Stil der Nintendo-Minispielsammlungen (Mario Party, Wii Party, Nintendo Land) für bis zu 4 Spieler an einem Bildschirm mit Controllern, gebaut mit Godot 4.7 für Windows und Linux (Bazzite).
 
 ## Pflichtlektüre zu Beginn jeder Sitzung
 
@@ -32,7 +32,7 @@ Fasse dem Nutzer danach in zwei bis drei Sätzen zusammen, wo das Projekt steht,
 
 | Bereich | Festlegung |
 |---|---|
-| Engine | Godot 4.6.x (Standard-Build, kein .NET) |
+| Engine | Godot 4.7.x (Standard-Build, kein .NET), D41 |
 | Sprache | GDScript mit statischer Typisierung |
 | Physik | Jolt Physics (in `project.godot` gesetzt) |
 | Renderer | Forward+; bei Performanceproblemen auf Handhelds ist Mobile die Ausweichoption |
@@ -49,16 +49,20 @@ godot --headless --path . --import
 # Einzelnes Skript auf Syntaxfehler prüfen
 godot --headless --path . --check-only --script res://pfad/zum/skript.gd
 
-# Automatische Tests (ab M2)
+# Unit-Tests (TeamAssigner, Punkte, Registry)
 godot --headless --path . --script res://tests/run_tests.gd
 
-# Automatischer Durchlauf M1 mit simulierten Eingaben (Exit-Code 0 = grün)
+# Alle Skripte und Szenen laden (findet Parse-Fehler, auch mit Autoloads)
+godot --headless --path . -- --smoke-compile
+
+# Durchläufe mit simulierten Eingaben (Exit-Code 0 = grün)
 godot --headless --path . -- --smoke-m1
+godot --headless --path . --fixed-fps 60 -- --smoke-m2
 ```
 
-`--check-only` kennt keine Autoloads; Skripte mit `InputRouter`, `PlayerRoster` oder `Game` deshalb über den Smoke-Test prüfen.
+`--check-only` kennt keine Autoloads; stattdessen `--smoke-compile` nutzen. `--smoke-m2` spielt ein ganzes Turnier und jedes Minispiel durch; mit `--fixed-fps 60` ohne Echtzeit in Sekunden.
 
-`godot` steht für die Programmdatei von Godot 4.6.x auf dem jeweiligen System.
+`godot` steht für die Programmdatei von Godot 4.7.x auf dem jeweiligen System.
 
 ## Code-Konventionen
 
@@ -69,7 +73,8 @@ godot --headless --path . -- --smoke-m1
 5. Bezeichner und Code auf Englisch, Kommentare und Dokumentation auf Deutsch.
 6. Eine Szene, ein Hauptskript mit gleichem Namen daneben (`player.tscn` und `player.gd`).
 7. **Eingabe:** Gameplay-Code fragt niemals globale Aktionen wie `ui_accept` oder `Input.is_action_pressed()` ohne Gerätebezug ab. Jede Spielereingabe läuft über den zentralen InputRouter (siehe `docs/ARCHITECTURE.md`), der Controller-IDs festen Spielerplätzen zuordnet.
-8. Neue Minispiele folgen der Vorlage in `minigames/` und werden über ihre Beschreibungsdatei registriert, nicht per Hand in Menüs eingetragen.
+8. Neue Minispiele folgen der Vorlage in `minigames/` und werden über ihre Beschreibungsdatei registriert, nicht per Hand in Menüs eingetragen. Anleitung in `docs/ARCHITECTURE.md` Abschnitt 4.4.
+9. Menüs und Tastenhinweise nutzen `MenuList` und `InputHints` (Tasten je Gerät, D28), nie Godots Fokus-Navigation.
 
 ## Ordnerstruktur
 

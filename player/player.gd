@@ -37,6 +37,13 @@ const GROUP: StringName = &"players"
 
 ## Waagerechte Bewegung (Minispiele können sie abschalten, Springen bleibt eigene Fähigkeit).
 var movement_enabled: bool = true
+## Liest die Figur überhaupt Eingaben? Aus während Regelbildschirm und Countdown.
+var controls_enabled: bool = true
+## Eine Fähigkeit (z. B. Autoscooter) bestimmt die waagerechte Bewegung selbst über drive_velocity.
+var drive_override: bool = false
+var drive_velocity: Vector3 = Vector3.ZERO
+## Größenfaktor der Figur (Riese 3.0), siehe set_body_scale().
+var body_scale: float = 1.0
 ## Blickrichtung in der Ebene, Länge 1.
 var facing: Vector3 = Vector3.FORWARD
 var slot: PlayerSlot = null
@@ -70,7 +77,7 @@ func setup(p_slot: PlayerSlot) -> void:
 
 
 func get_input() -> InputSource:
-	if slot == null:
+	if slot == null or not controls_enabled:
 		return null
 	return slot.source
 
@@ -111,21 +118,120 @@ func _physics_process(delta: float) -> void:
 		if ability.enabled:
 			ability.physics_update(delta)
 
-	velocity.x = _walk.x + _knockback.x
-	velocity.z = _walk.z + _knockback.z
+	var horizontal: Vector3 = drive_velocity if drive_override else _walk
+	velocity.x = horizontal.x + _knockback.x
+	velocity.z = horizontal.z + _knockback.z
 
-	if direction.length() > 0.1 and _stun_time <= 0.0:
+	if not drive_override and direction.length() > 0.1 and _stun_time <= 0.0:
 		var target_yaw: float = atan2(-direction.x, -direction.z)
 		visual.rotation.y = lerp_angle(visual.rotation.y, target_yaw, clampf(turn_speed * delta, 0.0, 1.0))
 		facing = Vector3.FORWARD.rotated(Vector3.UP, visual.rotation.y)
 
 	var fall_speed: float = -velocity.y
 	move_and_slide()
+	for ability: PlayerAbility in _abilities:
+		if ability.enabled:
+			ability.post_move_update(delta)
 	on_floor = is_on_floor()
 	if on_floor and not _was_on_floor:
 		visual.play_land(fall_speed)
 	_was_on_floor = on_floor
 	visual.update_motion(Vector2(_walk.x, _walk.z).length() / maxf(move_speed, 0.01), on_floor, delta)
+
+
+## Fügt zur Laufzeit eine Fähigkeit hinzu (z. B. Autoscooter-Steuerung eines Minispiels).
+func add_ability(ability: PlayerAbility) -> void:
+	add_child(ability)
+	_abilities.append(ability)
+
+
+## Stick-Eingabe → Richtung auf der Ebene (kamerarelativ), für Fähigkeiten mit eigener Bewegung.
+func input_to_world(move_input: Vector2) -> Vector3:
+	return _to_world_direction(move_input)
+
+
+func is_stunned() -> bool:
+	return _stun_time > 0.0
+
+
+## Kurz betäuben, ohne Rückstoß.
+func stun(duration: float) -> void:
+	_stun_time = maxf(_stun_time, duration)
+
+
+## Skaliert Figur, Kollision und Namensschild (z. B. Riese 3.0, Zwerge kleiner).
+func set_body_scale(factor: float) -> void:
+	body_scale = factor
+	visual.scale = Vector3.ONE * factor
+	var shape_node := $CollisionShape3D as CollisionShape3D
+	var capsule := (shape_node.shape as CapsuleShape3D).duplicate() as CapsuleShape3D
+	capsule.radius = 0.45 * factor
+	capsule.height = 1.3 * factor
+	shape_node.shape = capsule
+	shape_node.position.y = 0.65 * factor
+	tag_label.position.y = 1.85 * factor + 0.1
+	floor_snap_length = 0.2 * factor
+
+
+## Ersetzt die Kollisionsform (z. B. runder Autoscooter).
+func set_collision_shape(shape: Shape3D, offset_y: float) -> void:
+	var shape_node := $CollisionShape3D as CollisionShape3D
+	shape_node.shape = shape
+	shape_node.position.y = offset_y
+
+
+## Farbiger Ring unter den Füßen zur Teamkennzeichnung; transparente Farbe entfernt ihn.
+func set_team_ring(color: Color) -> void:
+	var ring := get_node_or_null("TeamRing") as MeshInstance3D
+	if color.a <= 0.0:
+		if ring != null:
+			ring.queue_free()
+		return
+	if ring == null:
+		ring = MeshInstance3D.new()
+		ring.name = "TeamRing"
+		var torus := TorusMesh.new()
+		torus.inner_radius = 0.55
+		torus.outer_radius = 0.75
+		torus.rings = 24
+		torus.ring_segments = 8
+		ring.mesh = torus
+		ring.scale = Vector3(1.0, 0.25, 1.0) * body_scale
+		ring.position.y = 0.04
+		add_child(ring)
+	var material := StandardMaterial3D.new()
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.albedo_color = color
+	ring.material_override = material
+
+
+## Figur ein- oder ausblenden und aus der Physik nehmen (z. B. ausgeschieden).
+func set_active(active: bool) -> void:
+	visible = active
+	set_physics_process(active)
+	($CollisionShape3D as CollisionShape3D).set_deferred("disabled", not active)
+	if active:
+		add_to_group(GROUP)
+	else:
+		remove_from_group(GROUP)
+
+
+## Wandelt eine Weltrichtung in Stick-Koordinaten um (Gegenstück zu _to_world_direction), für Computergegner.
+func world_to_input(direction: Vector3) -> Vector2:
+	direction.y = 0.0
+	if direction.length_squared() < 0.0001:
+		return Vector2.ZERO
+	var forward: Vector3 = Vector3.FORWARD
+	var right: Vector3 = Vector3.RIGHT
+	var camera: Camera3D = get_viewport().get_camera_3d()
+	if camera != null:
+		var cam_forward: Vector3 = -camera.global_basis.z
+		cam_forward.y = 0.0
+		if cam_forward.length_squared() > 0.001:
+			forward = cam_forward.normalized()
+			right = forward.cross(Vector3.UP)
+	var input := Vector2(direction.dot(right), -direction.dot(forward))
+	return input.limit_length(1.0)
 
 
 ## Fügt waagerechten Rückstoß hinzu (z. B. Ausfallschritt beim Schubsen).

@@ -20,10 +20,12 @@ func _ready() -> void:
 func _run() -> void:
 	print("SMOKE M1: Start")
 	await _frames(10)
-	_check(get_tree().current_scene.name == "JoinScreen", "Hauptszene ist der Beitrittsbildschirm")
+	_check(get_tree().current_scene.name == "TitleScreen", "Hauptszene ist der Titelbildschirm")
 
-	# Beitritt Tastatur
+	# Titel: Leertaste tritt bei und öffnet den Beitritt
 	await _tap_key(KEY_SPACE)
+	await _frames(5)
+	_check(get_tree().current_scene.name == "JoinScreen", "Leertaste auf dem Titel öffnet den Beitritt")
 	_check(_slot_key(0) == "kb:left", "Tastatur links belegt Platz 1")
 	var join_screen: Node = get_tree().current_scene
 	_check(join_screen._card_hints[0].text.contains("Esc: Los"), "Karte von Spieler 1 zeigt Esc als Start-Taste")
@@ -64,8 +66,13 @@ func _run() -> void:
 	# Start
 	await _tap_key(KEY_ESCAPE)
 	await _frames(10)
+	_check(get_tree().current_scene.name == "MainMenu", "Start führt ins Hauptmenü")
+	await _tap_key(KEY_S)
+	await _tap_key(KEY_S)
+	await _tap_key(KEY_SPACE)
+	await _frames(10)
 	var arena: Node = get_tree().current_scene
-	_check(arena != null and arena.name == "TestArena", "Start lädt die Testarena")
+	_check(arena != null and arena.name == "TestArena", "Hauptmenü „Testarena“ lädt die Testarena")
 	if arena == null or arena.name != "TestArena":
 		_finish()
 		return
@@ -172,13 +179,16 @@ func _run() -> void:
 	await _frames(5)
 	_check(p1.global_position.y > -1.0, "Abgestürzte Figur erscheint wieder")
 
-	# Zurück zum Beitritt über das Pause-Menü
+	# Zum Hauptmenü über das Pause-Menü
 	await _tap_key(KEY_ESCAPE)
 	await _tap_key(KEY_S)
 	await _tap_key(KEY_SPACE)
 	await _frames(10)
-	_check(get_tree().current_scene.name == "JoinScreen", "„Zurück zum Beitritt“ lädt den Beitrittsbildschirm")
-	_check(not get_tree().paused, "Beitrittsbildschirm ist nicht pausiert")
+	_check(get_tree().current_scene.name == "MainMenu", "„Zum Hauptmenü“ lädt das Hauptmenü")
+	_check(not get_tree().paused, "Hauptmenü ist nicht pausiert")
+	await _tap_key(KEY_E)
+	await _frames(5)
+	_check(get_tree().current_scene.name == "JoinScreen", "B im Hauptmenü führt zurück zum Beitritt")
 	_check(PlayerRoster.human_count() == 3 and PlayerRoster.slots[3].is_empty(), "Menschen bleiben beigetreten, Computer entfernt")
 	_finish()
 

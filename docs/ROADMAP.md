@@ -20,29 +20,36 @@ Status: **offen**, **in Arbeit**, **erledigt**, **verschoben**. Beim Abschluss e
 | 1.4 | Spielfigur: Laufen, Springen, Schubsen | erledigt (2026-10-19, headless und Smoke-Test grün, Controllertest offen) |
 | 1.5 | Testarena mit `ArenaCamera` für 4 Spieler | erledigt (2026-10-19, headless und Smoke-Test grün, Controllertest offen) |
 | 1.6 | Pause-Menü | erledigt (2026-10-19, headless und Smoke-Test grün, Controllertest offen) |
-| 1.7 | Testanleitung für Leonardo, Test bestanden | in Arbeit (Anleitung in `docs/TESTANLEITUNG_M1.md`, Test bei Leonardo offen) |
+| 1.7 | Testanleitung für Leonardo, Test bestanden | erledigt (2026-10-19, Leonardo: „klappt alles“, Windows, Godot 4.7, vor allem Tastatur) |
 
 ## Phase 2: Prototyp, Meilenstein M2 „Minispiel-Framework“
 
 | Nr | Aufgabe | Status |
 |---|---|---|
-| 2.1 | `TeamFormat`, `MinigameInfo`, `MinigameRegistry` | offen |
-| 2.2 | `Minigame`-Basisklasse, `MinigameContext`, `MinigameResult` | offen |
-| 2.3 | `MatchFlow`: Ankündigung, Regeln, Übung mit Bereit, Countdown, Ergebnis | offen |
-| 2.4 | `TeamAssigner` mit Tests | offen |
-| 2.5 | Schnellturnier mit Punktestand und Siegerehrung | offen |
-| 2.6 | Testläufer `tests/run_tests.gd` | offen |
+| 2.1 | `TeamFormat`, `MinigameInfo`, `MinigameRegistry` | erledigt (2026-10-19) |
+| 2.2 | `Minigame`-Basisklasse, `MinigameContext`, `MinigameResult` | erledigt (2026-10-19) |
+| 2.3 | `MatchFlow`: Ankündigung, Regeln mit Bereit (ohne Übung, D33), Countdown, Zeitlupe, Ergebnis | erledigt (2026-10-19) |
+| 2.4 | `TeamAssigner` mit Tests | erledigt (2026-10-19) |
+| 2.5 | Schnellturnier mit Punktestand und Siegerehrung | erledigt (2026-10-19) |
+| 2.6 | Testläufer `tests/run_tests.gd` | erledigt (2026-10-19) |
 
 ## Phase 3: Prototyp, Meilenstein M3 „Vertical Slice“
 
 | Nr | Aufgabe | Status |
 |---|---|---|
-| 3.1 | Minispiel FFA (Vorschlag Eisscholle) | offen |
-| 3.2 | Minispiel 2v2 (Vorschlag Ruderboot) | offen |
-| 3.3 | Minispiel 1v3 (Vorschlag Geisterhaus) | offen |
-| 3.4 | Minispiel 4vCPU (Vorschlag Staubsauger-Boss) | offen |
-| 3.5 | Einfache Computergegner über `AIInput` | offen |
+| 3.1 | Minispiel FFA: Autoscooter `bumper_cars` (D30, D34) | erledigt (2026-10-19, Smoke-Test grün, Controllertest offen) |
+| 3.2 | Minispiel 2v2: Tauziehen `tug_of_war` (D35) | erledigt (2026-10-19, Smoke-Test grün, Controllertest offen) |
+| 3.3 | Minispiel 1v3: Riese gegen Zwerge `giant_vs_dwarfs` (D36) | erledigt (2026-10-19, Smoke-Test grün, Controllertest offen) |
+| 3.4 | Minispiel 4vCPU: Schafe hüten `sheep_herding` (D37) | erledigt (2026-10-19, Smoke-Test grün, Controllertest offen) |
+| 3.5 | Einfache Computergegner über `AIInput`, Stärke einstellbar (D38, D45) | erledigt (2026-10-19) |
 | 3.6 | Erster gemeinsamer Spieleabend als Test, Feedback im DEVLOG | offen |
+
+## Zwischenschritt: Menüs (2026-10-19 vorgezogen)
+
+| Nr | Aufgabe | Status |
+|---|---|---|
+| M.1 | Titelbildschirm, Hauptmenü, Optionen (D29, D39) | erledigt (2026-10-19) |
+| M.2 | Freies Spiel mit Teamwahl (D40) | erledigt (2026-10-19) |
 
 ## Phase 4: Ausbau
 

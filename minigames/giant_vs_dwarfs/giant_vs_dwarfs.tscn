@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://minigames/giant_vs_dwarfs/giant_vs_dwarfs.gd" id="1_game"]
+
+[node name="GiantVsDwarfs" type="Node3D"]
+script = ExtResource("1_game")

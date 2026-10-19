@@ -13,6 +13,16 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-10-19: Menüs, Schnellturnier, Freies Spiel und vier Minispiele (M2, M3)
+
+Agent und Umgebung: Claude (Cowork), Variante B, Tests mit Godot 4.7.2 (Leonardo nutzt 4.7, D41)
+Erledigt: Testergebnis M1 von Leonardo: „klappt alles“ (Windows, Godot 4.7, vor allem mit Tastatur). Drei Designrunden (D29 bis D40). Menüs: Titel, Hauptmenü, Optionen mit Speicherung (`Settings`-Autoload), `MenuList`, `MenuBackdrop`. Framework: `TeamFormat`, `TeamAssigner`, `MinigameInfo`, `MinigameCatalog`, `MinigameRegistry`, `MinigameContext`, `MinigameResult`, `Scoring`, `Minigame`, `MatchFlow` (Ankündigung, Regeln mit Bereit, Countdown, Zeitlupe, Ergebnis), `MinigameHud`. Spielarten: Schnellturnier mit Zwischenstand und Siegerehrung, Freies Spiel mit Teamwahl. Minispiele: Autoscooter, Tauziehen, Riese gegen Zwerge, Schafe hüten, jeweils mit Computergegnern (`AIProfile`, drei Stärken). Spielfigur erweitert (eigene Bewegungsmodelle, Skalierung, Teamring, Ausscheiden). Pause-Menü „Zum Hauptmenü“. Tests: `tests/run_tests.gd` mit 18 Unit-Tests, Smoke-Tests m1, m2, compile.
+Entscheidungen: D29 bis D46; Q05 bis Q07 erledigt; neue offene Fragen Q13 (Teampunkte), Q14 (Teamfarben), Q15 (Balance)
+Getestet: Unit-Tests 18/18; `--smoke-compile` 0 Fehler; `--smoke-m1` 50/50; `--smoke-m2` 30/30 (komplettes 5-Runden-Turnier, jedes Minispiel, Optionen); Simulation Computer-Riese gegen Computer-Zwerge: Zwerge gewinnen nach ca. 57 von 75 s. Bildschirmfotos mit Forward+ (Software-Vulkan) geprüft. Echte Controller, Vibration und Bildrate offen.
+Probleme / Bekannte Fehler: Balance ist geschätzt (Q15). Untätige Menschen verlieren Tauziehen in ca. 10 s. Platzhaltergrafik überall. Leere `.gitkeep`-Dateien in Ordnern mit Inhalt können gelöscht werden.
+Nächster Schritt: Leonardo testet nach `docs/TESTANLEITUNG_M3.md` (Spieleabend, ROADMAP 3.6); danach Balance (Q15), Q13, Q14 klären. Für die nächste Sitzung `docs/prompts/02_spieleabend_und_ausbau.md` verwenden.
+Aktuelle Kopie liegt in: `C:\Users\wad32muj\Agentenraum\partypark`
+
 ## 2026-10-19: Tastenhinweise je Gerät
 
 Agent und Umgebung: Claude (Cowork), Variante B

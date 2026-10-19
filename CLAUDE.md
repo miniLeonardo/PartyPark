@@ -22,10 +22,11 @@ Direkt im Ordner arbeiten: lesen, bearbeiten, `git` ausführen. Für headless Go
 2. Godot für Prüfungen bereitstellen (falls nicht vorhanden):
    ```
    mkdir -p /home/claude/godot-bin && cd /home/claude/godot-bin
-   curl -sSL -o g.zip https://github.com/godotengine/godot/releases/download/4.6.2-stable/Godot_v4.6.2-stable_linux.x86_64.zip
+   curl -sSL -o g.zip https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
    unzip -q g.zip
    ```
-   Danach `/home/claude/godot-bin/Godot_v4.6.2-stable_linux.x86_64 --headless --path /home/claude/partypark --import`
+   Danach `/home/claude/godot-bin/Godot_v4.7.2-stable_linux.x86_64 --headless --path /home/claude/partypark --import`
+   Für Bildschirmfotos mit echtem 3D-Rendering: `apt-get install -y mesa-vulkan-drivers`, dann mit `xvfb-run -a -s "-screen 0 1920x1080x24" <godot> --path . --rendering-driver vulkan --resolution 960x540 --fixed-fps 60 -- --smoke-m2 --short --shots=<ordner>` (langsam, im Hintergrund starten).
 3. In der Cloud-Kopie `git init` ausführen, alles committen und `git tag sync/folder` setzen. Dieses Git dient nur dazu, eigene Änderungen zu erkennen, es ersetzt nicht das Repository im Ordner.
 4. In `/home/claude/partypark` arbeiten und dort committen.
 5. **Zurückschreiben:** `bash tools/pack_snapshot.sh` listet alle seit dem Tag `sync/folder` geänderten Dateien. Jede geänderte Datei nach `/mnt/user-data/outputs/partypark/<pfad>` kopieren und mit `device_commit_files` an denselben Pfad im Ordner schreiben, für bestehende Dateien mit `expectedMtimeMs`. Danach `git tag -f sync/folder` setzen.

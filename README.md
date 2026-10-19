@@ -1,15 +1,15 @@
 # Partypark
 
-Lokales 3D-Partyspiel für bis zu 4 Spieler mit Controllern, inspiriert von Mario Party, Wii Party und Nintendo Land. Gebaut mit Godot 4.6 für Windows und Linux (Bazzite).
+Lokales 3D-Partyspiel für bis zu 4 Spieler mit Controllern, inspiriert von Mario Party, Wii Party und Nintendo Land. Gebaut mit Godot 4.7 für Windows und Linux (Bazzite).
 
-Status: Meilenstein M1 „Kern“ umgesetzt (Beitritt, Spielfigur, Testarena, Pause), Controllertest bei Leonardo offen. Aktueller Stand immer im obersten Eintrag von [`docs/DEVLOG.md`](docs/DEVLOG.md).
+Status: Prototyp mit Titel, Beitritt, Hauptmenü, Optionen, Schnellturnier, Freiem Spiel und vier Minispielen (Autoscooter, Tauziehen, Riese gegen Zwerge, Schafe hüten). Erster Spieleabend als Test steht aus. Aktueller Stand immer im obersten Eintrag von [`docs/DEVLOG.md`](docs/DEVLOG.md).
 
 ## Schnellstart
 
-1. Godot **4.6.x** (Standard-Version, nicht .NET) von godotengine.org herunterladen.
+1. Godot **4.7.x** (Standard-Version, nicht .NET) von godotengine.org herunterladen.
    Bazzite: am einfachsten als Flatpak `org.godotengine.Godot` über die Softwareverwaltung.
 2. Godot starten, „Importieren“ wählen und die Datei `project.godot` in diesem Ordner öffnen.
-3. Spiel starten mit F5. Ohne Controller: Leertaste bzw. Enter lassen zwei Tastatur-Debugspieler beitreten (Belegung in `docs/DECISIONS.md`, D22).
+3. Spiel starten mit F5 (Titel → A drücken → Beitritt → Start → Hauptmenü). Ohne Controller: Leertaste bzw. Enter lassen zwei Tastatur-Debugspieler beitreten (Belegung in `docs/DECISIONS.md`, D22).
 
 ## Dokumente
 
@@ -33,7 +33,7 @@ Der gesamte Kontext steckt in den Dateien, nicht im Chatverlauf. So gelingt der 
 3. **Erster Prompt in der neuen Umgebung:**
    > Lies AGENTS.md und befolge die Pflichtlektüre. Fasse mir den Stand zusammen und schlage den nächsten Schritt aus der ROADMAP vor. Stelle Spieldesignfragen immer mir.
 4. **Im DEVLOG vermerken**, dass die Arbeit jetzt in der neuen Umgebung stattfindet, damit nicht zwei Kopien auseinanderlaufen.
-5. Godot 4.6.x auf dem neuen PC installieren und das Projekt importieren. Der Ordner `.godot/` wird dabei automatisch neu erzeugt.
+5. Godot 4.7.x auf dem neuen PC installieren und das Projekt importieren. Der Ordner `.godot/` wird dabei automatisch neu erzeugt.
 
 ## Git
 

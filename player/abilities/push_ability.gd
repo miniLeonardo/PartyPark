@@ -2,7 +2,10 @@ class_name PushAbility
 extends PlayerAbility
 ## Schubsen: trifft alle Figuren in einem Kegel vor der Figur und gibt ihnen Rückstoß.
 
-signal pushed(target: Player)
+signal pushed(target: Node3D)
+
+## Gruppe für Nicht-Spieler, die man schubsen kann (z. B. Wolf). Sie brauchen receive_push(impulse, lift, stun, by).
+const PUSHABLE_GROUP: StringName = &"pushable"
 
 ## Reichweite ab Figurmitte in Metern.
 @export var push_range: float = 1.6
@@ -21,6 +24,11 @@ signal pushed(target: Player)
 ## Höhenunterschied, bis zu dem noch getroffen wird (Meter).
 @export var max_height_difference: float = 1.2
 
+## Teammitglieder schubsen? Aus, wenn ein Minispiel team_check setzt und das nicht will.
+var friendly_fire: bool = true
+## Optional: Callable(a: int, b: int) -> bool, true wenn beide im selben Team sind.
+var team_check: Callable = Callable()
+
 var _cooldown: float = 0.0
 
 
@@ -33,9 +41,13 @@ func physics_update(delta: float) -> void:
 	player.visual.play_push()
 	player.add_knockback(player.facing * lunge_speed)
 	var hit_any: bool = false
-	for node: Node in player.get_tree().get_nodes_in_group(Player.GROUP):
-		var other := node as Player
-		if other == null or other == player:
+	var targets: Array[Node] = player.get_tree().get_nodes_in_group(Player.GROUP)
+	targets.append_array(player.get_tree().get_nodes_in_group(PUSHABLE_GROUP))
+	for node: Node in targets:
+		var other := node as Node3D
+		if other == null or other == player or not other.has_method("receive_push"):
+			continue
+		if node is Player and not friendly_fire and player.slot != null and (node as Player).slot != null and team_check.is_valid() and team_check.call(player.slot.index, (node as Player).slot.index):
 			continue
 		var offset: Vector3 = other.global_position - player.global_position
 		if absf(offset.y) > max_height_difference:
@@ -47,7 +59,7 @@ func physics_update(delta: float) -> void:
 		var direction: Vector3 = player.facing if distance < 0.01 else offset / distance
 		if rad_to_deg(player.facing.angle_to(direction)) > push_angle_deg * 0.5:
 			continue
-		other.receive_push(direction * push_strength, push_lift, push_stun_time, player)
+		other.call("receive_push", direction * push_strength, push_lift, push_stun_time, player)
 		pushed.emit(other)
 		hit_any = true
 	if hit_any:

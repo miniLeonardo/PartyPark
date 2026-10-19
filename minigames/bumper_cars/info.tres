@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="MinigameInfo" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/minigame/minigame_info.gd" id="1_info"]
+
+[resource]
+script = ExtResource("1_info")
+id = &"bumper_cars"
+display_name = "Autoscooter"
+formats = Array[int]([1])
+min_players = 2
+max_players = 4
+duration_sec = 90.0
+goal_text = "Schubs die anderen durch die Lücken in der Bande! Jeder hat 3 Leben, wer zuletzt noch fährt, gewinnt."
+controls = {
+"move": "Lenken",
+"jump": "Gas (halten)",
+"push": "Turbo-Rempler"
+}
+solo_goal_text = ""
+solo_controls = {}
+solo_role_name = ""
+team_role_name = ""
+scene_path = "res://minigames/bumper_cars/bumper_cars.tscn"

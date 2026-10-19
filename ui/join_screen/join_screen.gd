@@ -71,7 +71,7 @@ func _physics_process(_delta: float) -> void:
 			start_requested = true
 	if start_requested and PlayerRoster.human_count() > 0:
 		set_physics_process(false)
-		Game.start_match()
+		Game.goto_main_menu()
 
 
 func _refresh() -> void:
@@ -103,7 +103,7 @@ func _refresh() -> void:
 	if not joinable.is_empty() and PlayerRoster.human_count() < PlayerRoster.MAX_PLAYERS:
 		lines.append("Beitreten: " + InputHints.for_sources(joinable, InputBindings.CONFIRM))
 	if PlayerRoster.human_count() > 0:
-		lines.append("Los geht's: " + InputHints.for_humans(InputBindings.PAUSE))
+		lines.append("Weiter zum Hauptmenü: " + InputHints.for_humans(InputBindings.PAUSE))
 	else:
 		lines.append("Mindestens ein Spieler muss beitreten")
 	_hint.text = "\n".join(lines)
