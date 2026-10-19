@@ -22,8 +22,8 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	process_physics_priority = -1000
 	if OS.is_debug_build() and keyboard_players_enabled:
-		register_source(KeyboardInput.new("kb:left", "Tastatur links", InputBindings.KEYBOARD_LEFT))
-		register_source(KeyboardInput.new("kb:right", "Tastatur rechts", InputBindings.KEYBOARD_RIGHT))
+		register_source(KeyboardInput.new("kb:left", "Tastatur links", InputBindings.KEYBOARD_LEFT, "WASD"))
+		register_source(KeyboardInput.new("kb:right", "Tastatur rechts", InputBindings.KEYBOARD_RIGHT, "Pfeiltasten"))
 	for device: int in Input.get_connected_joypads():
 		_add_gamepad(device)
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)

@@ -8,17 +8,17 @@ Automatisch bereits geprüft (Cloud, ohne echte Controller): headless Import feh
 
 1. Godot 4.6.x starten, Projekt `partypark` importieren bzw. öffnen. Im Ausgabe-Panel unten dürfen keine roten Fehler stehen. Godot ergänzt beim ersten Speichern `uid`-Einträge in `.tscn`-Dateien; das ist normal und darf mit committet werden.
 2. **F5** drücken. Der Beitrittsbildschirm erscheint mit vier Podesten. Bei eingeschalteten Computergegnern stehen dort blasse Figuren mit „CPU“.
-3. **Tastatur:** Leertaste drücken. Spieler 1 (blau) wird „Tastatur links“, die Figur steht auf Podest 1 und hüpft bei jeder weiteren Leertaste. Enter drücken: Spieler 2 wird „Tastatur rechts“. E bzw. Rücktaste lässt sie wieder austreten.
+3. **Tastatur:** Die Karten im Beitrittsbildschirm und die Hinweiszeile zeigen immer die Tasten des jeweiligen Geräts (Tastatur links: Leertaste, E, Q, Esc; Tastatur rechts: Enter, Rücktaste, Ä, P). Leertaste drücken. Spieler 1 (blau) wird „Tastatur links“, die Figur steht auf Podest 1 und hüpft bei jeder weiteren Leertaste. Enter drücken: Spieler 2 wird „Tastatur rechts“. E bzw. Rücktaste lässt sie wieder austreten.
 4. **Controller:** Einen Controller nach dem anderen A drücken lassen. Jeder belegt den nächsten freien Platz, die Karte zeigt den Controllernamen, der Controller vibriert kurz. Mit B austreten, mit A wieder beitreten. Bis zu 4 Controller gleichzeitig ausprobieren.
 5. Prüfen, dass A auf Controller X nur die Figur von Controller X hüpfen lässt.
 6. **Y** auf einem beigetretenen Controller schaltet „Computer auffüllen“ an und aus (Hinweiszeile unten).
-7. **Start** auf einem beigetretenen Controller startet die Testarena. Es stehen so viele Figuren wie Plätze belegt sind (mit Computer immer 4; Computer stehen in M1 nur herum).
+7. **Start** auf einem beigetretenen Controller (Tastatur: Esc bzw. P) startet die Testarena. Es stehen so viele Figuren wie Plätze belegt sind (mit Computer immer 4; Computer stehen in M1 nur herum).
 8. In der Arena bewegt jeder seine Figur mit linkem Stick oder Steuerkreuz. Prüfen: keine Figur reagiert auf einen fremden Controller; ein leicht angetippter Stick bewegt nichts (Deadzone).
 9. **A** springt. Kurz tippen ergibt einen kleinen, lang halten einen hohen Sprung. Auf die lila Stufen, die graue Rampe und über die Lücke zur Sandinsel rechts springen.
 10. **X** schubst. Getroffene fliegen ein Stück weg und wackeln. Vibration: Schubsender kurz und schwach, Getroffener stark.
 11. Über eine Kante in den Abgrund laufen. Die Figur erscheint über ihrem Startpunkt wieder, der Controller vibriert.
 12. Die Kamera hält alle Figuren im Bild und zoomt heraus, wenn sie sich verteilen.
-13. **Start** öffnet das Pause-Menü, der Titel nennt den Spieler. Ein anderer Spieler kann mit dem Stick navigieren und auswählen (D21). B oder Start schließt. Alle drei Einträge ausprobieren: Weiter, Zurück zum Beitritt (Menschen bleiben beigetreten), Spiel beenden.
+13. **Start** (Tastatur: Esc bzw. P) öffnet das Pause-Menü, der Titel nennt den Spieler. Ein anderer Spieler kann mit dem Stick navigieren und auswählen (D21). B oder Start schließt. Alle drei Einträge ausprobieren: Weiter, Zurück zum Beitritt (Menschen bleiben beigetreten), Spiel beenden.
 14. **Abziehen:** Während der Arena einen Controller trennen (Kabel ziehen oder Bluetooth aus). Das Spiel pausiert mit „Controller getrennt, Spieler N“. Denselben Controller wieder verbinden: Der Platz wird automatisch übernommen, das Spiel läuft weiter.
 15. **Übernahme:** Wieder einen Controller trennen und dann auf einem anderen, noch nicht beigetretenen Controller A drücken. Er übernimmt den Platz.
 16. **Doppelte Controller:** Falls Steam läuft, prüfen, ob ein Controller beim Beitritt zwei Plätze belegt (sollte nicht passieren). Im Ausgabe-Panel steht pro erkanntem Gerät eine Zeile „InputRouter: Controller verbunden (ID, Name)“. Bitte notieren, wie viele Zeilen pro physischem Controller erscheinen.

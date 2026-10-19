@@ -86,6 +86,21 @@ func get_display_name() -> String:
 	return key
 
 
+## Gerätegruppe für Tastenhinweise, z. B. „Controller“ oder „Tastatur links“.
+func get_kind_name() -> String:
+	return get_display_name()
+
+
+## Beschriftung der Taste für eine Aktion auf diesem Gerät, z. B. „A“, „Kreuz“ oder „Leertaste“.
+func get_action_label(action: StringName) -> String:
+	return String(action)
+
+
+## Beschriftung der Bewegungseingabe, z. B. „Stick“ oder „WASD“.
+func get_move_label() -> String:
+	return "Stick"
+
+
 ## Unterklassen: welche Aktionen löst dieses gedrückte Ereignis bei dieser Quelle aus?
 func _actions_for_event(_event: InputEvent) -> Array[StringName]:
 	return []

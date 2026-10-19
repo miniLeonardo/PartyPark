@@ -25,6 +25,10 @@ func _run() -> void:
 	# Beitritt Tastatur
 	await _tap_key(KEY_SPACE)
 	_check(_slot_key(0) == "kb:left", "Tastatur links belegt Platz 1")
+	var join_screen: Node = get_tree().current_scene
+	_check(join_screen._card_hints[0].text.contains("Esc: Los"), "Karte von Spieler 1 zeigt Esc als Start-Taste")
+	_check(join_screen._hint.text.contains("Esc (Tastatur links)"), "Hinweiszeile nennt Esc für Tastatur links")
+	_check(join_screen._hint.text.contains("Enter (Tastatur rechts)"), "Hinweiszeile nennt Enter zum Beitreten für Tastatur rechts")
 	await _tap_key(KEY_ENTER)
 	_check(_slot_key(1) == "kb:right", "Tastatur rechts belegt Platz 2")
 
@@ -35,6 +39,10 @@ func _run() -> void:
 	await _tap_pad_both(10, 11, JOY_BUTTON_A)
 	_check(_slot_key(2) == "joy:10", "Gamepad 10 belegt Platz 3")
 	_check(PlayerRoster.human_count() == 3, "Doppelgänger-Gamepad 11 ist nicht beigetreten")
+	_check(join_screen._card_hints[2].text.contains("Start: Los") and join_screen._card_hints[2].text.contains("A: Hüpfen"), "Karte von Spieler 3 zeigt Controller-Tasten")
+	_check(GamepadInput.detect_label_style("DualSense Wireless Controller") == "playstation", "PlayStation-Controller wird erkannt")
+	_check(GamepadInput.detect_label_style("Nintendo Switch Pro Controller") == "nintendo", "Nintendo-Controller wird erkannt")
+	_check(GamepadInput.detect_label_style("Xbox Series Controller") == "xbox", "Xbox-Controller wird erkannt")
 	await _frames(15)
 	await _tap_pad_both(10, 11, JOY_BUTTON_A)
 	_check(PlayerRoster.human_count() == 3, "Doppelgänger bleibt draußen, wenn das belegte Gamepad erneut A drückt")
@@ -63,6 +71,7 @@ func _run() -> void:
 		return
 	_check(arena.players.size() == 4, "4 Figuren in der Arena")
 	_check(PlayerRoster.slots[3].is_cpu, "Platz 4 ist Computer")
+	_check(arena._hint.text.contains("Esc (Tastatur links)") and arena._hint.text.contains("Start (Controller)") and arena._hint.text.contains("P (Tastatur rechts)"), "Arena-Hinweis nennt Pause-Taste je Gerät")
 	await _frames(30)
 
 	var p1: Player = arena.get_player(0)
@@ -126,6 +135,7 @@ func _run() -> void:
 	# Pause durch Spieler 1, Weiter mit A
 	await _tap_key(KEY_ESCAPE)
 	_check(get_tree().paused and Game.pause_menu.is_open, "Esc öffnet das Pause-Menü")
+	_check(Game.pause_menu._controls.text.contains("Leertaste: Bestätigen"), "Pause-Menü zeigt Tastatur-Bedienung des Öffnenden")
 	await _shot("03_pause")
 	await _tap_key(KEY_SPACE)
 	await _frames(2)
@@ -134,6 +144,7 @@ func _run() -> void:
 	# Pause durch Spieler 3 (Gamepad), schließen mit B durch Spieler 2
 	await _tap_pad(10, JOY_BUTTON_START)
 	_check(Game.pause_menu.is_open, "Start auf Gamepad öffnet Pause")
+	_check(Game.pause_menu._controls.text.contains("A: Bestätigen"), "Pause-Menü zeigt Controller-Bedienung des Öffnenden")
 	await _tap_key(KEY_BACKSPACE)
 	await _frames(2)
 	_check(not Game.pause_menu.is_open and not get_tree().paused, "Ein anderer Spieler schließt mit B")

@@ -4,6 +4,7 @@ extends CanvasLayer
 
 var _list: Label
 var _panel: PanelContainer
+var _pause_hint: Label
 
 
 func _ready() -> void:
@@ -27,7 +28,8 @@ func _ready() -> void:
 	_list = UiStyle.make_label("", 40)
 	box.add_child(_list)
 	box.add_child(UiStyle.make_label("Drücke A auf einem Controller, um den Platz zu übernehmen.", 30))
-	box.add_child(UiStyle.make_label("Start: Pause-Menü", 24, UiStyle.MUTED_COLOR))
+	_pause_hint = UiStyle.make_label("", 24, UiStyle.MUTED_COLOR)
+	box.add_child(_pause_hint)
 
 
 func set_waiting(waiting: bool) -> void:
@@ -38,3 +40,5 @@ func set_waiting(waiting: bool) -> void:
 	for slot: PlayerSlot in PlayerRoster.get_disconnected_slots():
 		names.append(slot.display_name)
 	_list.text = ", ".join(names)
+	var pause_keys: String = InputHints.for_humans(InputBindings.PAUSE)
+	_pause_hint.text = "" if pause_keys.is_empty() else "Pause-Menü: " + pause_keys

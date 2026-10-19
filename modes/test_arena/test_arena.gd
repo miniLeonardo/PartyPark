@@ -18,6 +18,8 @@ const PLAYER_SCENE: PackedScene = preload("res://player/player.tscn")
 
 var players: Array[Player] = []
 
+var _hint: Label
+
 @onready var camera: ArenaCamera = $ArenaCamera
 
 
@@ -91,6 +93,20 @@ func _build_hud() -> void:
 	var hud := CanvasLayer.new()
 	hud.name = "Hud"
 	add_child(hud)
-	var hint: Label = UiStyle.make_label("Testarena (Platzhalter)   Start: Pause", 26, UiStyle.MUTED_COLOR)
-	hint.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT, Control.PRESET_MODE_MINSIZE, 32)
-	hud.add_child(hint)
+	_hint = UiStyle.make_label("", 28, Color(1, 1, 1, 0.9))
+	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_hint.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT, Control.PRESET_MODE_MINSIZE, 32)
+	_hint.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	hud.add_child(_hint)
+	_update_hint()
+	PlayerRoster.roster_changed.connect(_update_hint)
+
+
+func _exit_tree() -> void:
+	if PlayerRoster.roster_changed.is_connected(_update_hint):
+		PlayerRoster.roster_changed.disconnect(_update_hint)
+
+
+## Hinweiszeile mit den Pause-Tasten der Geräte, die gerade mitspielen (D28).
+func _update_hint() -> void:
+	_hint.text = "Testarena (Platzhalter)\nPause: " + InputHints.for_humans(InputBindings.PAUSE)

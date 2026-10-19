@@ -10,6 +10,7 @@ var selected: int = 0
 
 var _opened_frame: int = -1
 var _title: Label
+var _controls: Label
 var _item_labels: Array[Label] = []
 
 
@@ -36,7 +37,8 @@ func _ready() -> void:
 		var label: Label = UiStyle.make_label(item, 44)
 		_item_labels.append(label)
 		box.add_child(label)
-	box.add_child(UiStyle.make_label("Stick: Auswahl   A: Bestätigen   B/Start: Weiter", 24, UiStyle.MUTED_COLOR))
+	_controls = UiStyle.make_label("", 24, UiStyle.MUTED_COLOR)
+	box.add_child(_controls)
 
 
 func open(by: PlayerSlot) -> void:
@@ -46,6 +48,7 @@ func open(by: PlayerSlot) -> void:
 	_opened_frame = Engine.get_physics_frames()
 	_title.text = "Pause" if by == null else "Pause – %s" % by.display_name
 	_title.add_theme_color_override("font_color", UiStyle.TEXT_COLOR if by == null else by.color.lightened(0.25))
+	_update_controls(by)
 	_refresh()
 
 
@@ -73,6 +76,19 @@ func _physics_process(_delta: float) -> void:
 		elif source.just_pressed(InputBindings.CONFIRM):
 			_activate(selected)
 			return
+
+
+## Bedienhinweis in den Tasten des Geräts, das die Pause geöffnet hat (D28).
+func _update_controls(by: PlayerSlot) -> void:
+	if by == null or by.source == null:
+		_controls.text = ""
+		return
+	var source: InputSource = by.source
+	_controls.text = "%s: Auswahl   %s: Bestätigen   %s oder %s: Weiter" % [
+		source.get_move_label(),
+		source.get_action_label(InputBindings.CONFIRM),
+		source.get_action_label(InputBindings.BACK),
+		source.get_action_label(InputBindings.PAUSE)]
 
 
 func _activate(index: int) -> void:

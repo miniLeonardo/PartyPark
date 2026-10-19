@@ -34,6 +34,21 @@ const GAMEPAD: Dictionary = {
 	PAUSE: [JOY_BUTTON_START],
 }
 
+## Anzeigenamen für Tastatur-Tasten in Tastenhinweisen (physische Position, deutsches Layout).
+const KEY_LABELS: Dictionary = {
+	KEY_SPACE: "Leertaste",
+	KEY_ESCAPE: "Esc",
+	KEY_ENTER: "Enter",
+	KEY_BACKSPACE: "Rücktaste",
+	KEY_SEMICOLON: "Ö",
+	KEY_APOSTROPHE: "Ä",
+	KEY_KP_0: "Num 0",
+	KEY_KP_1: "Num 1",
+	KEY_KP_2: "Num 2",
+	KEY_KP_3: "Num 3",
+	KEY_KP_ADD: "Num +",
+}
+
 ## Tastatur-Debugspieler, physische Tastenpositionen (unabhängig vom Layout).
 const KEYBOARD_LEFT: Dictionary = {
 	&"up": [KEY_W],
@@ -54,11 +69,11 @@ const KEYBOARD_RIGHT: Dictionary = {
 	&"down": [KEY_DOWN],
 	&"left": [KEY_LEFT],
 	&"right": [KEY_RIGHT],
-	JUMP: [KEY_KP_0, KEY_ENTER],
-	CONFIRM: [KEY_KP_0, KEY_ENTER],
-	ACTION: [KEY_KP_2, KEY_BACKSPACE],
-	BACK: [KEY_KP_2, KEY_BACKSPACE],
-	PUSH: [KEY_KP_1, KEY_SEMICOLON],
-	SPECIAL: [KEY_KP_3, KEY_APOSTROPHE],
-	PAUSE: [KEY_KP_ADD, KEY_P],
+	JUMP: [KEY_ENTER, KEY_KP_0],
+	CONFIRM: [KEY_ENTER, KEY_KP_0],
+	ACTION: [KEY_BACKSPACE, KEY_KP_2],
+	BACK: [KEY_BACKSPACE, KEY_KP_2],
+	PUSH: [KEY_SEMICOLON, KEY_KP_1],
+	SPECIAL: [KEY_APOSTROPHE, KEY_KP_3],
+	PAUSE: [KEY_P, KEY_KP_ADD],
 }

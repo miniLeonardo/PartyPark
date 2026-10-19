@@ -13,12 +13,22 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-10-19: Tastenhinweise je Gerät
+
+Agent und Umgebung: Claude (Cowork), Variante B
+Erledigt: Erster Test von Leonardo unter Windows mit Godot 4.7: Projekt startet, Tastatur funktioniert, aber die Start-Taste der Tastatur (Esc) war nicht erkennbar, weil alle Hinweise Controller-Tasten nannten. Neu: `InputSource.get_action_label()`, `get_kind_name()`, `get_move_label()`; `GamepadInput` erkennt Xbox-, PlayStation- und Nintendo-Controller am Namen; `KeyboardInput` nennt Tasten im aktuellen Layout; Hilfsklasse `ui/input_hints.gd`. Beitrittskarten zeigen pro Spieler dessen Tasten, die Hinweiszeile nennt Beitritts- und Starttasten je Gerät, Arena und Verbindungshinweis nennen die Pause-Tasten je Gerät, das Pause-Menü zeigt die Bedienung des Öffnenden.
+Entscheidungen: D28
+Getestet: Smoke-Test 47 von 47 grün mit Godot 4.6.2 headless und Godot 4.7.2 mit Forward+ (Vulkan, Software-Renderer), Bildschirmfotos geprüft.
+Probleme / Bekannte Fehler: keine neuen. Controllertest weiter offen.
+Nächster Schritt: Leonardo testet weiter nach `docs/TESTANLEITUNG_M1.md`, zuerst mit Tastatur, dann mit Controllern.
+Aktuelle Kopie liegt in: `C:\Users\wad32muj\Agentenraum\partypark`
+
 ## 2026-10-19: Meilenstein M1 „Kern“ umgesetzt
 
 Agent und Umgebung: Claude (Cowork), Variante B aus `CLAUDE.md` (Dateiübertragung, keine Shell auf Leonardos Rechner). Arbeitskopie in der Cloud, Änderungen in den Projektordner zurückgeschrieben.
 Erledigt: Designrunde mit Leonardo (Q02, Q03, Q04, Q08, Startregel, Pause-Menü). Eingabeschicht `InputBindings`, `InputSource`, `GamepadInput`, `KeyboardInput` (zwei Debugspieler), `AIInput` (Gerüst), Autoload `InputRouter` mit Doppelgänger-Schutz und Latch für kurze Drücke. Autoload `PlayerRoster` mit `PlayerSlot`, Platzhalterfarben, Computer-Auffüllen. Autoload `Game` mit Szenenwechsel, Pause-Menü und Verbindungs-Pause samt Übernahme. Beitrittsbildschirm mit Podesten und Karten, Knubbelfigur mit Laufen, variablem Sprung, Schubsen mit Rückstoß, optischem Wackeln, Testarena mit Abgrund und Respawn, `ArenaCamera`. Hauptszene gesetzt. Smoke-Test `tests/smoke/m1_smoke.gd`. Testanleitung `docs/TESTANLEITUNG_M1.md`. ARCHITECTURE, AGENTS (Befehle), README aktualisiert.
 Entscheidungen: D15 bis D27; neue offene Fragen Q10 (Spielerfarben), Q11 (Platzhalter im Beitrittsbildschirm), Q12 (Bewegungswerte nach Test)
-Getestet: headless Import mit Godot 4.6.2 fehlerfrei; `--quit-after` Lauf von Hauptszene und Testarena ohne Fehler; Smoke-Test headless 37 von 37 grün; zusätzlich mit Forward+ (Vulkan, Software-Renderer unter Xvfb) 37 von 37 grün und Bildschirmfotos von Beitritt, Arena, Pause und Verbindungshinweis geprüft. Echte Controller, Vibration, Steam Input und Bazzite noch nicht getestet.
+Getestet: headless Import mit Godot 4.6.2 fehlerfrei; `--quit-after` Lauf von Hauptszene und Testarena ohne Fehler; Smoke-Test headless 37 von 37 grün; zusätzlich mit Forward+ (Vulkan, Software-Renderer unter Xvfb) 37 von 37 grün und Bildschirmfotos von Beitritt, Arena, Pause und Verbindungshinweis geprüft. Nachtrag: Import und Smoke-Test (headless und Forward+) auch mit Godot 4.7.2 grün, das Projekt läuft unverändert unter 4.7. Echte Controller, Vibration, Steam Input und Bazzite noch nicht getestet.
 Probleme / Bekannte Fehler: Computergegner stehen in M1 nur herum (KI folgt in M3). Leere `.gitkeep`-Dateien in Ordnern, die jetzt Dateien enthalten, können gelöscht werden (Variante B kann nicht löschen). `--check-only` meldet bei Skripten mit Autoloads fälschlich Fehler, siehe AGENTS.md.
 Nächster Schritt: Leonardo testet nach `docs/TESTANLEITUNG_M1.md` und meldet zurück; Ergebnis hier eintragen, Q10 bis Q12 klären, Werte justieren. Danach M2 (ROADMAP 2.1 bis 2.6), vorher Q06, Q07 und Ablauf von Regelbildschirm und Übungsrunde klären.
 Aktuelle Kopie liegt in: `C:\Users\wad32muj\Agentenraum\partypark` (Git-Commit dort durch Leonardo)

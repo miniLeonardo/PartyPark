@@ -1,6 +1,7 @@
 extends Node3D
 ## Beitrittsbildschirm (D20): A tritt bei, B tritt aus, Y schaltet Computergegner um,
 ## Start startet, sobald mindestens ein Mensch beigetreten ist. Beigetretene können auf ihrem Podest hüpfen.
+## Tastenhinweise richten sich nach dem Gerät jedes Spielers (D28).
 
 const PLAYER_SCENE: PackedScene = preload("res://player/player.tscn")
 
@@ -17,6 +18,7 @@ var _figures: Array[Player] = [null, null, null, null]
 var _cards: Array[PanelContainer] = []
 var _card_titles: Array[Label] = []
 var _card_status: Array[Label] = []
+var _card_hints: Array[Label] = []
 var _hint: Label
 
 @onready var camera: Camera3D = $Camera3D
@@ -33,12 +35,21 @@ func _ready() -> void:
 		StageKit.add_cylinder(self, 1.0, pedestal_height, pedestal_positions[i] + Vector3.UP * pedestal_height * 0.5, color.darkened(0.35))
 	_build_ui()
 	PlayerRoster.roster_changed.connect(_refresh)
+	InputRouter.source_connected.connect(_on_source_changed)
+	InputRouter.source_disconnected.connect(_on_source_changed)
 	_refresh()
 
 
 func _exit_tree() -> void:
 	if PlayerRoster.roster_changed.is_connected(_refresh):
 		PlayerRoster.roster_changed.disconnect(_refresh)
+	if InputRouter.source_connected.is_connected(_on_source_changed):
+		InputRouter.source_connected.disconnect(_on_source_changed)
+		InputRouter.source_disconnected.disconnect(_on_source_changed)
+
+
+func _on_source_changed(_source: InputSource) -> void:
+	_refresh()
 
 
 func _physics_process(_delta: float) -> void:
@@ -86,9 +97,16 @@ func _refresh() -> void:
 			figure.set_tag_text("CPU" if show_cpu else slot.get_tag())
 			figure.visual.set_ghosted(show_cpu)
 		_update_card(slot, show_cpu)
-	var cpu_text: String = "an" if PlayerRoster.cpu_fill_enabled else "aus"
-	var start_text: String = "Start: Los geht's" if PlayerRoster.human_count() > 0 else "Mindestens ein Spieler muss beitreten"
-	_hint.text = "A: Beitreten   B: Austreten   Y: Computer auffüllen (%s)   %s" % [cpu_text, start_text]
+	# Untere Zeile: Beitreten mit den Tasten der noch freien Geräte, Start mit den Tasten der Beigetretenen.
+	var lines: PackedStringArray = []
+	var joinable: Array[InputSource] = InputHints.joinable_sources()
+	if not joinable.is_empty() and PlayerRoster.human_count() < PlayerRoster.MAX_PLAYERS:
+		lines.append("Beitreten: " + InputHints.for_sources(joinable, InputBindings.CONFIRM))
+	if PlayerRoster.human_count() > 0:
+		lines.append("Los geht's: " + InputHints.for_humans(InputBindings.PAUSE))
+	else:
+		lines.append("Mindestens ein Spieler muss beitreten")
+	_hint.text = "\n".join(lines)
 
 
 func _update_card(slot: PlayerSlot, show_cpu: bool) -> void:
@@ -96,12 +114,21 @@ func _update_card(slot: PlayerSlot, show_cpu: bool) -> void:
 	var title: Label = _card_titles[i]
 	var status: Label = _card_status[i]
 	title.text = slot.display_name
+	var hint: Label = _card_hints[i]
 	if slot.is_human():
+		var source: InputSource = slot.source
+		var cpu_text: String = "an" if PlayerRoster.cpu_fill_enabled else "aus"
+		hint.text = "%s: Hüpfen    %s: Austreten\n%s: Computer %s    %s: Los" % [
+			source.get_action_label(InputBindings.JUMP),
+			source.get_action_label(InputBindings.BACK),
+			source.get_action_label(InputBindings.SPECIAL), cpu_text,
+			source.get_action_label(InputBindings.PAUSE)]
 		status.text = slot.source.get_display_name()
 		status.add_theme_color_override("font_color", UiStyle.TEXT_COLOR)
 		_cards[i].add_theme_stylebox_override("panel", UiStyle.make_panel_style(slot.color.darkened(0.2), slot.color.lightened(0.4), 6))
 	else:
-		status.text = "Computer" if show_cpu else "A drücken"
+		hint.text = ""
+		status.text = "Computer" if show_cpu else "frei"
 		status.add_theme_color_override("font_color", UiStyle.MUTED_COLOR)
 		_cards[i].add_theme_stylebox_override("panel", UiStyle.make_panel_style(UiStyle.PANEL_COLOR, slot.color.darkened(0.2), 4))
 
@@ -132,7 +159,7 @@ func _build_ui() -> void:
 	root.add_child(row)
 	for i: int in PlayerRoster.MAX_PLAYERS:
 		var card: PanelContainer = UiStyle.make_panel(UiStyle.PANEL_COLOR)
-		card.custom_minimum_size = Vector2(400, 150)
+		card.custom_minimum_size = Vector2(420, 220)
 		var box := VBoxContainer.new()
 		box.alignment = BoxContainer.ALIGNMENT_CENTER
 		card.add_child(box)
@@ -140,13 +167,16 @@ func _build_ui() -> void:
 		var card_status: Label = UiStyle.make_label("", 28)
 		card_status.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		card_status.custom_minimum_size = Vector2(340, 0)
+		var card_hint: Label = UiStyle.make_label("", 25, Color(1, 1, 1, 0.92))
 		box.add_child(card_title)
 		box.add_child(card_status)
+		box.add_child(card_hint)
+		_card_hints.append(card_hint)
 		row.add_child(card)
 		_cards.append(card)
 		_card_titles.append(card_title)
 		_card_status.append(card_status)
 
-	_hint = UiStyle.make_label("", 30)
-	_hint.custom_minimum_size = Vector2(0, 110)
+	_hint = UiStyle.make_label("", 28)
+	_hint.custom_minimum_size = Vector2(0, 130)
 	root.add_child(_hint)

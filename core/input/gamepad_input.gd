@@ -8,6 +8,15 @@ const STICK_DEADZONE: float = 0.2
 var device: int = -1
 var guid: String = ""
 var connected: bool = true
+## Beschriftungsstil der Tasten: "xbox", "playstation" oder "nintendo" (aus dem Gerätenamen erkannt).
+var label_style: String = "xbox"
+
+## Tastenbeschriftung nach Position (SDL3 meldet Positionen, nicht Aufdrucke).
+const BUTTON_LABELS: Dictionary = {
+	"xbox": {JOY_BUTTON_A: "A", JOY_BUTTON_B: "B", JOY_BUTTON_X: "X", JOY_BUTTON_Y: "Y", JOY_BUTTON_START: "Start"},
+	"playstation": {JOY_BUTTON_A: "Kreuz", JOY_BUTTON_B: "Kreis", JOY_BUTTON_X: "Viereck", JOY_BUTTON_Y: "Dreieck", JOY_BUTTON_START: "Options"},
+	"nintendo": {JOY_BUTTON_A: "B", JOY_BUTTON_B: "A", JOY_BUTTON_X: "Y", JOY_BUTTON_Y: "X", JOY_BUTTON_START: "+"},
+}
 
 
 func _init(p_device: int) -> void:
@@ -15,6 +24,19 @@ func _init(p_device: int) -> void:
 	key = "joy:%d" % p_device
 	if Input.get_connected_joypads().has(p_device):
 		guid = Input.get_joy_guid(p_device)
+	label_style = detect_label_style(get_display_name())
+
+
+## Erkennt die Controllerfamilie am Namen, den SDL meldet.
+static func detect_label_style(joy_name: String) -> String:
+	var lower: String = joy_name.to_lower()
+	for word: String in ["playstation", "dualsense", "dualshock", "ps3", "ps4", "ps5", "sony"]:
+		if lower.contains(word):
+			return "playstation"
+	for word: String in ["nintendo", "switch", "joy-con", "pro controller"]:
+		if lower.contains(word):
+			return "nintendo"
+	return "xbox"
 
 
 func _read_buttons() -> Dictionary[StringName, bool]:
@@ -69,6 +91,17 @@ func rumble(weak: float, strong: float, duration: float) -> void:
 
 func is_available() -> bool:
 	return connected
+
+
+func get_kind_name() -> String:
+	return "Controller"
+
+
+func get_action_label(action: StringName) -> String:
+	var buttons: Array = InputBindings.GAMEPAD.get(action, [])
+	if buttons.is_empty():
+		return String(action)
+	return (BUTTON_LABELS[label_style] as Dictionary).get(buttons[0], "?")
 
 
 func get_display_name() -> String:

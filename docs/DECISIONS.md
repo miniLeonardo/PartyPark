@@ -34,6 +34,7 @@ Spalte „Von“: **L** = Leonardo, **KI** = technische Entscheidung eines Agent
 | D25 | 2026-10-19 | Hauptszene ist direkt `ui/join_screen/join_screen.tscn`, kein separates `main.tscn`; Szenenwechsel, Pause und Verbindungs-Pause liegen im Autoload `Game` | weniger Zwischenschichten; ARCHITECTURE angepasst | KI (Claude, Cowork) |
 | D26 | 2026-10-19 | Menüs (Beitritt, Pause) navigieren über `InputSource` mit abgeleiteten Aktionen `nav_up/down/left/right`, nicht über Godot-Fokus und `ui_*`-Aktionen | Godots UI-Aktionen reagieren auf alle Geräte gleichzeitig und umgehen die Spielerzuordnung | KI (Claude, Cowork) |
 | D27 | 2026-10-19 | Automatischer Durchlauf `tests/smoke/m1_smoke.gd` mit simulierten Tastatur- und Gamepad-Ereignissen, Start über `-- --smoke-m1` | prüft Beitritt, Steuerung, Pause, Verbindungsabbruch ohne echte Controller | KI (Claude, Cowork) |
+| D28 | 2026-10-19 | Tastenhinweise passen sich dem Gerät an: jede Spielerkarte, die Pause und die Arena zeigen die Tasten des jeweiligen Geräts (Tastatur links/rechts, Controller); Controller-Beschriftung nach Familie aus dem Gerätenamen (Xbox A/B/X/Y, PlayStation Kreuz/Kreis/Viereck/Dreieck, Nintendo nach Position B/A/Y/X). Beim Tastaturspieler rechts steht jetzt die Haupttastatur-Taste vor der Ziffernblock-Taste | Wunsch von Leonardo nach erstem Test: Start war auf der Tastatur nicht auffindbar | L |
 
 ## Offene Fragen
 
