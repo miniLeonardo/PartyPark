@@ -13,7 +13,7 @@ Kernerlebnis: „Noch eine Runde!“ Jedes Minispiel ist in unter 10 Sekunden er
 | Punkt | Festlegung |
 |---|---|
 | Spieler | 1 bis 4 lokal, fehlende Plätze optional mit Computergegnern auffüllen (Vorschlag) |
-| Eingabe | Gamepads (Xbox, PlayStation, Steam Deck, Switch-Pro über Steam Input) |
+| Eingabe | Gamepads (Xbox, PlayStation, Steam Deck, Switch-Pro über Steam Input)(Tastatureingabe zum Testen des spiels) |
 | Plattformen | Windows, Linux (Bazzite, auch Handheld) |
 | Darstellung | 3D, ein gemeinsamer Bildschirm, kein Splitscreen |
 
@@ -68,6 +68,7 @@ Eine gemeinsame Figur für alle Minispiele, damit Steuerung und Animationen nur 
 ## 8. Grafik- und Tonstil (offen)
 
 Vorschlag: einheitlicher Low-Poly-Stil mit freien Paketen von Kenney und Quaternius (CC0), kräftige Farben, jede Spielerfarbe klar unterscheidbar (auch für Farbsehschwäche prüfen). Thema und Tonalität sind offen.
+Wichtig: Performance muss stimmen, das Spiel muss auf einer Integrierten Radeon 780m mit 60fps laufen
 
 ## 9. Minispiel-Pool (Ideen, alle noch Vorschlag)
 

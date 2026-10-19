@@ -2,14 +2,14 @@
 
 Lokales 3D-Partyspiel für bis zu 4 Spieler mit Controllern, inspiriert von Mario Party, Wii Party und Nintendo Land. Gebaut mit Godot 4.6 für Windows und Linux (Bazzite).
 
-Status: Phase 0 abgeschlossen, Prototyp noch nicht begonnen. Aktueller Stand immer im obersten Eintrag von [`docs/DEVLOG.md`](docs/DEVLOG.md).
+Status: Meilenstein M1 „Kern“ umgesetzt (Beitritt, Spielfigur, Testarena, Pause), Controllertest bei Leonardo offen. Aktueller Stand immer im obersten Eintrag von [`docs/DEVLOG.md`](docs/DEVLOG.md).
 
 ## Schnellstart
 
 1. Godot **4.6.x** (Standard-Version, nicht .NET) von godotengine.org herunterladen.
    Bazzite: am einfachsten als Flatpak `org.godotengine.Godot` über die Softwareverwaltung.
 2. Godot starten, „Importieren“ wählen und die Datei `project.godot` in diesem Ordner öffnen.
-3. Spiel starten mit F5 (sobald eine Hauptszene existiert).
+3. Spiel starten mit F5. Ohne Controller: Leertaste bzw. Enter lassen zwei Tastatur-Debugspieler beitreten (Belegung in `docs/DECISIONS.md`, D22).
 
 ## Dokumente
 

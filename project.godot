@@ -14,7 +14,14 @@ config/name="Partypark"
 config/description="Lokales 3D-Partyspiel für bis zu 4 Spieler mit Controllern (Windows und Linux/Bazzite)."
 config/version="0.0.1"
 config/features=PackedStringArray("4.6", "Forward Plus")
+run/main_scene="res://ui/join_screen/join_screen.tscn"
 config/icon="res://icon.svg"
+
+[autoload]
+
+InputRouter="*res://core/input/input_router.gd"
+PlayerRoster="*res://core/teams/player_roster.gd"
+Game="*res://core/game.gd"
 
 [display]
 

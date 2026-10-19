@@ -49,9 +49,14 @@ godot --headless --path . --import
 # Einzelnes Skript auf Syntaxfehler prüfen
 godot --headless --path . --check-only --script res://pfad/zum/skript.gd
 
-# Automatische Tests (sobald vorhanden)
+# Automatische Tests (ab M2)
 godot --headless --path . --script res://tests/run_tests.gd
+
+# Automatischer Durchlauf M1 mit simulierten Eingaben (Exit-Code 0 = grün)
+godot --headless --path . -- --smoke-m1
 ```
+
+`--check-only` kennt keine Autoloads; Skripte mit `InputRouter`, `PlayerRoster` oder `Game` deshalb über den Smoke-Test prüfen.
 
 `godot` steht für die Programmdatei von Godot 4.6.x auf dem jeweiligen System.
 

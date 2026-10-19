@@ -14,13 +14,13 @@ Status: **offen**, **in Arbeit**, **erledigt**, **verschoben**. Beim Abschluss e
 
 | Nr | Aufgabe | Status |
 |---|---|---|
-| 1.1 | `InputRouter` mit `GamepadInput`, `KeyboardInput` (Debug), Verbindungsabbruch | offen |
-| 1.2 | `PlayerRoster`, Spielerfarben | offen |
-| 1.3 | Beitrittsbildschirm „Drücke A zum Mitspielen“ | offen |
-| 1.4 | Spielfigur: Laufen, Springen, Schubsen | offen |
-| 1.5 | Testarena mit `ArenaCamera` für 4 Spieler | offen |
-| 1.6 | Pause-Menü | offen |
-| 1.7 | Testanleitung für Leonardo, Test bestanden | offen |
+| 1.1 | `InputRouter` mit `GamepadInput`, `KeyboardInput` (Debug), Verbindungsabbruch | erledigt (2026-10-19, headless und Smoke-Test grün, Controllertest offen) |
+| 1.2 | `PlayerRoster`, Spielerfarben | erledigt (2026-10-19, headless und Smoke-Test grün, Controllertest offen) |
+| 1.3 | Beitrittsbildschirm „Drücke A zum Mitspielen“ | erledigt (2026-10-19, headless und Smoke-Test grün, Controllertest offen) |
+| 1.4 | Spielfigur: Laufen, Springen, Schubsen | erledigt (2026-10-19, headless und Smoke-Test grün, Controllertest offen) |
+| 1.5 | Testarena mit `ArenaCamera` für 4 Spieler | erledigt (2026-10-19, headless und Smoke-Test grün, Controllertest offen) |
+| 1.6 | Pause-Menü | erledigt (2026-10-19, headless und Smoke-Test grün, Controllertest offen) |
+| 1.7 | Testanleitung für Leonardo, Test bestanden | in Arbeit (Anleitung in `docs/TESTANLEITUNG_M1.md`, Test bei Leonardo offen) |
 
 ## Phase 2: Prototyp, Meilenstein M2 „Minispiel-Framework“
 

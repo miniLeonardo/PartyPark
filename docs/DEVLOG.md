@@ -13,6 +13,16 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-10-19: Meilenstein M1 „Kern“ umgesetzt
+
+Agent und Umgebung: Claude (Cowork), Variante B aus `CLAUDE.md` (Dateiübertragung, keine Shell auf Leonardos Rechner). Arbeitskopie in der Cloud, Änderungen in den Projektordner zurückgeschrieben.
+Erledigt: Designrunde mit Leonardo (Q02, Q03, Q04, Q08, Startregel, Pause-Menü). Eingabeschicht `InputBindings`, `InputSource`, `GamepadInput`, `KeyboardInput` (zwei Debugspieler), `AIInput` (Gerüst), Autoload `InputRouter` mit Doppelgänger-Schutz und Latch für kurze Drücke. Autoload `PlayerRoster` mit `PlayerSlot`, Platzhalterfarben, Computer-Auffüllen. Autoload `Game` mit Szenenwechsel, Pause-Menü und Verbindungs-Pause samt Übernahme. Beitrittsbildschirm mit Podesten und Karten, Knubbelfigur mit Laufen, variablem Sprung, Schubsen mit Rückstoß, optischem Wackeln, Testarena mit Abgrund und Respawn, `ArenaCamera`. Hauptszene gesetzt. Smoke-Test `tests/smoke/m1_smoke.gd`. Testanleitung `docs/TESTANLEITUNG_M1.md`. ARCHITECTURE, AGENTS (Befehle), README aktualisiert.
+Entscheidungen: D15 bis D27; neue offene Fragen Q10 (Spielerfarben), Q11 (Platzhalter im Beitrittsbildschirm), Q12 (Bewegungswerte nach Test)
+Getestet: headless Import mit Godot 4.6.2 fehlerfrei; `--quit-after` Lauf von Hauptszene und Testarena ohne Fehler; Smoke-Test headless 37 von 37 grün; zusätzlich mit Forward+ (Vulkan, Software-Renderer unter Xvfb) 37 von 37 grün und Bildschirmfotos von Beitritt, Arena, Pause und Verbindungshinweis geprüft. Echte Controller, Vibration, Steam Input und Bazzite noch nicht getestet.
+Probleme / Bekannte Fehler: Computergegner stehen in M1 nur herum (KI folgt in M3). Leere `.gitkeep`-Dateien in Ordnern, die jetzt Dateien enthalten, können gelöscht werden (Variante B kann nicht löschen). `--check-only` meldet bei Skripten mit Autoloads fälschlich Fehler, siehe AGENTS.md.
+Nächster Schritt: Leonardo testet nach `docs/TESTANLEITUNG_M1.md` und meldet zurück; Ergebnis hier eintragen, Q10 bis Q12 klären, Werte justieren. Danach M2 (ROADMAP 2.1 bis 2.6), vorher Q06, Q07 und Ablauf von Regelbildschirm und Übungsrunde klären.
+Aktuelle Kopie liegt in: `C:\Users\wad32muj\Agentenraum\partypark` (Git-Commit dort durch Leonardo)
+
 ## 2026-10-19: Umzug in den lokalen Projektordner
 
 Agent und Umgebung: Claude (Cowork)
