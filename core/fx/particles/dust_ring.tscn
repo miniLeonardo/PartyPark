@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/fx/fx_burst.gd" id="1_fx"]
+
+[node name="DustRing" type="GPUParticles3D"]
+script = ExtResource("1_fx")
+burst_amount = 28
+burst_lifetime = 0.7
+base_color = Color(0.86, 0.82, 0.74, 1)
+shape = 0
+particle_size = 0.45
+spread_deg = 20.0
+speed_min = 0.5
+speed_max = 1.5
+radial_speed = 7.0
+gravity_strength = 1.0
+drag = 4.0
+emit_radius = 1.2
+flat_ring = true

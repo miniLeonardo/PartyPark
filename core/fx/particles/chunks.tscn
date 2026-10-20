@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/fx/fx_burst.gd" id="1_fx"]
+
+[node name="Chunks" type="GPUParticles3D"]
+script = ExtResource("1_fx")
+burst_amount = 18
+burst_lifetime = 1.2
+base_color = Color(0.8, 0.3, 0.3, 1)
+shape = 0
+particle_size = 0.32
+spread_deg = 75.0
+speed_min = 5.0
+speed_max = 10.0
+gravity_strength = 18.0
+drag = 0.6
+emit_radius = 0.45
+spin = 300.0

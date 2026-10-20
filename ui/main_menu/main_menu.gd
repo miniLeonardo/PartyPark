@@ -86,6 +86,7 @@ func _physics_process(_delta: float) -> void:
 	var sources: Array[InputSource] = InputHints.human_sources()
 	for source: InputSource in sources:
 		if source.just_pressed(InputBindings.BACK):
+			Sfx.play_ui(&"ui_back")
 			set_physics_process(false)
 			Game.goto_join()
 			return

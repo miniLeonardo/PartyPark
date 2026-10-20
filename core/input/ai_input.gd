@@ -5,6 +5,8 @@ extends InputSource
 
 ## Gewünschte Bewegung (Stick-Koordinaten, y negativ = vom Bildschirm weg).
 var move: Vector2 = Vector2.ZERO
+## Gewünschtes Umsehen (zweiter Stick), für Ego-Spiele.
+var aim: Vector2 = Vector2.ZERO
 ## Dauerhaft gehaltene Tasten.
 var held: Dictionary[StringName, bool] = {}
 ## Für genau eine Abfrage gedrückte Tasten.
@@ -26,6 +28,7 @@ func hold(action: StringName, down: bool) -> void:
 
 ## Alles loslassen und stehen bleiben.
 func release_all() -> void:
+	aim = Vector2.ZERO
 	held.clear()
 	_taps.clear()
 	move = Vector2.ZERO
@@ -53,3 +56,11 @@ func _read_buttons() -> Dictionary[StringName, bool]:
 
 func _read_move() -> Vector2:
 	return move
+
+
+func _read_aim() -> Vector2:
+	return aim
+
+
+func has_aim_stick() -> bool:
+	return true

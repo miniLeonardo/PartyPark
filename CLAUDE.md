@@ -30,6 +30,7 @@ Direkt im Ordner arbeiten: lesen, bearbeiten, `git` ausführen. Für headless Go
 3. In der Cloud-Kopie `git init` ausführen, alles committen und `git tag sync/folder` setzen. Dieses Git dient nur dazu, eigene Änderungen zu erkennen, es ersetzt nicht das Repository im Ordner.
 4. In `/home/claude/partypark` arbeiten und dort committen.
 5. **Zurückschreiben:** `bash tools/pack_snapshot.sh` listet alle seit dem Tag `sync/folder` geänderten Dateien. Jede geänderte Datei nach `/mnt/user-data/outputs/partypark/<pfad>` kopieren und mit `device_commit_files` an denselben Pfad im Ordner schreiben, für bestehende Dateien mit `expectedMtimeMs`. Danach `git tag -f sync/folder` setzen.
+   Wurden neue Skripte mit `class_name` angelegt, zusätzlich `.godot/global_script_class_cache.cfg` aus der Cloud-Kopie (nach `--import`) in den Ordner schreiben. Sonst kennt Godot die neuen Klassen erst nach „Projekt → Aktuelles Projekt neu laden“ im Editor, und das Spiel bricht beim Start mit „Could not find type …“ ab.
 6. Leonardo eine passende Commit-Nachricht vorschlagen, damit er die Änderungen lokal committet.
 7. Gelöschte oder verschobene Dateien kann Variante B nicht entfernen. Leonardo die betroffenen Pfade nennen, damit er sie selbst löscht.
 

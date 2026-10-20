@@ -52,6 +52,8 @@ func physics_update(delta: float) -> void:
 		turbo_ready_in = turbo_cooldown
 		player.visual.play_push()
 		source.rumble(0.4, 0.0, 0.15)
+		Fx.burst(&"dust", player.global_position - heading * 0.9 + Vector3.UP * 0.3, Color(0, 0, 0, 0), 0.8)
+		Sfx.play(&"turbo", player.global_position)
 	var gas: bool = source != null and source.is_down(InputBindings.JUMP)
 	if _turbo_time > 0.0:
 		_turbo_time -= delta
@@ -102,6 +104,11 @@ func post_move_update(delta: float) -> void:
 		if source != null:
 			source.rumble(0.5, 0.2, 0.15)
 		bumped.emit(other, strength)
+
+
+## Läuft gerade ein Turbo-Rempler?
+func is_turbo() -> bool:
+	return _turbo_time > 0.0
 
 
 func _on_was_pushed(_by: Player) -> void:

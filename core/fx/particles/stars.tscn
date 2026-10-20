@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/fx/fx_burst.gd" id="1_fx"]
+
+[node name="Stars" type="GPUParticles3D"]
+script = ExtResource("1_fx")
+burst_amount = 8
+burst_lifetime = 0.6
+base_color = Color(1, 0.92, 0.35, 1)
+shape = 2
+particle_size = 0.22
+spread_deg = 90.0
+speed_min = 2.5
+speed_max = 5.0
+gravity_strength = 3.0
+drag = 3.0
+emit_radius = 0.2
+spin = 200.0
+glow = true

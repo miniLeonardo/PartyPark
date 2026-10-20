@@ -56,12 +56,14 @@ func _physics_process(_delta: float) -> void:
 	for source: InputSource in InputRouter.poll_join_requests():
 		var slot: PlayerSlot = PlayerRoster.join(source)
 		if slot != null:
+			Sfx.play_ui(&"join", 0.0, 0.9 + 0.08 * float(slot.index))
 			source.rumble(0.4, 0.2, 0.15)
 	var start_requested: bool = false
 	for slot: PlayerSlot in PlayerRoster.get_human_slots():
 		var source: InputSource = slot.source
 		if source.just_pressed(InputBindings.BACK):
 			source.rumble(0.2, 0.0, 0.08)
+			Sfx.play_ui(&"leave")
 			PlayerRoster.leave(slot)
 			continue
 		if source.just_pressed(InputBindings.SPECIAL):

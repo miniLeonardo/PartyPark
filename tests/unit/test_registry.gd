@@ -19,7 +19,7 @@ func test_scan_finds_all_shipped_minigames() -> void:
 		assert_true(ResourceLoader.exists(info.scene_path), "Szene von %s existiert" % info.id)
 		assert_true(not info.goal_text.is_empty(), "%s hat einen Zieltext" % info.id)
 	ids.sort()
-	assert_eq(ids, ["bumper_cars", "giant_vs_dwarfs", "sheep_herding", "tug_of_war"], "alle vier Minispiele gefunden")
+	assert_eq(ids, ["blaster_brawl", "bumper_cars", "giant_vs_dwarfs", "hex_fall", "hot_potato", "sheep_herding", "tug_of_war"], "alle Minispiele gefunden")
 
 
 func test_filter_by_format_and_players() -> void:

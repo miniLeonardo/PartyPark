@@ -1,6 +1,7 @@
 extends Minigame
 ## Tauziehen (D35), 2 gegen 2: A im Takt zieht, beide Teammitglieder im selben Takt geben Synchronbonus,
 ## Fehldruck lässt kurz ausrutschen. Wer die Markierung über die eigene Linie zieht, gewinnt.
+## D53: Synchrontakte füllen den Kraftbalken des Teams; voll löst Y einen großen Ruck aus.
 
 ## Abstand zwischen zwei Takten am Anfang und am Ende (Sekunden); der Takt wird schneller.
 @export var beat_interval_start: float = 0.8
@@ -8,17 +9,34 @@ extends Minigame
 ## Toleranz um den Takt herum (Sekunden).
 @export var hit_window: float = 0.13
 ## Seilweg pro Treffer und Zusatz bei Synchronität (Meter).
-@export var pull_per_hit: float = 0.1
+@export var pull_per_hit: float = 0.16
 @export var sync_bonus: float = 0.08
 ## Sieg, sobald die Markierung so weit von der Mitte entfernt ist (Meter).
 @export var win_distance: float = 3.0
 ## Sperre nach einem Fehldruck (Sekunden).
 @export var slip_time: float = 0.6
 
+@export_group("Kraftakt (D53)")
+## Synchrontakte, bis der Kraftbalken voll ist (Platzhalter).
+@export var power_charge_needed: int = 4
+## Seilweg des Kraftakts (Meter).
+@export var power_pull: float = 0.6
+
+@export_group("Seil-Optik")
+## Federhärte und Dämpfung, mit der das Seil dem Zielwert folgt (schwingt leicht nach).
+@export var rope_stiffness: float = 45.0
+@export var rope_damping: float = 7.0
+
 var rope_x: float = 0.0
 
 var _rope_target: float = 0.0
+var _rope_velocity: float = 0.0
+var _rope_wobble: float = 0.0
 var _rope: Node3D
+var _rope_mesh: MeshInstance3D
+## Kraftbalken je Team (Index 0 und 1).
+var _team_charge: Array[int] = [0, 0]
+var _debug_power_count: int = 0
 var _beat_ring: BeatRing
 var _last_beat: float = -10.0
 var _next_beat: float = 0.0
@@ -32,7 +50,7 @@ var _ai_planned_beat: Dictionary = {}
 
 
 func _init() -> void:
-	time_limit = 45.0
+	time_limit = 30.0
 
 
 func _build_arena() -> void:
@@ -57,6 +75,7 @@ func _build_arena() -> void:
 	rope_mesh.position = Vector3(0, 0.95, 0)
 	rope_mesh.material_override = StageKit.make_material(Color("#d9b77a"))
 	_rope.add_child(rope_mesh)
+	_rope_mesh = rope_mesh
 	var flag := MeshInstance3D.new()
 	var flag_mesh := BoxMesh.new()
 	flag_mesh.size = Vector3(0.15, 0.7, 0.5)
@@ -118,14 +137,21 @@ func _round_process(delta: float) -> void:
 		_next_beat += _current_interval()
 		_beat_id += 1
 		_beat_ring.pulse()
+		Sfx.play(&"beat", Vector3.INF, -6.0)
 	var span: float = maxf(_next_beat - _last_beat, 0.01)
 	_beat_ring.progress = clampf((elapsed - _last_beat) / span, 0.0, 1.0) if _last_beat > -5.0 else clampf(elapsed / _next_beat, 0.0, 1.0)
 	for player: Player in players:
 		var source: InputSource = player.get_input()
 		if source != null and source.just_pressed(InputBindings.JUMP):
 			_on_press(player)
-	rope_x = move_toward(rope_x, _rope_target, delta * 2.5)
+		if source != null and source.just_pressed(InputBindings.SPECIAL):
+			_on_power(player)
+	# Seil folgt dem Ziel wie eine Feder und schwingt leicht nach
+	_rope_velocity += ((_rope_target - rope_x) * rope_stiffness - _rope_velocity * rope_damping) * delta
+	rope_x += _rope_velocity * delta
 	_rope.position.x = rope_x
+	_rope_wobble = move_toward(_rope_wobble, 0.0, delta * 1.5)
+	_rope_mesh.position.y = 0.95 + sin(elapsed * 38.0) * 0.12 * _rope_wobble
 	for player: Player in players:
 		var stand: Vector3 = _stand_position(player.slot.index, rope_x)
 		player.global_position = Vector3(stand.x, player.global_position.y, stand.z)
@@ -149,6 +175,8 @@ func _on_press(player: Player) -> void:
 	if offset > hit_window or hits.has(index):
 		_slipped_until[index] = elapsed + slip_time
 		player.visual.play_hit(Vector3(0, 0, 4))
+		Fx.burst(&"dust", player.global_position + Vector3.UP * 0.2, Color(0, 0, 0, 0), 0.7)
+		Sfx.play(&"slip", player.global_position)
 		_feedback(player, "Daneben!")
 		return
 	hits.append(index)
@@ -162,12 +190,56 @@ func _on_press(player: Player) -> void:
 			synced = true
 	if synced:
 		amount += sync_bonus
+		if _team_charge[team] < power_charge_needed:
+			_team_charge[team] += 1
+			if _team_charge[team] >= power_charge_needed:
+				hud.show_message("%s: Kraftakt bereit!" % context.team_name(team, info), 1.2)
 	_rope_target += direction * amount
+	_rope_wobble = maxf(_rope_wobble, 0.35 if synced else 0.2)
 	player.visual.play_land(6.0)
+	# Schlammspritzer bei jedem Zug, größer bei Synchronität (D53)
+	Fx.burst(&"mud", player.global_position + Vector3.UP * 0.1, Color(0, 0, 0, 0), 1.0 if synced else 0.6)
+	Sfx.play(&"pull", player.global_position)
+	if synced:
+		Sfx.play(&"sync", player.global_position)
 	var source: InputSource = player.slot.source
 	source.rumble(0.25 if not synced else 0.5, 0.0, 0.08)
 	_feedback(player, "Synchron!" if synced else "Zug!")
 	_update_hud()
+
+
+## Kraftakt (D53): nur mit vollem Teambalken, auch während des Ausrutschens nicht.
+func _on_power(player: Player) -> void:
+	var index: int = player.slot.index
+	var team: int = context.team_of(index)
+	if _team_charge[team] < power_charge_needed or elapsed < float(_slipped_until.get(index, -1.0)):
+		return
+	_team_charge[team] = 0
+	_debug_power_count += 1
+	var direction: float = -1.0 if team == 0 else 1.0
+	_rope_target += direction * power_pull
+	_rope_velocity += direction * 4.0
+	_rope_wobble = 1.0
+	for member: int in context.team_members(team):
+		var mate: Player = get_player(member)
+		mate.visual.play_land(14.0)
+		mate.slot.source.rumble(0.6, 0.6, 0.25)
+		_feedback(mate, "KRAFTAKT!")
+	hud.show_message("KRAFTAKT!", 1.0)
+	Fx.shake(Fx.SHAKE_MEDIUM)
+	Sfx.play(&"power", Vector3(rope_x, 0.5, 0.0))
+	Fx.burst(&"mud", Vector3(rope_x, 0.2, 0.0), Color(0, 0, 0, 0), 1.8)
+	_update_hud()
+
+
+## Knapp: Zeit ist abgelaufen und die Markierung lag nahe der Mitte.
+func was_close() -> bool:
+	return elapsed >= time_limit - 0.1 and absf(_rope_target) < 1.0
+
+
+## Für den Smoke-Test `--smoke-games`.
+func debug_summary() -> String:
+	return "Seil %.2f m, Kraftakte %d" % [_rope_target, _debug_power_count]
 
 
 func _feedback(player: Player, text: String) -> void:
@@ -190,6 +262,8 @@ func _finish_team(winner_team: int) -> void:
 		var player: Player = get_player(index)
 		var toward_center: float = 1.0 if loser_team == 0 else -1.0
 		player.receive_push(Vector3(toward_center * 9.0, 0, 0), 6.0, 1.0, null)
+	Fx.burst(&"mud", Vector3(rope_x, 0.2, 0.0), Color(0, 0, 0, 0), 2.0)
+	Sfx.play(&"mud", Vector3(rope_x, 0.2, 0.0))
 	finish(MinigameResult.team_win(context.team_members(winner_team), context.team_members(loser_team)))
 
 
@@ -210,6 +284,11 @@ func _update_hud() -> void:
 	elif _rope_target > 0.05:
 		leader = "Team Lila vorn"
 	hud.set_info("rope", "%s (%.1f m)" % [leader, meters])
+	for team: int in 2:
+		var charge: int = _team_charge[team]
+		var bar: String = "■".repeat(charge) + "□".repeat(maxi(0, power_charge_needed - charge))
+		var text: String = "Kraftakt bereit!" if charge >= power_charge_needed else "Kraft %s" % bar
+		hud.set_info("power%d" % team, text, context.team_color(team))
 
 
 # --- Computergegner ---
@@ -226,4 +305,8 @@ func _update_ai(player: Player, ai: AIInput, _delta: float) -> void:
 	if not pending.is_empty() and elapsed >= float(pending[0]):
 		pending.pop_front()
 		ai.tap(InputBindings.JUMP)
+	# Kraftakt: nicht sofort, sondern nach kurzer Reaktionszeit zufällig
+	var team: int = context.team_of(index)
+	if _team_charge[team] >= power_charge_needed and rng.randf() < AIProfile.skill(context.difficulty) * 0.04:
+		ai.tap(InputBindings.SPECIAL)
 	_ai_press_at[index] = pending

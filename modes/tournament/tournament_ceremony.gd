@@ -57,6 +57,8 @@ func _ready() -> void:
 				winner_names.append(slot.display_name)
 		place += group.size()
 	_add_confetti()
+	Sfx.play_ui(&"win")
+	Announcer.say(&"tournament_end", {"winner": " und ".join(winner_names)})
 	_build_ui(groups, winner_names)
 
 

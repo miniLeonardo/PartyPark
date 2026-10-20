@@ -80,6 +80,11 @@ func play_hit(impulse: Vector3) -> void:
 	_stretch_velocity -= 4.0
 
 
+## Allgemeiner Squash-Impuls für Effekte (positiv = stauchen, negativ = strecken).
+func punch_squash(amount: float) -> void:
+	_stretch_velocity -= amount * 8.0
+
+
 func play_spawn() -> void:
 	_spawn_scale = 0.2
 

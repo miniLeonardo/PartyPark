@@ -32,7 +32,11 @@ func _ready() -> void:
 	add_child(pause_menu)
 	disconnect_overlay = DISCONNECT_OVERLAY_SCENE.instantiate() as DisconnectOverlay
 	add_child(disconnect_overlay)
+	add_child(PerfOverlay.new())
 	PlayerRoster.player_disconnected.connect(_on_player_disconnected)
+	# Messmodus (WP 4.5) auch in exportierten Spielen
+	if OS.get_cmdline_user_args().has("--bench") or OS.get_cmdline_args().has("--bench"):
+		add_child((load("res://core/bench/bench_runner.gd") as GDScript).new())
 	PlayerRoster.roster_changed.connect(_update_pause_state)
 	if OS.is_debug_build():
 		var args: PackedStringArray = OS.get_cmdline_user_args()
@@ -123,6 +127,7 @@ func _start_mode(scene_path: String) -> void:
 
 
 func _leave_match() -> void:
+	Announcer.stop()
 	pause_menu.close()
 	match_running = false
 	Engine.time_scale = 1.0
@@ -136,6 +141,7 @@ func _leave_match() -> void:
 # --- Pause ---
 
 func open_pause(by: PlayerSlot) -> void:
+	Sfx.play_ui(&"pause")
 	pause_menu.open(by)
 	_update_pause_state()
 

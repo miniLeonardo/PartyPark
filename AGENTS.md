@@ -38,7 +38,7 @@ Fasse dem Nutzer danach in zwei bis drei Sätzen zusammen, wo das Projekt steht,
 | Renderer | Forward+; bei Performanceproblemen auf Handhelds ist Mobile die Ausweichoption |
 | Zielplattformen | Windows x86_64 und Linux x86_64 (Bazzite, auch Handhelds wie Steam Deck) |
 | Eingabe | bis zu 4 Gamepads gleichzeitig, Tastatur nur als Debug-Eingabe |
-| Bildschirm | ein gemeinsamer Bildschirm, kein Splitscreen |
+| Bildschirm | ein gemeinsamer Bildschirm; Splitscreen nur in Ego-Minispielen über `SplitScreen` (D49) |
 
 ### Nützliche Befehle
 
@@ -58,6 +58,16 @@ godot --headless --path . -- --smoke-compile
 # Durchläufe mit simulierten Eingaben (Exit-Code 0 = grün)
 godot --headless --path . -- --smoke-m1
 godot --headless --path . --fixed-fps 60 -- --smoke-m2
+godot --headless --path . --fixed-fps 60 -- --smoke-games
+
+# Geräusche aus tools/sfx_recipes.gd neu erzeugen, danach --import
+godot --headless --path . --script res://tools/sfx_gen.gd
+
+# Neues Minispiel anlegen (Anleitung docs/MINIGAME_GUIDE.md)
+godot --headless --path . --script res://tools/new_minigame.gd -- --id=<id> --name="<Name>" --formats=ffa
+
+# Messmodus (mit Fenster, Ergebnis in user://bench.txt, siehe docs/PERFORMANCE.md)
+godot --path . -- --bench
 ```
 
 `--check-only` kennt keine Autoloads; stattdessen `--smoke-compile` nutzen. `--smoke-m2` spielt ein ganzes Turnier und jedes Minispiel durch; mit `--fixed-fps 60` ohne Echtzeit in Sekunden.
@@ -73,7 +83,7 @@ godot --headless --path . --fixed-fps 60 -- --smoke-m2
 5. Bezeichner und Code auf Englisch, Kommentare und Dokumentation auf Deutsch.
 6. Eine Szene, ein Hauptskript mit gleichem Namen daneben (`player.tscn` und `player.gd`).
 7. **Eingabe:** Gameplay-Code fragt niemals globale Aktionen wie `ui_accept` oder `Input.is_action_pressed()` ohne Gerätebezug ab. Jede Spielereingabe läuft über den zentralen InputRouter (siehe `docs/ARCHITECTURE.md`), der Controller-IDs festen Spielerplätzen zuordnet.
-8. Neue Minispiele folgen der Vorlage in `minigames/` und werden über ihre Beschreibungsdatei registriert, nicht per Hand in Menüs eingetragen. Anleitung in `docs/ARCHITECTURE.md` Abschnitt 4.4.
+8. Neue Minispiele entstehen mit `tools/new_minigame.gd` und werden über ihre Beschreibungsdatei registriert, nicht per Hand in Menüs eingetragen. Anleitung in `docs/MINIGAME_GUIDE.md`. Effekte (`Fx`), Geräusche (`Sfx`) und Ansager (`Announcer`) gehören von Anfang an dazu.
 9. Menüs und Tastenhinweise nutzen `MenuList` und `InputHints` (Tasten je Gerät, D28), nie Godots Fokus-Navigation.
 
 ## Ordnerstruktur

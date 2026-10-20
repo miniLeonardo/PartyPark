@@ -2,7 +2,7 @@
 
 Lokales 3D-Partyspiel für bis zu 4 Spieler mit Controllern, inspiriert von Mario Party, Wii Party und Nintendo Land. Gebaut mit Godot 4.7 für Windows und Linux (Bazzite).
 
-Status: Prototyp mit Titel, Beitritt, Hauptmenü, Optionen, Schnellturnier, Freiem Spiel und vier Minispielen (Autoscooter, Tauziehen, Riese gegen Zwerge, Schafe hüten). Erster Spieleabend als Test steht aus. Aktueller Stand immer im obersten Eintrag von [`docs/DEVLOG.md`](docs/DEVLOG.md).
+Status: Version 0.4 „Spieleabend“ mit Titel, Beitritt, Hauptmenü, Optionen, Schnellturnier, Freiem Spiel, Effekten, selbst erzeugten Geräuschen, Ansager und sieben Minispielen (Autoscooter, Tauziehen, Riese gegen Zwerge, Schafe hüten, Wackelwaben, Heiße Kartoffel, Zerfetzung mit Splitscreen). Test mit Controllern und auf Bazzite steht aus. Aktueller Stand immer im obersten Eintrag von [`docs/DEVLOG.md`](docs/DEVLOG.md).
 
 ## Schnellstart
 
@@ -22,6 +22,11 @@ Status: Prototyp mit Titel, Beitritt, Hauptmenü, Optionen, Schnellturnier, Frei
 | [`docs/DECISIONS.md`](docs/DECISIONS.md) | alle Entscheidungen und offenen Fragen |
 | [`docs/ROADMAP.md`](docs/ROADMAP.md) | Phasen und Meilensteine mit Status |
 | [`docs/DEVLOG.md`](docs/DEVLOG.md) | Tagebuch: was wann von wem gemacht wurde, nächster Schritt |
+| [`docs/MINIGAME_GUIDE.md`](docs/MINIGAME_GUIDE.md) | Bauanleitung für neue Minispiele |
+| [`docs/PERFORMANCE.md`](docs/PERFORMANCE.md) | Messmodus und Leistungsmesswerte |
+| [`docs/GITHUB_ANLEITUNG.md`](docs/GITHUB_ANLEITUNG.md) | privates GitHub-Repository mit automatischen Tests |
+| [`docs/EXPORT_UND_BAZZITE.md`](docs/EXPORT_UND_BAZZITE.md) | Exportieren und Test auf Bazzite |
+| [`docs/TESTANLEITUNG_V0_4.md`](docs/TESTANLEITUNG_V0_4.md) | aktuelle Testanleitung |
 | [`docs/prompts/`](docs/prompts/) | fertige Prompts für KI-Sitzungen |
 
 ## Weiterarbeiten mit einer anderen KI oder auf einem anderen PC

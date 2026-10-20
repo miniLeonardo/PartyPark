@@ -49,18 +49,23 @@ func handle_input(sources: Array[InputSource]) -> void:
 		return
 	for source: InputSource in sources:
 		if source.just_pressed(InputBindings.NAV_UP):
+			Sfx.play_ui(&"ui_move")
 			_move(-1)
 			return
 		if source.just_pressed(InputBindings.NAV_DOWN):
+			Sfx.play_ui(&"ui_move")
 			_move(1)
 			return
 		if source.just_pressed(InputBindings.NAV_LEFT) and items[selected].has("value"):
+			Sfx.play_ui(&"ui_move", 0.0, 0.9)
 			value_changed.emit(selected, -1)
 			return
 		if source.just_pressed(InputBindings.NAV_RIGHT) and items[selected].has("value"):
+			Sfx.play_ui(&"ui_move", 0.0, 1.1)
 			value_changed.emit(selected, 1)
 			return
 		if source.just_pressed(InputBindings.CONFIRM) and items[selected].get("enabled", true):
+			Sfx.play_ui(&"ui_confirm")
 			source.rumble(0.25, 0.0, 0.06)
 			activated.emit(selected)
 			return

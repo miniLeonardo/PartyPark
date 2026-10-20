@@ -39,6 +39,7 @@ func physics_update(delta: float) -> void:
 		return
 	_cooldown = push_cooldown
 	player.visual.play_push()
+	Sfx.play(&"push", player.global_position, -3.0)
 	player.add_knockback(player.facing * lunge_speed)
 	var hit_any: bool = false
 	var targets: Array[Node] = player.get_tree().get_nodes_in_group(Player.GROUP)

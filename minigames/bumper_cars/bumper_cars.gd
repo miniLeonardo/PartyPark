@@ -86,6 +86,7 @@ func _configure_player(player: Player, slot: PlayerSlot) -> void:
 	var scooter := ScooterAbility.new()
 	scooter.name = "ScooterAbility"
 	player.add_ability(scooter)
+	scooter.bumped.connect(_on_bumped.bind(player, scooter))
 	scooter.reset(player.facing)
 
 
@@ -142,8 +143,21 @@ func _round_process(delta: float) -> void:
 		finish(_ranking())
 
 
+## Rempler: Hitstop für beide, Sterne an der Aufprallstelle, Turbo wackelt leicht (D56).
+func _on_bumped(other: Player, _strength: float, bumper: Player, scooter: ScooterAbility) -> void:
+	Fx.hitstop([bumper, other])
+	Sfx.play(&"bump", bumper.global_position, 0.0, 1.15 if not scooter.is_turbo() else 0.85)
+	Fx.burst(&"stars", (bumper.global_position + other.global_position) * 0.5 + Vector3.UP * 0.6)
+	if scooter.is_turbo():
+		Fx.shake(Fx.SHAKE_LIGHT)
+
+
 func _on_fell(player: Player) -> void:
 	var index: int = player.slot.index
+	# Rausfallen: Platscher im Wasser und starkes Wackeln (D56)
+	Fx.burst(&"splash", Vector3(player.global_position.x, -5.4, player.global_position.z))
+	Fx.shake(Fx.SHAKE_STRONG)
+	Sfx.play(&"splash", player.global_position)
 	lives[index] = int(lives[index]) - 1
 	player.set_active(false)
 	var source: InputSource = player.slot.source
@@ -151,6 +165,8 @@ func _on_fell(player: Player) -> void:
 	if lives[index] <= 0:
 		eliminated.append(index)
 		hud.show_message("%s ist raus!" % player.slot.display_name, 1.5)
+		Sfx.play(&"eliminated")
+		Announcer.say(&"bad_luck", {"player": player.slot.display_name}, 0.6)
 	else:
 		_respawn_timers[index] = respawn_delay
 	_update_hud()
@@ -191,6 +207,22 @@ func _ranking() -> MinigameResult:
 	for i: int in range(eliminated.size() - 1, -1, -1):
 		groups.append([eliminated[i]])
 	return MinigameResult.from_ranking(groups)
+
+
+## Knapp: Am Ende hat der Sieger nur noch ein Leben, oder mehrere teilen sich die meisten Leben.
+func was_close() -> bool:
+	var alive: Array[int] = _alive()
+	if alive.size() == 1:
+		return int(lives[alive[0]]) <= 1
+	var best: int = 0
+	var count: int = 0
+	for index: int in alive:
+		if int(lives[index]) > best:
+			best = int(lives[index])
+			count = 1
+		elif int(lives[index]) == best:
+			count += 1
+	return count > 1
 
 
 func _on_time_up() -> void:

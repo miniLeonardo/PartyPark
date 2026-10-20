@@ -59,6 +59,7 @@ func _physics_process(_delta: float) -> void:
 	var requests: Array[InputSource] = InputRouter.poll_join_requests()
 	if requests.is_empty():
 		return
+	Sfx.play_ui(&"join")
 	for source: InputSource in requests:
 		PlayerRoster.join(source)
 		source.rumble(0.4, 0.2, 0.15)

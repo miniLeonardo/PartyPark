@@ -34,6 +34,7 @@ func physics_update(delta: float) -> void:
 		_coyote = 0.0
 		_rising = true
 		player.visual.play_jump()
+		Sfx.play(&"jump", player.global_position, -4.0, 1.0 / sqrt(player.body_scale))
 		jumped.emit()
 	if _rising:
 		if player.velocity.y <= 0.0:

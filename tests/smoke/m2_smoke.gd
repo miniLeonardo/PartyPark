@@ -54,6 +54,7 @@ func _run() -> void:
 		await _frames(5)
 	await _wait_until(func() -> bool: return int(tournament.get("state")) == 2, 300)
 	_check(int(tournament.get("state")) == 2, "Siegerehrung erreicht")
+	_check(Announcer.spoken_count >= rounds, "Ansager hat gesprochen (%d Sprüche, zuletzt: %s)" % [Announcer.spoken_count, Announcer.last_line])
 	await _frames(120)
 	await _shot("siegerehrung")
 	var history: Array = tournament.get("history")
@@ -109,6 +110,13 @@ func _run() -> void:
 	_check(Settings.cpu_difficulty == maxi(0, before - 1), "Links senkt die Computer-Stärke")
 	await _tap_key(KEY_D)
 	_check(Settings.cpu_difficulty == before, "Rechts erhöht sie wieder")
+	var shake_before: bool = Settings.screen_shake
+	await _tap_key(KEY_S)
+	await _tap_key(KEY_S)
+	await _tap_key(KEY_D)
+	_check(Settings.screen_shake != shake_before, "Bildschirmwackeln umschalten")
+	await _tap_key(KEY_D)
+	_check(Settings.screen_shake == shake_before, "Bildschirmwackeln zurückschalten")
 	await _tap_key(KEY_E)
 	await _frames(5)
 	_check(get_tree().current_scene.name == "MainMenu", "Optionen → Hauptmenü")
@@ -174,6 +182,7 @@ func _shot(file_name: String) -> void:
 		return
 	await RenderingServer.frame_post_draw
 	_shot_count += 1
+	DirAccess.make_dir_recursive_absolute(_shot_dir)
 	var image: Image = get_viewport().get_texture().get_image()
 	image.save_png(_shot_dir.path_join("%02d_%s.png" % [_shot_count, file_name]))
 

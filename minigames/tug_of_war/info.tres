@@ -9,10 +9,11 @@ display_name = "Tauziehen"
 formats = Array[int]([2])
 min_players = 4
 max_players = 4
-duration_sec = 45.0
-goal_text = "Zieht im Takt! Drückt, wenn der Ring sich schließt. Ziehen beide im selben Takt, gibt es einen Bonus. Zu früh oder zu spät lässt euch ausrutschen."
+duration_sec = 30.0
+goal_text = "Zieht im Takt! Drückt, wenn der Ring sich schließt. Ziehen beide im selben Takt, gibt es einen Bonus. Zu früh oder zu spät lässt euch ausrutschen. Synchrone Züge füllen euren Kraftbalken: Ist er voll, löst ihr einen Kraftakt aus."
 controls = {
-"jump": "Im Takt ziehen"
+"jump": "Im Takt ziehen",
+"special": "Kraftakt (Balken voll)"
 }
 solo_goal_text = ""
 solo_controls = {}

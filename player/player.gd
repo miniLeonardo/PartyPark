@@ -35,6 +35,12 @@ const GROUP: StringName = &"players"
 @export_range(0.0, 1.0) var stunned_control: float = 0.15
 @export var hit_rumble_strength: float = 0.7
 
+@export_group("Effekte")
+## Ab dieser Fallgeschwindigkeit (m/s) staubt die Landung.
+@export var hard_landing_speed: float = 9.0
+## Partikel beim Erscheinen und bei Treffern.
+@export var spawn_particles: bool = true
+
 ## Waagerechte Bewegung (Minispiele können sie abschalten, Springen bleibt eigene Fähigkeit).
 var movement_enabled: bool = true
 ## Liest die Figur überhaupt Eingaben? Aus während Regelbildschirm und Countdown.
@@ -53,6 +59,8 @@ var _knockback: Vector3 = Vector3.ZERO
 var _stun_time: float = 0.0
 var _was_on_floor: bool = true
 var _abilities: Array[PlayerAbility] = []
+## Restzeit des Hitstops (echte Sekunden), siehe apply_hitstop().
+var _hitstop: float = 0.0
 
 @onready var visual: PlayerVisual = $Visual
 @onready var tag_label: Label3D = $Tag
@@ -93,6 +101,14 @@ func _apply_slot() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if _hitstop > 0.0:
+		# Hitstop: Figur steht kurz still und zittert leicht; Zeit unabhängig von der Zeitlupe
+		_hitstop -= delta / maxf(Engine.time_scale, 0.01)
+		var jitter: float = 0.05 * body_scale
+		visual.position = Vector3(randf_range(-jitter, jitter), 0.0, randf_range(-jitter, jitter))
+		if _hitstop <= 0.0:
+			visual.position = Vector3.ZERO
+		return
 	var source: InputSource = get_input()
 	var move_input: Vector2 = Vector2.ZERO
 	if source != null and movement_enabled:
@@ -135,8 +151,20 @@ func _physics_process(delta: float) -> void:
 	on_floor = is_on_floor()
 	if on_floor and not _was_on_floor:
 		visual.play_land(fall_speed)
+		if fall_speed > hard_landing_speed:
+			Fx.burst(&"dust", global_position + Vector3.UP * 0.1, Color(0, 0, 0, 0), body_scale * 0.8)
+			Sfx.play(&"land", global_position, -4.0, 1.0 / sqrt(body_scale))
 	_was_on_floor = on_floor
 	visual.update_motion(Vector2(_walk.x, _walk.z).length() / maxf(move_speed, 0.01), on_floor, delta)
+
+
+## Friert die Figur kurz ein (lokaler Hitstop, D56). Mehrfachaufrufe verlängern nicht, sie nehmen das Maximum.
+func apply_hitstop(duration: float) -> void:
+	_hitstop = maxf(_hitstop, duration)
+
+
+func is_in_hitstop() -> bool:
+	return _hitstop > 0.0
 
 
 ## Fügt zur Laufzeit eine Fähigkeit hinzu (z. B. Autoscooter-Steuerung eines Minispiels).
@@ -246,6 +274,9 @@ func receive_push(impulse: Vector3, lift: float, stun_time: float, by: Player) -
 	velocity.y = maxf(velocity.y, lift)
 	_stun_time = stun_time
 	visual.play_hit(impulse)
+	# Normale Schubser: nur Partikel und Squash, kein Wackeln (D56)
+	Fx.burst(&"dust", global_position + Vector3.UP * 0.5 * body_scale, Color(0, 0, 0, 0), 0.8)
+	Sfx.play(&"hit", global_position)
 	var source: InputSource = get_input()
 	if source != null:
 		source.rumble(0.0, hit_rumble_strength, 0.2)
@@ -268,7 +299,12 @@ func respawn(at: Vector3) -> void:
 	_walk = Vector3.ZERO
 	_knockback = Vector3.ZERO
 	_stun_time = 0.0
+	_hitstop = 0.0
+	visual.position = Vector3.ZERO
 	visual.play_spawn()
+	if spawn_particles and slot != null and is_inside_tree():
+		Fx.burst(&"stars", at + Vector3.UP * 0.6 * body_scale, slot.color.lightened(0.3))
+		Sfx.play(&"spawn", at, -6.0)
 
 
 ## Wandelt die Stick-Eingabe relativ zur aktiven Kamera in eine Richtung auf der Ebene um.

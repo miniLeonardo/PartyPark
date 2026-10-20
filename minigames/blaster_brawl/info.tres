@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="MinigameInfo" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/minigame/minigame_info.gd" id="1_info"]
+
+[resource]
+script = ExtResource("1_info")
+id = &"blaster_brawl"
+display_name = "Zerfetzung"
+formats = Array[int]([1])
+min_players = 2
+max_players = 4
+duration_sec = 90.0
+goal_text = "Ego-Sicht mit geteiltem Bildschirm: Triff die anderen mit dem Krawumm-Blaster! Nach 3 Treffern zerplatzt man. Wer zuletzt übrig ist, gewinnt. Dauerfeuer überhitzt den Blaster."
+controls = {
+"move": "Laufen",
+"aim": "Umsehen und Zielen",
+"push": "Feuern (halten = Dauerfeuer)",
+"jump": "Springen"
+}
+solo_goal_text = ""
+solo_controls = {}
+solo_role_name = ""
+team_role_name = ""
+scene_path = "res://minigames/blaster_brawl/blaster_brawl.tscn"

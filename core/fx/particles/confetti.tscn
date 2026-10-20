@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/fx/fx_burst.gd" id="1_fx"]
+
+[node name="Confetti" type="GPUParticles3D"]
+script = ExtResource("1_fx")
+burst_amount = 70
+burst_lifetime = 2.2
+base_color = Color(1, 0.3, 0.3, 1)
+hue_spread = 0.5
+shape = 1
+particle_size = 0.18
+spread_deg = 40.0
+speed_min = 6.0
+speed_max = 11.0
+gravity_strength = 6.0
+drag = 2.5
+emit_radius = 0.4
+spin = 400.0

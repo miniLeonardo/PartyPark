@@ -27,6 +27,7 @@ var award_points: bool = false
 var round_label: String = ""
 
 var _timer: float = 0.0
+var _last_countdown_step: int = -1
 var _ready_state: Dictionary = {}
 var _started_round: bool = false
 var _ui: CanvasLayer
@@ -52,6 +53,7 @@ func start(p_info: MinigameInfo, p_context: MinigameContext, p_round_label: Stri
 	minigame.finished.connect(_on_minigame_finished)
 	_build_ui()
 	_enter(Phase.ANNOUNCE)
+	Announcer.say(&"round_start", {"game": info.display_name})
 
 
 func _exit_tree() -> void:
@@ -98,6 +100,7 @@ func _enter(new_phase: Phase) -> void:
 				_enter(Phase.COUNTDOWN)
 		Phase.COUNTDOWN:
 			_started_round = false
+			_last_countdown_step = -1
 			_countdown.text = "3"
 		Phase.RESULT:
 			_build_result()
@@ -108,6 +111,7 @@ func _update_ready() -> void:
 		if slot.is_human() and not slot.disconnected and not _ready_state.get(slot.index, false):
 			if slot.source.just_pressed(InputBindings.CONFIRM):
 				_ready_state[slot.index] = true
+				Sfx.play_ui(&"ui_confirm", 0.0, 0.9 + 0.08 * float(slot.index))
 				slot.source.rumble(0.3, 0.0, 0.1)
 				_refresh_ready()
 	if _all_ready():
@@ -123,6 +127,11 @@ func _all_ready() -> bool:
 
 func _update_countdown() -> void:
 	var step: int = int(_timer / countdown_step)
+	if step != _last_countdown_step and step <= 3:
+		_last_countdown_step = step
+		Sfx.play_ui(&"countdown_go" if step == 3 else &"countdown_tick")
+		if step == 3:
+			Announcer.say(&"countdown", {}, 0.35)
 	if step < 3:
 		_countdown.text = str(3 - step)
 	else:
@@ -151,8 +160,43 @@ func _on_minigame_finished(p_result: MinigameResult) -> void:
 	if result.headline.is_empty():
 		result.headline = _default_headline()
 	_banner.text = result.headline
+	_celebrate()
+	var lost: bool = context.format == TeamFormat.Format.COOP_VS_CPU and not result.coop_won
+	Sfx.play_ui(&"lose" if lost else &"win")
+	_comment_result(lost)
 	Engine.time_scale = slowmo_scale
 	_enter(Phase.SLOWMO)
+
+
+## Ansager zum Ergebnis: knappe Entscheidung, Sieg, Unentschieden oder Koop-Niederlage.
+func _comment_result(lost: bool) -> void:
+	if result.is_draw:
+		Announcer.say(&"draw")
+	elif lost:
+		Announcer.say(&"coop_lost")
+	elif minigame.has_method("was_close") and bool(minigame.call("was_close")):
+		Announcer.say(&"close_call")
+	else:
+		var winners: Array[int] = result.get_winners()
+		if winners.is_empty():
+			return
+		if context.format == TeamFormat.Format.FFA:
+			if winners.size() > 1:
+				Announcer.say(&"close_call")
+				return
+			Announcer.say(&"win", {"winner": context.get_slot(winners[0]).display_name})
+		else:
+			Announcer.say(&"win", {"winner": context.team_name(context.team_of(winners[0]), info)})
+
+
+## Konfetti über den Siegern (bei Koop nur bei Erfolg, bei Unentschieden nicht).
+func _celebrate() -> void:
+	if result.is_draw or (context.format == TeamFormat.Format.COOP_VS_CPU and not result.coop_won):
+		return
+	for index: int in result.get_winners():
+		var player: Player = minigame.get_player(index)
+		if player != null and player.visible:
+			Fx.burst(&"confetti", player.global_position + Vector3.UP * 1.2 * player.body_scale)
 
 
 func _default_headline() -> String:
@@ -278,7 +322,14 @@ func _controls_text(slot: PlayerSlot) -> String:
 		controls = info.solo_controls
 	var lines: PackedStringArray = []
 	for action: String in controls:
-		var label: String = slot.source.get_move_label() if action == "move" else slot.source.get_action_label(StringName(action))
+		var label: String
+		match action:
+			"move":
+				label = slot.source.get_move_label()
+			"aim":
+				label = slot.source.get_aim_label()
+			_:
+				label = slot.source.get_action_label(StringName(action))
 		lines.append("%s: %s" % [label, controls[action]])
 	return "\n".join(lines)
 

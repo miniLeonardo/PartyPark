@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/fx/fx_burst.gd" id="1_fx"]
+
+[node name="Mud" type="GPUParticles3D"]
+script = ExtResource("1_fx")
+burst_amount = 12
+burst_lifetime = 0.6
+base_color = Color(0.42, 0.29, 0.17, 1)
+shape = 0
+particle_size = 0.2
+spread_deg = 50.0
+speed_min = 3.0
+speed_max = 6.0
+gravity_strength = 18.0
+drag = 0.5
+emit_radius = 0.3

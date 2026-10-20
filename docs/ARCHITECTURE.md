@@ -1,6 +1,6 @@
 # Partypark: Technische Architektur
 
-Stand: 2026-10-19, nach Umsetzung von M1, M2, M3 und den Menüs. Alle Abschnitte außer 9 (Export) beschreiben den umgesetzten Stand. Wer davon abweicht, aktualisiert dieses Dokument und trägt die Abweichung in `docs/DECISIONS.md` ein.
+Stand: 2026-10-20, nach Umsetzung von M1, M2, M3, den Menüs und Patch v0.4 (laufend). Alle Abschnitte außer 9 (Export) beschreiben den umgesetzten Stand. Wer davon abweicht, aktualisiert dieses Dokument und trägt die Abweichung in `docs/DECISIONS.md` ein.
 
 ## 1. Überblick
 
@@ -23,13 +23,16 @@ Spielweite Zustände liegen in wenigen Autoloads (Singletons). Minispiele kennen
 
 | Name | Datei | Aufgabe |
 |---|---|---|
-| `Settings` | `core/settings.gd` | Optionen (Computer-Stärke, Vibration, Vollbild, Turnierlänge), gespeichert in `user://settings.cfg` |
+| `Settings` | `core/settings.gd` | Optionen (Computer-Stärke, Vibration, Bildschirmwackeln, Lautstärken Musik/Effekte/Stimme, Vollbild, Turnierlänge), gespeichert in `user://settings.cfg`; `apply_audio()` setzt die Busse |
+| `Sfx` | `core/audio/sfx.gd` | Geräusche aus `assets/audio/sfx/*.wav`: Stimmen-Pool (24 positionell, 12 flach), Tonhöhen-Streuung ±6 % (D60), Drosselung gleicher Geräusche; `play(id, position)`, `play_ui(id)` (läuft auch in der Pause), `play_voice(id, pitch)` |
+| `Announcer` | `core/announcer/announcer.gd` | Ansager „Hodenhüpfer“ (D67, D68): Sprechblase unten links, Text Zeichen für Zeichen mit Silben-Geplapper; `say(event, werte, chance)`, `stop()`; Sprüche in `announcer_lines.json` |
+| `Fx` | `core/fx/fx.gd` | Effekt-Baukasten: `shake(trauma)`, `burst(kind, position, color, size)`, `hitstop(players)`, `squash(player, amount)`, `clear()`; Stärken als Konstanten nach D55/D56 |
 | `InputRouter` | `core/input/input_router.gd` | Controller erkennen, Geräte festen Spielerplätzen zuordnen, Eingaben pro Spieler bereitstellen, Verbindungsabbrüche melden |
 | `PlayerRoster` | `core/teams/player_roster.gd` | Die bis zu 4 Spielerplätze: Gerät, Farbe, Name, Computergegner ja/nein, Gesamtpunkte |
 | `MinigameRegistry` | `core/minigame/minigame_registry.gd` | findet beim Start alle `minigames/*/info.tres` und filtert nach Teamformat und Spielerzahl |
 | `Game` | `core/game.gd` | Szenenwechsel (`goto_title`, `goto_join`, `goto_main_menu`, `goto_options`, `start_tournament`, `start_free_play`, `start_test_arena`), Pause-Menü, Verbindungs-Pause mit Übernahme, Smoke-Tests (`--smoke-<name>` lädt `tests/smoke/<name>_smoke.gd`) |
 
-Reihenfolge in `project.godot`: Settings, InputRouter, PlayerRoster, MinigameRegistry, Game. `Game.match_running` ist während Turnier, Freiem Spiel und Testarena an (dann gibt es Pause und Verbindungs-Pause), in Menüs aus. Beim Start einer Spielart füllt `Game` Computergegner auf (falls im Beitritt eingeschaltet) und entfernt sie bei der Rückkehr ins Menü wieder. Alle drei laufen mit `PROCESS_MODE_ALWAYS`, damit Eingabe und Menüs auch bei pausiertem Baum funktionieren. Der InputRouter fragt mit `process_physics_priority = -1000` vor allen anderen Knoten ab.
+Reihenfolge in `project.godot`: Settings, Sfx, Fx, Announcer, InputRouter, PlayerRoster, MinigameRegistry, Game. `Game` hängt außerdem die Leistungsanzeige `PerfOverlay` an und startet bei `-- --bench` den Messmodus. `Game.match_running` ist während Turnier, Freiem Spiel und Testarena an (dann gibt es Pause und Verbindungs-Pause), in Menüs aus. Beim Start einer Spielart füllt `Game` Computergegner auf (falls im Beitritt eingeschaltet) und entfernt sie bei der Rückkehr ins Menü wieder. Alle drei laufen mit `PROCESS_MODE_ALWAYS`, damit Eingabe und Menüs auch bei pausiertem Baum funktionieren. Der InputRouter fragt mit `process_physics_priority = -1000` vor allen anderen Knoten ab.
 
 ## 3. Eingabe: das wichtigste technische Thema
 
@@ -162,6 +165,9 @@ Eine Szene in `core/minigame/match_flow.tscn`, die genau einen Durchlauf steuert
 
 | ID | Format | Kern |
 |---|---|---|
+| `hex_fall` | FFA | Wackelwaben (D70, D73): 3 Ebenen à 91 Waben (StaticBody3D mit sechseckiger ConvexPolygonShape3D, Lookup über axiale Koordinaten), betretene Wabe wird aus der Position berechnet (`_tile_under`), wackelt 0,6 s, fällt; Computer warten auf ihrer Wabe, bis sie kippt |
+| `hot_potato` | FFA | Heiße Kartoffel (D71): Bombe folgt dem Halter, Weitergabe über `PushAbility.pushed`, Lunte 8 bis 15 s mit schneller werdendem Ticken, Explosion schleudert Umstehende weg |
+| `blaster_brawl` | FFA | Zerfetzung (D72, D49): `SplitScreen` mit vier Ego-Ansichten, `ShooterAbility` (linker Stick laufen, rechter Stick schauen, Zielhilfe), Projektile per Raycast, Hitzebalken, nach 3 Treffern Partikel „chunks“; Hauptansicht rendert währenddessen kein 3D |
 | `bumper_cars` | FFA | `ScooterAbility` ersetzt das Laufen (`Player.drive_override`), runde Kollision, Rempler über Aufprallgeschwindigkeit, 3 Leben, Bande mit 4 Lücken |
 | `tug_of_war` | 2v2 | Takt mit `BeatRing`, Treffer ±0,13 s, Synchronbonus, Fehldruck sperrt kurz, Figuren werden entlang des Seils positioniert |
 | `giant_vs_dwarfs` | 1v3 | Riese per `Player.set_body_scale(3)`, Stampfen mit Ausholzeit und Schockwelle, Seilzählung über aufsummierten Winkel um den Riesen |
@@ -203,6 +209,51 @@ Umgesetzt: feste Neigung (`pitch_deg`) und Drehung (`yaw_deg`), Abstand aus Ausd
 | `modes/test_arena/` | Testarena; bei Start per F6 treten alle Quellen automatisch bei |
 | `tests/smoke/m1_smoke.gd` | automatischer M1-Durchlauf (D27); mit `--shots=<ordner>` und Renderer zusätzlich Bildschirmfotos |
 
+## 7b. Effekte und Sound (v0.4)
+
+### Effekte `core/fx/`
+
+| Datei | Inhalt |
+|---|---|
+| `fx.gd` | Autoload `Fx` (siehe Abschnitt 2). Partikel-Pools je Vorlage, feste Obergrenze `MAX_LIVE_PARTICLES` (700) für das 780M-Budget; überzählige Stöße werden ausgelassen (`skipped_bursts`) |
+| `camera_shaker.gd` | `CameraShaker`: Trauma 0 bis 1, Ausschlag ∝ Trauma², Simplex-Rauschen, Abbau in unskalierter Zeit. Verschiebung über `h_offset`/`v_offset`, Neigung um die Blickachse; erkennt, ob die Kamera (z. B. `ArenaCamera`) ihre Lage selbst neu gesetzt hat. `Fx` hängt ihn bei Bedarf an die aktive Kamera und an alle Kameras der Gruppe `fx_cameras` (für Splitscreen). Aus über `Settings.screen_shake` |
+| `fx_burst.gd` | `FxBurst` (GPUParticles3D, `@tool`): einmaliger Stoß, alle Werte im Editor einstellbar (Menge, Farbe, Form Klecks/Schnipsel/Funke, Tempo, Schwerkraft, Ring-Ausstoß, Schrumpfen) |
+| `particles/*.tscn` | Vorlagen `dust`, `dust_ring`, `splash`, `confetti`, `stars`, `mud` |
+| `rope_tube.gd` | `RopeTube`: Seil als vierkantiger Schlauch entlang einer Punktliste (Riese gegen Zwerge, D52) |
+
+Hitstop ist lokal (D56): `Player.apply_hitstop(duration)` hält nur diese Figur an (Physik und Fähigkeiten pausieren, Modell zittert leicht), gerechnet in echten Sekunden. `Engine.time_scale` bleibt der Zeitlupe von `MatchFlow` vorbehalten (D42). Squash über `PlayerVisual.punch_squash()`, rein optisch (D16). `MatchFlow` wirft am Rundenende Konfetti über die Sieger; `Minigame._exit_tree()` ruft `Fx.clear()`.
+
+### Sound `core/audio/`, `tools/sfx_gen.gd`
+
+1. Busse in `default_bus_layout.tres`: `Music`, `Sfx`, `Voice` (alle an Master). Lautstärken nach D61, Regler in den Optionen.
+2. Alle Geräusche sind selbst erzeugt (D59): `tools/sfx_recipes.gd` enthält die Rezepte (Wellenform, Tonhöhenverlauf, Vibrato, Tonsprung, Hüllkurve mit Punch, Tief-/Hochpass, Rauschen, mehrere Schichten mit Verzögerung). `tools/sfx_gen.gd` rechnet sie headless in 16-Bit-WAV (44,1 kHz, mono) nach `assets/audio/sfx/` um:
+   `godot --headless --path . --script res://tools/sfx_gen.gd [-- --only=bump,jump]`, danach `--import`.
+3. Ohne Audiogerät (Treiber „Dummy“, headless) zählt `Sfx` nur mit, statt abzuspielen.
+4. Neues Geräusch: Rezept in `sfx_recipes.gd` ergänzen, Generator und Import laufen lassen, im Code `Sfx.play(&"name", position)`. `tests/unit/test_sfx.gd` prüft, dass jedes im Code verwendete Geräusch ein Rezept hat.
+
+### Ansager `core/announcer/`
+
+1. `announcer_lines.json`: Ereignis → Liste von Sprüchen mit Platzhaltern `{game}`, `{winner}`, `{player}`. Ereignisse: `round_start`, `countdown`, `close_call`, `win`, `bad_luck`, `coop_lost`, `draw`, `tournament_end`. Die Datei wird beim Export über den Include-Filter mitgenommen.
+2. Wichtigkeit (`PRIORITY`): Sieg und Turnierende unterbrechen alles, Pech und Countdown unterbrechen nichts; höchstens ein Spruch wartet. Zufällige Auswahl ohne direkte Wiederholung.
+3. Silben: alle ca. 2,6 Buchstaben eine der Silben `voice_0` bis `voice_5` auf dem Bus `Voice`, Grundtonhöhe 0,82 mit ±5 % (trocken, fast monoton). Tempo 16 bis 32 Zeichen pro Sekunde, abhängig von der Textlänge. Läuft in unskalierter Zeit und pausiert mit dem Spiel.
+4. Einbindung: `MatchFlow` (Ankündigung, Countdown, Ergebnis mit `was_close()`), Siegerehrung, Ausscheiden in den Minispielen (`bad_luck` mit Wahrscheinlichkeit). `Game` ruft beim Verlassen eines Spiels `Announcer.stop()`.
+5. Gesicht: `AnnouncerPortrait` (Platzhalter, D68).
+
+### Leistung (v0.4)
+
+1. Grafikstufen in `Settings` (D69): `QUALITY_3D_SCALE` 0,7/0,85/1,0 mit FSR, Schatten aus/hart/weich, MSAA nur bei Hoch. `apply_graphics()` wirkt auf die Hauptansicht und alle Lichter der Gruppe `stage_lights`; `apply_graphics_to_viewport()` für SubViewports.
+2. `ui/perf_overlay.gd` (`PerfOverlay`): fps, Frametime, 1-%-Tiefstwert, Draw Calls, Objekte, Partikel; F3 oder Option. `PerfOverlay.frame_stats()` rechnet Durchschnitt und Tiefstwert.
+3. Messmodus `core/bench/bench_runner.gd`: `-- --bench [--bench-seconds=20] [--quality=0|1|2]`, je Minispiel 2 s Einschwingen plus Messzeit über die Sandbox, VSync aus, Ergebnis nach `user://bench.txt`. Funktioniert auch im exportierten Spiel. Anleitung in `docs/PERFORMANCE.md`.
+
+### Ego-Spiele und Splitscreen
+
+1. `InputSource.get_aim()` liefert den rechten Stick (`GamepadInput`), `AIInput.aim` für Computer; `has_aim_stick()` ist bei der Tastatur falsch, dann dreht links/rechts (Debug). `get_aim_label()` beschriftet den Schlüssel `aim` in `controls`.
+2. `core/camera/split_screen.gd` (`SplitScreen`): 2×2-SubViewports mit gemeinsamer Welt, eine Kamera und eine Overlay-Fläche je Ansicht, Kameras in der Gruppe `fx_cameras`. Eigene Figur per Render-Ebene ausblenden (`player_layer_bit`, `set_render_layer`, `hide_layer_in_view`). Setzt `disable_3d` der Hauptansicht, solange er existiert.
+
+### Minispiel-Sandbox
+
+`core/minigame/minigame_sandbox.gd` (`MinigameSandbox`) spielt ein Minispiel ohne Menüs und MatchFlow mit vier Computergegnern auf eigenen Spielerplätzen (PlayerRoster bleibt unberührt). Genutzt von `--smoke-games` und später vom Messmodus. Minispiele können `debug_summary() -> String` anbieten, der Smoke-Test gibt den Text aus.
+
 ## 8. Tests
 
 Unit-Tests (TeamAssigner, Punkte, Registry) und Smoke-Tests (Spiel startet normal, das Skript simuliert Eingaben und beendet mit Exit-Code 0 oder 1):
@@ -212,7 +263,10 @@ godot --headless --path . --script res://tests/run_tests.gd
 godot --headless --path . -- --smoke-m1
 godot --headless --path . --fixed-fps 60 -- --smoke-m2
 godot --headless --path . -- --smoke-compile
+godot --headless --path . --fixed-fps 60 -- --smoke-games [--game=<id>] [--short]
 ```
+
+`--smoke-games` spielt jedes Minispiel in jedem Format komplett mit vier Computern über die Sandbox, prüft Ergebnis, Partikel-Obergrenze, Kamera-Wackeln und dass alle Geräusche vorhanden sind.
 
 `--smoke-m2` spielt Titel, Beitritt, Hauptmenü, ein komplettes Schnellturnier, jedes Minispiel im Freien Spiel und die Optionen durch. `--fixed-fps 60` schaltet die Echtzeit ab, dann dauert das Ganze nur Sekunden. Mit Renderer und `--shots=<ordner>` (und `--short` für 20-s-Runden) entstehen Bildschirmfotos.
 
@@ -223,4 +277,6 @@ Hinweis: `--check-only --script` kennt keine Autoloads und meldet für Skripte, 
 
 ## 9. Export
 
-Export-Vorlagen für „Windows Desktop“ und „Linux“ werden in Phase 6 angelegt (`export_presets.cfg`). Ausgabe nach `builds/`, nicht versioniert.
+`export_presets.cfg` (v0.4) enthält „Windows Desktop“ (`builds/windows/Partypark.exe`) und „Linux“ (`builds/linux/Partypark.x86_64`), beide x86_64 mit eingebettetem PCK. Ausgeschlossen: `docs/`, `tests/unit/`, `tools/`, `.github/`, `builds/`; eingeschlossen: `core/announcer/*.json`. Kommandozeile: `godot --headless --path . --export-release "Linux" builds/linux/Partypark.x86_64`. Export-Vorlagen 4.7.2 müssen installiert sein (Anleitung `docs/EXPORT_UND_BAZZITE.md`). In der Cloud geprüft: beide Exporte laufen durch, der Linux-Export startet und durchläuft den Messmodus.
+
+`tools/new_minigame.gd` legt ein neues Minispiel an (WP 4.7, Bauanleitung `docs/MINIGAME_GUIDE.md`).

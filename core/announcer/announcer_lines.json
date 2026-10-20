@@ -1,0 +1,53 @@
+{
+	"_info": "Spruchlisten des Ansagers (D67: trockener Kommentator, D68: Name Hodenhüpfer). Platzhalter in geschweiften Klammern: {game}, {winner}, {player}. Zeilen frei änderbar; Ereignisse siehe docs/ARCHITECTURE.md.",
+	"round_start": [
+		"Als Nächstes: {game}. Ich bin vorsichtig optimistisch.",
+		"{game}. Bitte nicht wieder alle gleichzeitig ins Wasser.",
+		"Es folgt {game}. Die Regeln stehen da. Lesen hilft.",
+		"{game}. Ich habe schon Schlimmeres gesehen. Heute vermutlich auch.",
+		"Nun also {game}. Wir tun alle so, als wäre das geplant."
+	],
+	"countdown": [
+		"Los. Oder auch nicht.",
+		"Bitte anfangen.",
+		"Dann mal los.",
+		"Start. Ich schaue zu.",
+		"Los geht's. Leider."
+	],
+	"close_call": [
+		"Das war knapp. Unnötig knapp.",
+		"Hauchdünn. Ich musste kurz blinzeln.",
+		"Knapper geht es kaum. Ich habe es versucht.",
+		"Spannend. Für die Verhältnisse hier.",
+		"Jetzt wird es tatsächlich interessant."
+	],
+	"win": [
+		"{winner} gewinnt. Bemerkenswert.",
+		"Sieg für {winner}. Ich notiere das widerwillig.",
+		"{winner}. Wer hätte das gedacht. Ich nicht.",
+		"Glückwunsch, {winner}. Das war fast elegant.",
+		"{winner} gewinnt. Die anderen waren auch da."
+	],
+	"bad_luck": [
+		"{player} ist raus. Das war absehbar.",
+		"Und weg ist {player}.",
+		"{player}. Schade. Eigentlich nicht.",
+		"{player} hat sich für den kurzen Weg entschieden.",
+		"Ein mutiger Abgang von {player}."
+	],
+	"coop_lost": [
+		"Verloren. Gemeinsam, immerhin.",
+		"Das war Teamarbeit. In die falsche Richtung.",
+		"Die Schafe gewinnen. Wieder einmal."
+	],
+	"draw": [
+		"Unentschieden. Alle gleich gut. Oder gleich schlecht.",
+		"Gleichstand. Ich bin enttäuscht, aber nicht überrascht.",
+		"Niemand gewinnt. Das ist auch eine Leistung."
+	],
+	"tournament_end": [
+		"{winner} gewinnt das Turnier. Ich gehe jetzt nach Hause.",
+		"Turniersieg für {winner}. Applaus, falls jemand mag.",
+		"{winner} ist Champion. Ich hatte auf jemand anderen gewettet."
+	]
+}

@@ -84,6 +84,20 @@ func _read_move() -> Vector2:
 	return stick
 
 
+func has_aim_stick() -> bool:
+	return true
+
+
+func _read_aim() -> Vector2:
+	if not connected:
+		return Vector2.ZERO
+	var stick := Vector2(Input.get_joy_axis(device, JOY_AXIS_RIGHT_X), Input.get_joy_axis(device, JOY_AXIS_RIGHT_Y))
+	var length: float = stick.length()
+	if length < STICK_DEADZONE:
+		return Vector2.ZERO
+	return stick / length * minf(1.0, (length - STICK_DEADZONE) / (1.0 - STICK_DEADZONE))
+
+
 func rumble(weak: float, strong: float, duration: float) -> void:
 	if connected and Settings.vibration_enabled:
 		Input.start_joy_vibration(device, clampf(weak, 0.0, 1.0), clampf(strong, 0.0, 1.0), duration)

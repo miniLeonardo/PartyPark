@@ -13,6 +13,46 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-10-20: Patch v0.4 „Spieleabend“ abgeschlossen (WP 4 bis 9)
+
+Agent und Umgebung: Claude (Cowork), Variante B, Godot 4.7.2 headless, Bildschirmfotos mit Vulkan-Software-Renderer, Export mit Vorlagen 4.7.2
+Erledigt: Leonardo wünschte, ohne Testrückmeldung weiterzuarbeiten (D66, Haltepunkte übersprungen). WP 4: Ansager „Hodenhüpfer“ als trockener Kommentator (D67, D68): Autoload `Announcer`, Sprechblase mit Gesicht, Silben-Geplapper, Spruchliste `core/announcer/announcer_lines.json` mit 8 Ereignissen, eingebunden in MatchFlow, Siegerehrung und Ausscheiden; Minispiele melden knappe Entscheidungen über `was_close()`. WP 5: Grafikstufen Niedrig/Mittel/Hoch (FSR, Schatten, MSAA), Leistungsanzeige mit F3 oder Option, Messmodus `-- --bench` mit `user://bench.txt`, `docs/PERFORMANCE.md` (D69, D77). WP 6: Wackelwaben (D70, D73: 3 Ebenen à 91 Waben), Heiße Kartoffel (D71), zusätzlich Zerfetzung als Ego-Shooter mit Splitscreen und comichafter Zerfetzung (D49, D72, D76: `SplitScreen`, `ShooterAbility`, zweiter Stick `get_aim()`); 12 neue Geräusche. WP 7: `docs/MINIGAME_GUIDE.md`, `tools/new_minigame.gd` mit Unit-Test. WP 8: Q09 → privates GitHub mit Actions (Vorlage `tools/ci/tests.yml`, von Leonardo nach `.github/workflows/` zu kopieren, weil `.github` für Claude gesperrt ist; `docs/GITHUB_ANLEITUNG.md`, D74, D79); Liste leerer `.gitkeep` in TESTANLEITUNG_V0_4 Nr. 30. WP 9: `export_presets.cfg` Windows und Linux (D78), `docs/EXPORT_UND_BAZZITE.md`. Fehler behoben: Lambda auf freigegebene Figur im Schafe-Spiel (Tween statt SceneTreeTimer), Ordner für Bildschirmfotos im Smoke-Test M2. Version 0.4.0.
+Entscheidungen: D66 bis D79; Q09 erledigt; neue offene Fragen Q23 (Ansager-Optik), Q24 (Zerfetzung-Details)
+Getestet: Unit 31/31; compile 117 Dateien, 0 Fehler; m1 50/50; m2 39/39 (sieben Minispiele im Freien Spiel, Ansager spricht); games 12/12. Simulation Computer gegen Computer: Wackelwaben 25 bis 40 s, Heiße Kartoffel ca. 40 s mit 12 bis 14 Weitergaben, Zerfetzung 50 bis 70 s, Riese gegen Zwerge ausgeglichen. Bildschirmfotos: Splitscreen mit vier Ego-Ansichten, Ansager-Sprechblase. Exporte Windows und Linux erzeugt, Linux-Export startet und durchläuft den Messmodus. Nicht prüfbar: Klang, Vibration, echte Bildrate, Controller, Bazzite.
+Probleme / Bekannte Fehler: Im headless Smoke-Test mit `--fixed-fps` erscheint gelegentlich die Jolt-Warnung „job system exceeded the maximum number of jobs“ (trat schon vor v0.4 auf, ohne Folgen). Messwerte auf der Radeon 780M fehlen. Zerfetzung rendert vier Ansichten mit Schatten, Bildrate dort besonders prüfen. Haltepunkte 1 und 2 ohne Rückmeldung.
+Nächster Schritt: Leonardo testet nach `docs/TESTANLEITUNG_V0_4.md` (1 bis 30), richtet GitHub ein, misst mit `-- --bench`. Danach neuer Chat mit `docs/prompts/04_patch_v0_5.md`.
+Aktuelle Kopie liegt in: `C:\Users\wad32muj\Agentenraum\partypark` (nach dem Zurückschreiben)
+
+## 2026-10-20: Patch v0.4, WP 1 bis 3 (Feedback, Effekte, Sound), Haltepunkt 1
+
+Agent und Umgebung: Claude (Cowork), Variante B, Godot 4.7.2 headless (Bildschirmfotos mit Vulkan-Software-Renderer)
+Erledigt: Ausgangswert grün (Unit 18/18, compile 78/0, m1 50/50, m2 30/30). Fragerunde: Versionsplan übernommen (D47), neue Spiele Wackelwaben, Heiße Kartoffel und ein Ego-Shooter mit echtem Splitscreen (D48, D49), Ansager mit Brabbelstimme (D50). Spieleabend-Feedback (Q22): Autoscooter mit Tastatur schwer steuerbar, Grafik dürftig, beim Riesen keine Seile sichtbar, Tauziehen etwas langweilig. WP 1: Seile beim Riesen sichtbar gewickelt (`RopeTube`, Ringe außen, Abschütteln fliegt weg, D52), Tauziehen mit Kraftakt (Y), 30 s, mehr Zug, federndes Seil (D53), Computer-Zwerge zögerlicher mit Pausen (D58, Simulation 8 von 16 Zwergsiege), Q13 und Q14 bleiben (D54, D57). Neue `MinigameSandbox` und Smoke-Test `--smoke-games`. WP 2: Effekt-Baukasten `core/fx/` mit Autoload `Fx`, `CameraShaker`, lokalem Hitstop, sechs Partikel-Vorlagen mit Pool und Obergrenze 700, Squash-Impulsen, Option „Bildschirmwackeln“, eingebaut in Figur, MatchFlow (Konfetti) und alle vier Minispiele nach D55/D56. WP 3: Busse Music/Sfx/Voice, Autoload `Sfx`, Generator `tools/sfx_gen.gd` mit 42 selbst erzeugten Geräuschen (inkl. sechs Ansager-Silben), Lautstärkeregler in den Optionen, Geräusche in Menüs, Ablauf und allen Minispielen (D59 bis D62).
+Entscheidungen: D47 bis D65; Q13, Q14, Q16, Q17, Q21 erledigt; Q15 teilweise; Q22 (Feedback) in Arbeit
+Getestet: Unit 23/23; compile 96 Dateien, 0 Fehler; m1 50/50; m2 32/32 (neu: Bildschirmwackeln umschalten); games 9/9 (alle Spiele, Partikel-Obergrenze, Wackeln, Geräusche vorhanden). Bildschirmfotos: Seile am Riesen, Kraftbalken im Tauziehen, Partikel im Autoscooter sichtbar. Klang, Vibration, Bildrate und Controller nur bei Leonardo prüfbar.
+Probleme / Bekannte Fehler: Computer gegen Computer sind Runden kurz (Riese 10 bis 35 s, Schafe teils unter 30 s); Kraftakt im Tauziehen bei Computern sehr häufig (Platzhalter 4 Synchrontakte). Autoscooter-Steuerung unverändert bis zum Controllertest (D51).
+Nächster Schritt: Haltepunkt 1, Leonardo testet nach `docs/TESTANLEITUNG_V0_4.md` Teil 1. Danach WP 4 (Ansager).
+Aktuelle Kopie liegt in: `C:\Users\wad32muj\Agentenraum\partypark` (nach dem Zurückschreiben)
+
+## 2026-10-20: Bestandsaufnahme und Versionsplan bis v1.0
+
+Agent und Umgebung: Claude (Cowork), nur Doku, kein Code geändert
+Erledigt: Stand gesichtet (M1 bis M3, Menüs, 4 Minispiele, 18 Unit-Tests, Smoke-Tests, Godot 4.7.2). Recherche bei Partyspielen und genrefremden Spielen. ROADMAP um einen Versionsplan v0.4 bis v1.0 erweitert (Spieleabend, Mehr Chaos, Der Park, Party-Joker, Rettet den Park, Für alle, Eröffnung). GAME_DESIGN: Schnellbau-Liste 9.5 (4 Spiele), 18 neue Minispielideen in 9.6, neue Formate, Ideenspeicher für Funktionen (Abschnitt 12), Parkrundfahrt als Hybrid-Vorschlag für Q01. Neue offene Fragen Q16 bis Q21. Prompt für den nächsten Patch: `docs/prompts/03_patch_v0_4.md`.
+Entscheidungen: keine; alles als Vorschlag markiert
+Getestet: nichts (nur Doku)
+Probleme / Bekannte Fehler: Spieleabend (ROADMAP 3.6) noch nicht zurückgemeldet.
+Nächster Schritt: Neuer Chat mit `docs/prompts/03_patch_v0_4.md`.
+Aktuelle Kopie liegt in: `C:\Users\wad32muj\Agentenraum\partypark`
+
+## 2026-10-20: Startfehler „Could not find type MinigameInfo“ behoben
+
+Agent und Umgebung: Claude (Cowork), Variante B
+Erledigt: Leonardo meldete, dass das Spiel nach dem Zurückschreiben von M2/M3 nicht startete (Autoload `MinigameRegistry` und Titelbildschirm fanden die neuen Klassen nicht). Ursache: Der Klassen-Cache `.godot/global_script_class_cache.cfg` im Ordner stammte noch vom Stand M1, weil die neuen Dateien von außen kamen und der Editor noch nicht neu gescannt hatte. Aktuellen Cache aus der Cloud-Kopie in den Ordner geschrieben; Vorgehen in `CLAUDE.md` (Variante B, Schritt 5) ergänzt.
+Entscheidungen: keine
+Getestet: Cache-Inhalt geprüft (36 Klassen); Start bei Leonardo steht aus.
+Probleme / Bekannte Fehler: Ist der Editor beim Zurückschreiben geöffnet, kann er den alten Cache wieder speichern. Dann im Editor „Projekt → Aktuelles Projekt neu laden“.
+Nächster Schritt: wie im Eintrag darunter.
+Aktuelle Kopie liegt in: `C:\Users\wad32muj\Agentenraum\partypark`
+
 ## 2026-10-19: Menüs, Schnellturnier, Freies Spiel und vier Minispiele (M2, M3)
 
 Agent und Umgebung: Claude (Cowork), Variante B, Tests mit Godot 4.7.2 (Leonardo nutzt 4.7, D41)

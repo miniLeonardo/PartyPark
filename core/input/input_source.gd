@@ -9,6 +9,8 @@ var key: String = ""
 var _down: Dictionary[StringName, bool] = {}
 var _prev: Dictionary[StringName, bool] = {}
 var _move: Vector2 = Vector2.ZERO
+## Zweiter Stick zum Umsehen (Ego-Spiele), Länge 0 bis 1.
+var _aim: Vector2 = Vector2.ZERO
 ## Tasten, die seit dem letzten poll() gedrückt wurden (auch wenn schon wieder losgelassen).
 var _latched: Dictionary[StringName, bool] = {}
 
@@ -22,6 +24,7 @@ func poll() -> void:
 		_down[action] = buttons.get(action, false) or _latched.get(action, false)
 	_latched.clear()
 	_move = _read_move().limit_length(1.0)
+	_aim = _read_aim().limit_length(1.0)
 	_down[InputBindings.NAV_UP] = _move.y < -InputBindings.NAV_THRESHOLD
 	_down[InputBindings.NAV_DOWN] = _move.y > InputBindings.NAV_THRESHOLD
 	_down[InputBindings.NAV_LEFT] = _move.x < -InputBindings.NAV_THRESHOLD
@@ -34,6 +37,7 @@ func reset() -> void:
 	_prev = {}
 	_latched.clear()
 	_move = Vector2.ZERO
+	_aim = Vector2.ZERO
 
 
 ## Merkt einen Tastendruck aus einem Eingabe-Ereignis vor, damit sehr kurze Drücke
@@ -46,6 +50,21 @@ func latch_event(event: InputEvent) -> void:
 ## Bewegung, Länge 0 bis 1. y negativ heißt nach oben bzw. vom Bildschirm weg.
 func get_move() -> Vector2:
 	return _move
+
+
+## Umsehen mit dem rechten Stick. x positiv = nach rechts, y positiv = nach unten.
+func get_aim() -> Vector2:
+	return _aim
+
+
+## Hat die Quelle einen zweiten Stick? Sonst drehen Ego-Spiele mit links/rechts (Tastatur-Debug).
+func has_aim_stick() -> bool:
+	return false
+
+
+## Beschriftung der Umsehen-Eingabe, z. B. „rechter Stick“.
+func get_aim_label() -> String:
+	return "rechter Stick" if has_aim_stick() else "%s links/rechts drehen" % get_move_label()
 
 
 func is_down(action: StringName) -> bool:
@@ -109,6 +128,11 @@ func _actions_for_event(_event: InputEvent) -> Array[StringName]:
 ## Unterklassen liefern den Rohzustand der Tasten.
 func _read_buttons() -> Dictionary[StringName, bool]:
 	return {}
+
+
+## Unterklassen liefern den Rohzustand des zweiten Sticks.
+func _read_aim() -> Vector2:
+	return Vector2.ZERO
 
 
 ## Unterklassen liefern den Rohzustand der Bewegung.

@@ -110,10 +110,20 @@ func _round_process(delta: float) -> void:
 		if _in_pen(animal.global_position):
 			count += 1
 	if count != in_pen:
+		if count > in_pen:
+			Fx.burst(&"stars", PEN_ENTRANCE + Vector3.UP * 1.0)
+			Sfx.play(&"sheep_in", PEN_ENTRANCE)
 		in_pen = count
 		_update_hud()
 	if in_pen >= sheep_needed:
 		finish(MinigameResult.coop(context.indices(), true))
+
+
+## Knapp: in den letzten 10 Sekunden geschafft oder um höchstens zwei Schafe verpasst.
+func was_close() -> bool:
+	if in_pen >= sheep_needed:
+		return time_left() < 10.0
+	return in_pen >= sheep_needed - 2
 
 
 func _on_time_up() -> void:
@@ -139,14 +149,18 @@ func _handle_barks(delta: float) -> void:
 			continue
 		_bark_ready_in[index] = bark_cooldown
 		_spawn_bark_ring(player.global_position, player.slot.color)
+		Fx.burst(&"dust", player.global_position + Vector3.UP * 0.2, Color(0, 0, 0, 0), 0.7)
+		Fx.squash(player, 0.6)
+		Sfx.play(&"bark", player.global_position)
 		for animal: Sheep in sheep:
 			var d: float = animal.global_position.distance_to(player.global_position)
 			if d < bark_radius:
 				animal.scare(player.global_position, bark_strength * (1.0 - d / bark_radius) + 2.0)
 		player.set_tag_text("Wuff!")
-		get_tree().create_timer(0.5).timeout.connect(func() -> void:
-			if is_instance_valid(player):
-				player.set_tag_text(player.slot.get_tag()))
+		# An die Figur gebundener Tween, damit nichts nachläuft, wenn das Minispiel endet
+		var tween: Tween = player.create_tween()
+		tween.tween_interval(0.5)
+		tween.tween_callback(func() -> void: player.set_tag_text(player.slot.get_tag()))
 
 
 func _spawn_bark_ring(at: Vector3, color: Color) -> void:
@@ -234,6 +248,7 @@ func _update_wolf(delta: float) -> void:
 				_set_wolf_active(true)
 				wolf.global_position = Vector3(FIELD_HALF.x - 1.0 if rng.randf() < 0.5 else -FIELD_HALF.x + 1.0, 0.3, 8.0)
 				hud.show_message("Ein Wolf kommt!", 1.5)
+				Sfx.play(&"wolf_howl", wolf.global_position)
 		"hunting":
 			var target: Vector3 = Vector3(0, 0, -7)
 			var best: float = INF
@@ -262,6 +277,7 @@ func _update_wolf(delta: float) -> void:
 				_set_wolf_active(true)
 				wolf.global_position = Vector3(FIELD_HALF.x - 1.0 if rng.randf() < 0.5 else -FIELD_HALF.x + 1.0, 0.3, 8.0)
 				hud.show_message("Der Wolf ist zurück!", 1.2)
+				Sfx.play(&"wolf_howl", wolf.global_position)
 
 
 func _set_wolf_active(active: bool) -> void:
@@ -279,6 +295,8 @@ func _on_wolf_chased() -> void:
 	# Flucht über den Zaun: kurz ohne Kollision
 	(wolf.get_child(0) as CollisionShape3D).set_deferred("disabled", true)
 	hud.show_message("Wolf verjagt!", 1.2)
+	Fx.burst(&"stars", wolf.global_position + Vector3.UP * 0.8)
+	Sfx.play(&"wolf_yelp", wolf.global_position)
 
 
 # --- Computergegner ---

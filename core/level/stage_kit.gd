@@ -25,7 +25,8 @@ static func add_environment(parent: Node) -> void:
 	var sun := DirectionalLight3D.new()
 	sun.rotation_degrees = Vector3(-55.0, -35.0, 0.0)
 	sun.light_energy = 1.1
-	sun.shadow_enabled = true
+	sun.shadow_enabled = Settings.shadows_enabled()
+	sun.add_to_group(Settings.STAGE_LIGHTS_GROUP)
 	sun.directional_shadow_max_distance = 60.0
 	parent.add_child(sun)
 

@@ -40,6 +40,7 @@ func _physics_process(_delta: float) -> void:
 		State.LIST:
 			for source: InputSource in humans:
 				if source.just_pressed(InputBindings.BACK):
+					Sfx.play_ui(&"ui_back")
 					set_physics_process(false)
 					Game.goto_main_menu()
 					return
@@ -122,6 +123,7 @@ func _update_teams(_humans: Array[InputSource]) -> void:
 			continue
 		var source: InputSource = slot.source
 		if source.just_pressed(InputBindings.BACK):
+			Sfx.play_ui(&"ui_back")
 			_enter_list()
 			return
 		if source.just_pressed(InputBindings.CONFIRM):

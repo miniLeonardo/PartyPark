@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="MinigameInfo" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/minigame/minigame_info.gd" id="1_info"]
+
+[resource]
+script = ExtResource("1_info")
+id = &"hot_potato"
+display_name = "Heiße Kartoffel"
+formats = Array[int]([1])
+min_players = 2
+max_players = 4
+duration_sec = 60.0
+goal_text = "Wer die Bombe hat, schubst sie einem anderen zu. Die Lunte brennt unterschiedlich lang: Wer sie beim Knall hält, ist raus. Wer zuletzt übrig ist, gewinnt."
+controls = {
+"move": "Laufen",
+"jump": "Springen",
+"push": "Schubsen (Bombe weitergeben)"
+}
+solo_goal_text = ""
+solo_controls = {}
+solo_role_name = ""
+team_role_name = ""
+scene_path = "res://minigames/hot_potato/hot_potato.tscn"

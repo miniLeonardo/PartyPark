@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="MinigameInfo" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/minigame/minigame_info.gd" id="1_info"]
+
+[resource]
+script = ExtResource("1_info")
+id = &"hex_fall"
+display_name = "Wackelwaben"
+formats = Array[int]([1])
+min_players = 2
+max_players = 4
+duration_sec = 90.0
+goal_text = "Jede Wabe, die du betrittst, wackelt kurz und fällt. Bleib in Bewegung, fall durch die Ebenen, aber nicht ins Wasser! Wer zuletzt noch steht, gewinnt."
+controls = {
+"move": "Laufen",
+"jump": "Springen",
+"push": "Schubsen"
+}
+solo_goal_text = ""
+solo_controls = {}
+solo_role_name = ""
+team_role_name = ""
+scene_path = "res://minigames/hex_fall/hex_fall.tscn"

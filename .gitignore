@@ -20,3 +20,10 @@ desktop.ini
 .mono/
 data_*/
 mono_crash.*.json
+
+# Godot-Programmdateien, falls sie im Projektordner liegen (gehören nicht ins Repository)
+Godot_v*.exe
+Godot_v*.x86_64
+
+# Ablage von Claude-Ausgaben
+Claude outputs/

@@ -47,6 +47,10 @@ func setup(ctx: MinigameContext, p_info: MinigameInfo) -> void:
 	_after_setup()
 
 
+func _exit_tree() -> void:
+	Fx.clear()
+
+
 func start_round() -> void:
 	running = true
 	elapsed = 0.0

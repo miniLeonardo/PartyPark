@@ -65,15 +65,19 @@ func _physics_process(_delta: float) -> void:
 			continue
 		var source: InputSource = slot.source
 		if source.just_pressed(InputBindings.BACK) or source.just_pressed(InputBindings.PAUSE):
+			Sfx.play_ui(&"ui_back")
 			Game.resume()
 			return
 		if source.just_pressed(InputBindings.NAV_UP):
 			selected = wrapi(selected - 1, 0, ITEMS.size())
+			Sfx.play_ui(&"ui_move")
 			_refresh()
 		elif source.just_pressed(InputBindings.NAV_DOWN):
 			selected = wrapi(selected + 1, 0, ITEMS.size())
+			Sfx.play_ui(&"ui_move")
 			_refresh()
 		elif source.just_pressed(InputBindings.CONFIRM):
+			Sfx.play_ui(&"ui_confirm")
 			_activate(selected)
 			return
 
