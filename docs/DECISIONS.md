@@ -104,6 +104,7 @@ Spalte „Von“: **L** = Leonardo, **KI** = technische Entscheidung eines Agent
 | D95 | 2026-10-21 | Steuerung: Trigger (RT / R2) für Primäraktionen (Gas/Boost in Autoscooter, Schuss in Zerfetzung, Scheuchen in Schafe hüten); A bleibt Bestätigen/Springen, B Zurück/Aktion | ergonomischeres Gefühl am Gamepad, Standard für Fahr- und Schießaktionen | L |
 | D96 | 2026-10-21 | Schafe hüten Gameplay-Überarbeitung: Komplexere Aufgaben, Schafarten (z. B. störrischer Widder, Gold-Schaf) und Arena-Mechaniken für mehr Dynamik | Feedback „zu langweilig“, braucht mehr Spieltiefe | L |
 | D97 | 2026-10-21 | Tastensymbole aus kenney_input-prompts in Menüs und HUD grafisch einbinden (WP 8) | Text-Platzhalter wie [A] durch saubere Controller-Grafiken ersetzen | L |
+| D98 | 2026-10-21 | Q01 entschieden: Kein Brettspiel (Idee verworfen). Stattdessen 3D-Lobby-Areal (Freizeitpark-Hub) als Brücke zwischen Minispielen mit spaßiger Bewegung und spielerischen Elementen (z. B. schwieriges Jump'n'Run) | Wunsch von Leonardo: mehr Action und Bewegungsspaß statt Würfel-Runden | L |
 
 ## Offene Fragen
 
@@ -111,7 +112,7 @@ Beim Klären in die Tabelle oben übernehmen und hier als erledigt markieren.
 
 | ID | Frage | Wann klären | Status |
 |---|---|---|---|
-| Q01 | Herzstück langfristig: Freizeitpark-Hub oder Brettspiel? | vor Phase 4 | offen |
+| Q01 | Herzstück langfristig: Freizeitpark-Hub oder Brettspiel? | vor Phase 4 | erledigt (D98) |
 | Q02 | Welche Spielfigur (Tier, Kartoffel, Roboter, Männchen …) und wie wackelig/physikalisch? | Beginn Prototyp | erledigt (D15, D16) |
 | Q03 | Thema und Grafikstil (Low-Poly mit Kenney/Quaternius vorgeschlagen) | Beginn Prototyp | erledigt (D17) |
 | Q04 | Tastenbelegung der abstrakten Aktionen | Beginn Prototyp | erledigt (D18) |

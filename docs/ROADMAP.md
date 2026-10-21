@@ -125,17 +125,17 @@ Ziel: Doppelt so viele Spiele, und niemand sitzt mehr untätig herum.
 | 6.5 | Rundenstatistik und Bonustitel am Turnierende („Meiste Schubser“, „Pechvogel“, „Taktgefühl“), auf Wunsch mit Bonuspunkten | Mario-Party-Bonussterne | offen |
 | 6.6 | Finale: letzte Runde doppelte Punkte, bei Gleichstand Duell im neuen Format 1 gegen 1 | Mario Party „Letzte 5 Runden“ | offen |
 
-### v0.7 „Der Park“ (Herzstück, Q01)
+### v0.7 „Der Park“ (Herzstück, Q01 entschieden D98)
 
-Ziel: Ein Abendmodus mit Spannungsbogen, der über einzelne Minispiele hinausgeht. Baut auf der Park-Kulisse aus v0.5 auf.
+Ziel: Ein interaktives 3D-Lobby-Areal im Freizeitpark, das als nahtlose Brücke zwischen den Minispielen dient. Voller Bewegungsspaß, Platforming-Spielereien und einem fordernden Jump'n'Run. Baut auf der Park-Kulisse aus v0.5 auf.
 
 | Nr | Aufgabe | Inspiration | Status |
 |---|---|---|---|
-| 7.1 | Q01 entscheiden. Vorschlag Hybrid „Parkrundfahrt“: Brettspiel, dessen Brett ein begehbarer Low-Poly-Freizeitpark ist (Achterbahnschienen als Wege, Attraktionen als Ereignisfelder); Tickets als Währung, Goldene Eintrittskarte als Siegpunkt | Mario Party, Nintendo Land | offen |
-| 7.2 | Ereignisfelder: Wartungsarbeiten sperren Wege, Parade schiebt alle weiter, Riesenrad tauscht Plätze, Glücksrad, Fotoautomat | | offen |
-| 7.3 | Gegenstände im Kiosk: Doppelwürfel, Abkürzungs-Pass, Greifarm (Ticket klauen), Regenschirm (Schutz) | Mario Party | offen |
-| 7.4 | Brett-Kamera, Würfel, Zugreihenfolge, Speichern und Fortsetzen eines Abends | | offen |
-| 7.5 | Regelvarianten: Schnelle Runde (10 Züge), Tag-Team (2er-Teams teilen Tickets) | Jamboree TV (Frenzy, Tag-Team) | offen |
+| 7.1 | Q01 entschieden (D98): 3D-Freizeitpark-Lobby als interaktiver Hub zwischen Minispielen statt Brettspiel | Mario 64 Schlossgarten, Nintendo Land Plaza, Fall Guys Lobby | offen |
+| 7.2 | Bewegungs- & Platforming-Spielplatz: Trampoline, Rutschen, bewegliche Hindernisse, Rempler-Zonen | Fall Guys, A Hat in Time | offen |
+| 7.3 | Forderndes Jump'n'Run (Parkour / Turm): Knifflige Sprungpassagen mit Belohnung an der Spitze (Aussichtspunkt, Krone, Sound) | Mario Sunshine Klettergerüste, Roblox Obby | offen |
+| 7.4 | Minispiel-Stationen: Attraktionen im Park mit Anmelde-Podesten („Drücke A für Start“); Turniermodus führt von Station zu Station | Mario Party Hub, Nintendo Land | offen |
+| 7.5 | Hub-Kamera, Parkbesucher (Kenney Mini Characters) und Rummelplatz-Atmosphäre | | offen |
 
 ### v0.8 „Party-Joker“
 
