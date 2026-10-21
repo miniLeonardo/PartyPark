@@ -6,10 +6,14 @@ extends Node
 
 var _failures: int = 0
 var _checks: int = 0
+var _shot_dir: String = ""
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	for arg: String in OS.get_cmdline_user_args():
+		if arg.begins_with("--shots="):
+			_shot_dir = arg.trim_prefix("--shots=")
 	_run.call_deferred()
 
 
@@ -100,6 +104,12 @@ func _run() -> void:
 	await _frames(3)
 	_check(p1.global_position.y >= -1.0, "Absturz-Sicherung: Spieler wird nach Fall unter kill_height sicher respawnt")
 
+	if not _shot_dir.is_empty():
+		DirAccess.make_dir_recursive_absolute(_shot_dir)
+		p1.global_position = Vector3(0, 0.4, 4.0)
+		await _frames(15)
+		await _shot("01_hub_plaza")
+
 	# Trampolin-Sprungfunktion testen (D103)
 	var tramp: HubTrampoline = terrain.get_node("Playground/TrampolineEast") as HubTrampoline
 	p1.global_position = tramp.global_position + Vector3(0, 1.5, 0)
@@ -107,7 +117,54 @@ func _run() -> void:
 	await _frames(5)
 	_check(p1.velocity.y > 10.0, "Trampolin: Dynamischer Katapult-Impuls nach unten gerichtetem Fall aktiv")
 
+	# Kletterturm, Siegerkrone & Konfetti-Buzzer testen (D100, D107, D108)
+	var tower: HubTower = terrain.get_node_or_null("Playground/ClimbingTower") as HubTower
+	_check(tower != null, "Kletterturm (HubTower) im Park vorhanden")
+	if tower != null:
+		_check(tower.crown != null and tower.crown is HubCrown, "Siegerkrone auf der Turmspitze vorhanden")
+		_check(tower.buzzer != null and tower.buzzer is HubConfettiBuzzer, "Konfetti-Buzzer auf der Turmspitze vorhanden")
+
+		if not _shot_dir.is_empty():
+			p1.global_position = Vector3(0, 0.4, -22.0)
+			await _frames(15)
+			await _shot("02_hub_tower")
+
+		# Krone aufsetzen
+		p1.global_position = tower.crown.global_position
+		await _frames(5)
+		_check(tower.crown.current_state == HubCrown.State.WORN and tower.crown.wearer == p1, "Siegerkrone: Spieler 1 setzt die Krone beim Erreichen auf")
+
+		if not _shot_dir.is_empty():
+			await _frames(15)
+			await _shot("03_hub_summit_crown")
+
+		# Schubser -> Krone fliegt als Physik-Item ab (D108)
+		var p2: Player = hub.players[1]
+		tower.crown.drop_from_push(p2)
+		await _frames(3)
+		_check(tower.crown.current_state == HubCrown.State.DROPPED and tower.crown._velocity.length() > 5.0, "Siegerkrone: Springt bei Schubser als Physik-Item mit Bogenflug ab")
+
+		# Buzzer auslösen
+		p1.global_position = tower.buzzer.global_position
+		await _frames(5)
+		_check(tower.buzzer._cooldown > 0.0, "Konfetti-Buzzer: Löst bei Betreten der Turmspitze aus")
+
+	if not _shot_dir.is_empty():
+		p1.global_position = Vector3(32.0, 0.4, 0.0)
+		await _frames(15)
+		await _shot("04_hub_rummel_carousel")
+		p1.global_position = Vector3(-32.0, 0.4, 6.0)
+		await _frames(15)
+		await _shot("05_hub_playground_slide")
+
 	_finish()
+
+
+func _shot(file_name: String) -> void:
+	await RenderingServer.frame_post_draw
+	var img: Image = get_viewport().get_texture().get_image()
+	img.save_png(_shot_dir.path_join(file_name + ".png"))
+	print("SHOT %s" % file_name)
 
 
 func _check(condition: bool, description: String) -> void:

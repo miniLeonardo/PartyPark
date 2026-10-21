@@ -477,3 +477,9 @@ static func _build_playground(parent: Node3D) -> void:
 	tower_lift.platform_size = Vector3(2.8, 0.35, 2.8)
 	tower_lift.platform_color = Color("#ebd8b0")
 	playground.add_child(tower_lift)
+
+	# 8. Kletterturm & Parkour in der Nord-Zone (D100, D107, D108)
+	var tower := HubTower.new()
+	tower.name = "ClimbingTower"
+	tower.position = Vector3(0.0, 0.2, -36.0)
+	playground.add_child(tower)

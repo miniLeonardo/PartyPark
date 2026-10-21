@@ -113,6 +113,8 @@ Spalte „Von“: **L** = Leonardo, **KI** = technische Entscheidung eines Agent
 | D104 | 2026-10-21 | Rutsch-Mechanik: Reine Null-Reibungs-Gleitfläche mit Trägheitsphysik; Figur beschleunigt hangabwärts und muss aktiv per Stick gesteuert werden | Anspruchsvoller und dynamischer Bewegungsspaß | L |
 | D105 | 2026-10-21 | Karussell & Drehscheiben: Kontinuierliche Rotation mit spürbarer Fliehkraft, die Spieler nach außen drängt | Erzeugt heitere Rempler-Duelle im Rummel-Bereich | L (Empfehlung angenommen) |
 | D106 | 2026-10-21 | Bewegliche Plattformen: Vielfältiger Mix aus physikalischen Wippen (Gewichtsreaktion), Schwebeliften und horizontalen Pendeln | Bietet abwechslungsreiche Platforming-Elemente in der Spielplatz-Zone | L (Empfehlung angenommen) |
+| D107 | 2026-10-21 | Kletterturm-Schwierigkeit: Knackig fordernder Parkour mit schmalen Balken und vertikalen Sprüngen, abgesichert durch Sicherheitsnetze alle 6 Höhenmeter | Verlangt gutes Sprungtiming und verhindert frustrierende Abstürze bis ganz nach unten | L (Empfehlung angenommen) |
+| D108 | 2026-10-21 | Siegerkrone-Verhalten: Krone schwebt auf der Turmspitze; wird sie getragen und der Spieler geschubst, springt sie als Physik-Item mit Bogenflug ab, prallt am Boden ab und kann von jedem neu aufgesammelt werden | Sorgt für chaotische, spannende Gerangel um die Krone | L |
 
 ## Offene Fragen
 

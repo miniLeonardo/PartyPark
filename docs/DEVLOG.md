@@ -13,6 +13,17 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-10-21: Patch v0.7 „Der Park“ – WP 3 & Haltepunkt 1 erreicht
+
+Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
+Erledigt: Fragerunde zu Kletterturm-Schwierigkeit und Kronen-Mechanik durchgeführt und Entscheidungen D107 und D108 in `docs/DECISIONS.md` festgehalten (D107: knackiger Parkour mit Sicherheitsnetzen alle 6 Höhenmeter; D108: Siegerkrone schwebt auf der Spitze und springt bei Schubsern als Physik-Item mit weitem Bogenflug ab). Implementierungsplan für WP 3 vorgelegt. WP 3 (ROADMAP 7.3) umgesetzt: Kletterturm in `modes/hub/tower/` (`tower.gd`, `crown.gd`, `confetti_buzzer.gd`) mit 20 Metern Höhe am Ende des Nord-Boulevards errichtet. 3 Passagen (Spiral-Holzbalken mit Trampolin, rotierende Drehkreuze mit Schwebestufen, dünne Balancier-Pfähle mit Launchpad), 2 Zwischen-Plattformen mit Auffangnetzen, Aussichtsplattform mit Baldachin-Dach, schwebender Siegerkrone und großem Konfetti-Buzzer. Haltepunkt 1 erreicht: 5 Screenshots in 1280x720 Forward+ gerendert (`docs/screenshots/v0_7/hub/`), Schnellstart über `.\Godot_v4.7.2-stable_win64_console.exe --hub` bereit für Leonardos Probesprung.
+Entscheidungen: D107, D108
+Getestet: Unit-Tests 31/31; compile_smoke 141/0; smoke-hub 37/37 (inkl. Kronenraub, Physikflug und Buzzer-Test); smoke-m1 50/50; smoke-m2 39/39; 5 Screenshots erfolgreich gerendert; asset_audit erfolgreich.
+Probleme / Bekannte Fehler: keine.
+Nächster Schritt: WP 4 (Attraktions-Portale & Minispiel-Einstieg: Stationen für alle Minispiele, Schnellturnier-Bude, Aktivierungs-Zonen nach D101).
+Aktuelle Kopie liegt in: Git-Repo `https://github.com/sudoMrMCaffe/PartyPark.git` und lokal in `c:\Users\VM\Desktop\PartyPark`
+
+
 ## 2026-10-21: Patch v0.7 „Der Park“ – WP 2 abgeschlossen
 
 Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
