@@ -37,9 +37,9 @@ Die Minispiele bilden einen gemeinsamen Pool. Darüber liegen Spielarten, die de
 | Schnellturnier | 5 oder 10 zufällige Minispiele, 3/2/1/0 Punkte, Siegerehrung (D31, D32) | gebaut |
 | Freizeitpark-Hub | begehbares 3D-Gelände, Attraktionen sind Minispiele (wie Nintendo Land). Passt zum Namen Partypark | Vorschlag |
 | Brettspiel | Würfeln, Felder, Münzen, Sterne, Feldfarben bestimmen das Teamformat (wie Mario Party) | Idee, später |
-| Koop-Kampagne | Abfolge von 4vCPU-Spielen mit wiederkehrendem Endboss | Idee, später (ROADMAP v0.8) |
-| Parkrundfahrt | Hybrid aus Hub und Brettspiel: Das Brett ist ein begehbarer Freizeitpark, Schienen sind Wege, Attraktionen Ereignisfelder | Vorschlag für Q01 (ROADMAP v0.6) |
-| Mikrospiel-Marathon | Serien aus 3-Sekunden-Spielen, immer schneller (WarioWare-Prinzip) | Idee (ROADMAP v0.7) |
+| Koop-Kampagne | Abfolge von 4vCPU-Spielen mit wiederkehrendem Endboss | Idee, später (ROADMAP v0.9) |
+| Parkrundfahrt | Hybrid aus Hub und Brettspiel: Das Brett ist ein begehbarer Freizeitpark, Schienen sind Wege, Attraktionen Ereignisfelder | Vorschlag für Q01 (ROADMAP v0.7) |
+| Mikrospiel-Marathon | Serien aus 3-Sekunden-Spielen, immer schneller (WarioWare-Prinzip) | Idee (ROADMAP v0.8) |
 | Freies Spiel | einzelnes Minispiel wählen, Teams selbst festlegen (D40) | gebaut |
 
 **Offene Frage:** Was ist langfristig das Herzstück, Hub oder Brettspiel?
@@ -67,10 +67,13 @@ Eine gemeinsame Figur für alle Minispiele, damit Steuerung und Animationen nur 
 
 Entschieden: eigene runde Knubbelfigur, ganzer Körper in Spielerfarbe, präzise Steuerung mit optischem Wackeln. In Teamformaten zusätzlich ein farbiger Ring unter den Füßen (Q14).
 
-## 8. Grafik- und Tonstil (Thema entschieden, D17)
+## 8. Grafik- und Tonstil (Thema entschieden, D17; Ausarbeitung in v0.5)
 
-Vorschlag: einheitlicher Low-Poly-Stil mit freien Paketen von Kenney und Quaternius (CC0), kräftige Farben, jede Spielerfarbe klar unterscheidbar (auch für Farbsehschwäche prüfen). Thema und Tonalität sind offen.
-Wichtig: Performance muss stimmen, das Spiel muss auf einer Integrierten Radeon 780m mit 60fps laufen
+Thema Freizeitpark, Low-Poly, kräftige Farben, jede Spielerfarbe klar unterscheidbar (auch für Farbsehschwäche prüfen). Die genaue Stilrichtung (Licht, Palette, Materialien, Umrisslinien) wird in v0.5 anhand gerenderter Stilproben festgelegt (Q25) und dann in `docs/ART_GUIDE.md` verbindlich beschrieben. Freie Asset-Quellen mit Lizenzen stehen in `docs/ASSET_QUELLEN.md`; fremde Modelle werden farblich und stofflich an den eigenen Stil angepasst, damit nichts nach Baukasten aussieht.
+
+Wichtig: Performance muss stimmen, das Spiel muss auf einer integrierten Radeon 780M mit 60 fps laufen.
+
+Klang: weich-comichaft, selbst erzeugt (D59).
 
 ## 9. Minispiel-Pool (Ideen, alle noch Vorschlag)
 
@@ -174,6 +177,19 @@ Zusätzlich in v0.4 gebaut: **Zerfetzung** `blaster_brawl` (FFA, Ego-Sicht mit S
 | Saboteur | Koop-Aufgabe, einer sabotiert heimlich, Rolle per Vibrationsmuster, Abstimmung am Ende | Among Us |
 | Alle gegen alle in Wellen | Überleben, Ausgeschiedene spielen im Rache-Modus weiter | Jamboree „Koopathlon“, Tetris 99 |
 
+### 9.7 Schießspiele und weitere Ideen (2026-10-21, alle Vorschlag)
+
+Zerfetzung (D72) ist das erste Schießspiel, weitere sollen folgen. Gemeinsame Basis: `ShooterAbility`, `SplitScreen` (nur bei Ego-Sicht, D76) und die Spielzeug-Blaster aus dem Kenney Blaster Kit (`docs/ASSET_QUELLEN.md`, Abschnitt A). Comichaft, bunt, keine realistischen Waffen ohne Rücksprache.
+
+| ID | Name | Format | Idee | Ansicht |
+|---|---|---|---|---|
+| target_rally | Zielscheiben-Rallye | FFA | Klappziele, Ballons und bewegliche Pappfiguren auf einer Schießbude; Bonusziele, Fehlschüsse auf „Oma-Figuren“ kosten Punkte | Draufsicht mit Fadenkreuz je Spieler, kein Splitscreen |
+| paint_fort | Farbbeutel-Fort | 2v2 | Jedes Team verteidigt eine Hüpfburg-Festung, Treffer färben den Gegner ein, Fahne klauen | Draufsicht |
+| ghost_blasters | Geisterjäger | 1v3 | Drei Jäger mit Lichtblastern gegen einen unsichtbaren Geist, der nur im Lichtkegel kurz sichtbar wird (Ausbau von `ghost_house`) | Draufsicht |
+| robot_invasion | Roboter-Invasion | 4vCPU | Wellen von Spielzeugrobotern stürmen den Park, Team verteidigt Fahrgeschäfte, Upgrades zwischen Wellen | Draufsicht oder Splitscreen |
+| water_duel | Wasserpistolen-Duell | Duell 1v1 | Finale/Gleichstand: beide stehen auf Wippen, wer den anderen runterspritzt, gewinnt | Seitenansicht |
+| minigolf_chaos | Minigolf-Chaos | FFA | Alle spielen gleichzeitig auf einer Bahn, Bälle können sich gegenseitig wegschießen, Hindernisse aus dem Kenney Minigolf Kit | Draufsicht |
+
 ## 10. Vertical Slice für den ersten Prototyp (entschieden, D30, gebaut)
 
 Je ein Spiel pro Format, im Schnellturnier spielbar:
@@ -193,14 +209,14 @@ Bildschirmwackeln, kurze Freeze-Frames bei Treffern, übertriebene Ragdoll- oder
 
 | Idee | Beschreibung | Inspiration | Version |
 |---|---|---|---|
-| Rache-Modus | Ausgeschiedene schweben als Geister am Rand und stören mit kleinen Würfen | Bomberman, Mario Kart Battle | v0.5 |
-| Joker-Karten | Letztplatzierter wählt vor der Runde 1 aus 3 Regeländerungen | Balatro, Hades, Baba Is You | v0.7 |
-| Wiederholung | Entscheidender Moment aus anderer Perspektive in Zeitlupe | Sport, Rocket League | v0.5 |
-| Bonustitel | Statistik-Titel am Turnierende („Pechvogel“, „Schubskönig“) | Mario Party | v0.5 |
+| Rache-Modus | Ausgeschiedene schweben als Geister am Rand und stören mit kleinen Würfen | Bomberman, Mario Kart Battle | v0.6 |
+| Joker-Karten | Letztplatzierter wählt vor der Runde 1 aus 3 Regeländerungen | Balatro, Hades, Baba Is You | v0.8 |
+| Wiederholung | Entscheidender Moment aus anderer Perspektive in Zeitlupe | Sport, Rocket League | v0.6 |
+| Bonustitel | Statistik-Titel am Turnierende („Pechvogel“, „Schubskönig“) | Mario Party | v0.6 |
 | Brabbelstimme | Ansager spricht in Silbengeplapper, Sprechblasen mit Witzsprüchen | Animal Crossing | v0.4 |
-| Formatvarianten | Ein Minispiel in mehreren Formaten, vergrößert den Pool günstig | Mario Party Jamboree | v0.5 |
-| Sammelalbum | Hüte und Sticker mit Tickets freischalten | Fall Guys | v0.7 |
-| Vibrations-Geheimnisse | Geheime Rollen oder Hinweise nur über die Vibration des eigenen Controllers | Nintendo Land (zweiter Bildschirm) | v0.7 |
-| Fotoautomat | Nach dem Sieg ein Gruppenfoto mit Posen, Fotos sammeln sich im Album | Freizeitpark-Fotos | v0.6 |
+| Formatvarianten | Ein Minispiel in mehreren Formaten, vergrößert den Pool günstig | Mario Party Jamboree | v0.6 |
+| Sammelalbum | Hüte und Sticker mit Tickets freischalten | Fall Guys | v0.8 |
+| Vibrations-Geheimnisse | Geheime Rollen oder Hinweise nur über die Vibration des eigenen Controllers | Nintendo Land (zweiter Bildschirm) | v0.8 |
+| Fotoautomat | Nach dem Sieg ein Gruppenfoto mit Posen, Fotos sammeln sich im Album | Freizeitpark-Fotos | v0.7 |
 | Online über Steam | „Remote Play Together“ macht lokale Spiele online spielbar, ohne eigenen Netzcode | Steam | v1.0 |
 

@@ -24,6 +24,7 @@ var _hint: Label
 
 
 func _ready() -> void:
+	Look.use_mood(Look.mood_for_progress(0.0))
 	StageKit.add_environment(self)
 	_build_level()
 	_build_hud()

@@ -13,6 +13,46 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-10-21: Übergabe-Prompt an Antigravity mit Rest von v0.5
+
+Agent und Umgebung: Claude (Cowork), nur Doku, kein Spielcode geändert
+Erledigt: Stand geprüft: In der v0.5-Sitzung lief eine frühere Fassung von Prompt 04 (ohne Waffen-Abschnitt und ohne Download-Skript); umgesetzt sind Schritt 0 bis WP 2 (Stil D85, Tageszeiten D86, `core/look/`, ART_GUIDE, Asset-Audit, Coaster Kit in `assets/third_party/`). Version noch 0.4.0. Prompt 05 neu: Teil A Übergabe an Antigravity (Windows-Befehle, Bildschirmfotos mit echter Grafikkarte, Skills, Rückfrageregeln), Teil B Rest von v0.5 (WP 3 bis 10) mit zehn Nachbesserungen: Waffen aus dem Blaster Kit als `core/weapons/` (neues WP 5a), keine Umrisslinien, alle drei Stimmungen je Arena, Draw Calls Wackelwaben und Dreiecke Schafe, Wasser-Spiegelung, Arenathemen Q26 mit Bildern, doppelte Pakete in `_incoming`, Hüte selbst bauen, offene Testpunkte, kein Dateibrücken-Ablauf mehr. Prompt 06 setzt den Abschluss von v0.5 voraus und schlägt mindestens ein Schießspiel vor. Prompt 04 mit Hinweis versehen, ROADMAP (5.5a, Umgebung v0.5), D89.
+Entscheidungen: D89
+Getestet: nichts (nur Doku)
+Probleme / Bekannte Fehler: Haltepunkt 1 von v0.5 ohne formale Rückmeldung zu den Bildern; Testergebnisse v0.4 und Messwerte weiter offen.
+Nächster Schritt: Leonardo committet und pusht den aktuellen Stand, dann in Antigravity `docs/prompts/05_uebergabe_antigravity.md` starten.
+Aktuelle Kopie liegt in: `C:\Users\wad32muj\Agentenraum\partypark`
+
+## 2026-10-21: Patch v0.5, Schritt 0 bis WP 2 (Stil steht), Haltepunkt 1
+
+Agent und Umgebung: Claude (Cowork), Variante B, Godot 4.7.2 headless, Bildschirmfotos mit Vulkan-Software-Renderer (lavapipe) in 1280×720
+Erledigt: Ausgangswerte grün (Unit 31, compile 117, m1 50/50, m2 39/39, games 12/12). Vorher-Bilder aller sieben Minispiele, Titel, Beitritt, Hauptmenü, Testarena, Regeln, Ergebnis und Siegerehrung in `docs/screenshots/v0_5/vorher/`. Alle 20 Pakete in `assets/_incoming/` geprüft (alle CC0, D83). Fragerunde: ohne Testergebnis weiter (D82), alle sieben Arenen (D84). WP 2: Stilproben derselben Szene (Autoscooter-Arena mit Riesenrad, Achterbahn, Zelten, Lichterketten) in drei Stilen und drei Stimmungen; Leonardo wählt Spielzeug-Plastik ohne Umrisslinien (D85) und den Tagesverlauf im Turnier mit Option „Tageszeit“ (D86). Neu: `core/look/` mit `Look` (Umgebung je Stimmung mit AgX, Tiefennebel, Glow, SSAO auf Hoch; Materialien je Stoffart; Figurenmaterial; `restyle()` für fremde Modelle), `ParkProps` (Riesenrad, Zelt, Achterbahn aus Kontrollpunkten, Lichterkette, Fahnenmast, Laterne), `ParkWheel`, Wasser-Shader mit Schaumkante (D87). `StageKit` nutzt den Look, Figur glänzt wie lackiertes Spielzeug. Turnier, Freies Spiel, Siegerehrung, Menüs und Testarena wählen ihre Stimmung. `docs/ART_GUIDE.md` (verbindlich). Vorgezogen aus WP 3: `tools/asset_audit.gd` mit Start über `-- --tool-asset_audit` (D88), Kenney Coaster Kit (Bäume, Buden) in `assets/third_party/`, CREDITS. ROADMAP 5.1 verschoben (D82).
+Entscheidungen: D82 bis D88; Q25 erledigt; Q26 teilweise
+Getestet: Unit 31/31; compile 122 Dateien, 0 Fehler; m1 50/50; m2 39/39; games 12/12. Stilproben und Autoscooter mit neuem Licht als Bild geprüft. Asset-Audit Stand v0.4: Wackelwaben schätzungsweise 608 Draw Calls (über Budget 400), Schafe hüten 147.000 Dreiecke.
+Probleme / Bekannte Fehler: Arenen selbst sind noch die alten Grundformen (kommt in WP 6); große Wasserflächen der alten Arenen spiegeln die Sonne stark. Farbwirkung und Bildrate nur auf Leonardos Rechner prüfbar.
+Nächster Schritt: Haltepunkt 1, Leonardo schaut die Bilder an; danach WP 3 (Asset-Pipeline), WP 4 (Look-Grundlage), WP 5 (Figur).
+Aktuelle Kopie liegt in: `C:\Users\wad32muj\Agentenraum\partypark` (nach dem Zurückschreiben)
+
+## 2026-10-21: Erweiterte Asset-Recherche mit Direktlinks und Download-Skript
+
+Agent und Umgebung: Claude (Cowork), nur Doku und Hilfsskript, kein Spielcode geändert
+Erledigt: `docs/ASSET_QUELLEN.md` neu gegliedert (Waffen, Park und Arenen, einzelne Minispiele, Menü/UI, Texturen und Himmel, Audio, Selbstbau) mit rund 40 geprüften Quellen, Lizenzen und Direktlinks (Kenney, KayKit, Quaternius, Poly Haven, ambientCG, Google Fonts). Neues Skript `tools/download_assets.ps1` lädt alle Pakete mit Direktlink nach `assets/_incoming/<name>/` (Gruppen Basis, Erweitert, Audio). GAME_DESIGN 9.7 mit sechs Schießspiel- und Minigolf-Ideen. Prompts 04 (Vorbereitung per Skript, Blaster für die Zerfetzung, gemeinsame Waffen-Szenen) und 06 angepasst.
+Entscheidungen: keine; alles Vorschlag
+Getestet: Download-Adressen am 2026-10-21 auf den Herstellerseiten geprüft; Skript nicht ausgeführt (keine PowerShell in der Cloud).
+Probleme / Bekannte Fehler: Für Hüte gibt es kein freies Paket mit klarer CC0-Lizenz, Vorschlag: selbst bauen. Kenney kann Download-Adressen ändern, dann von Hand laden.
+Nächster Schritt: Leonardo führt `tools/download_assets.ps1` aus, lädt die itch.io-Pakete und Schriften von Hand, dann neuer Chat mit `docs/prompts/04_patch_v0_5.md`.
+Aktuelle Kopie liegt in: `C:\Users\wad32muj\Agentenraum\partypark`
+
+## 2026-10-21: Planung v0.5 „Neuer Look“ und Übergabe an Antigravity
+
+Agent und Umgebung: Claude (Cowork), nur Doku, kein Code geändert
+Erledigt: Stand nach v0.4 gesichtet (sieben Minispiele, Effekte, Sound, Ansager, Grafikstufen, Messmodus, Export, GitHub-Vorlage; Tests bei Leonardo offen). Versionsplan umgestellt (D80): v0.5 Grafik, v0.6 Mehr Chaos, v0.7 Der Park, v0.8 Party-Joker, v0.9 Rettet den Park und Für alle. Freie Asset-Quellen recherchiert und mit Lizenzen in `docs/ASSET_QUELLEN.md` festgehalten (Kenney Coaster Kit und Input Prompts, KayKit, Quaternius, Poly Haven, ambientCG). Prompt `docs/prompts/04_patch_v0_5.md` neu geschrieben (vorherige Fassung „Mehr Chaos“ ist in `06_patch_v0_6.md` aufgegangen). Neu: `docs/prompts/05_uebergabe_antigravity.md` und `docs/prompts/06_patch_v0_6.md` für die Arbeit in Antigravity (D81). GAME_DESIGN Abschnitt 8 und Versionsverweise angepasst. Neue offene Fragen Q25 bis Q27.
+Entscheidungen: D80, D81
+Getestet: nichts (nur Doku). Asset-Seiten sind aus der Cloud-Umgebung nicht erreichbar (Proxy 403), deshalb lädt Leonardo die Pakete nach `assets/_incoming/`.
+Probleme / Bekannte Fehler: Testergebnis v0.4 und Messwerte der Radeon 780M stehen weiter aus.
+Nächster Schritt: Leonardo lädt die Pakete aus `docs/ASSET_QUELLEN.md` (Abschnitt „Empfohlene Pakete“) nach `assets/_incoming/`, dann neuer Chat mit `docs/prompts/04_patch_v0_5.md`.
+Aktuelle Kopie liegt in: `C:\Users\wad32muj\Agentenraum\partypark`
+
 ## 2026-10-20: Patch v0.4 „Spieleabend“ abgeschlossen (WP 4 bis 9)
 
 Agent und Umgebung: Claude (Cowork), Variante B, Godot 4.7.2 headless, Bildschirmfotos mit Vulkan-Software-Renderer, Export mit Vorlagen 4.7.2

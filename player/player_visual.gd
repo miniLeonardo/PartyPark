@@ -27,7 +27,7 @@ var _pitch_kick: float = 0.0
 var _step_phase: float = 0.0
 var _lean: float = 0.0
 var _spawn_scale: float = 1.0
-var _body_material: StandardMaterial3D
+var _body_material: Material
 var _base_color: Color = Color.WHITE
 var _ghosted: bool = false
 
@@ -38,10 +38,7 @@ var _ghosted: bool = false
 
 
 func _ready() -> void:
-	_body_material = StandardMaterial3D.new()
-	_body_material.albedo_color = Color.WHITE
-	_body_material.roughness = 0.45
-	body.material_override = _body_material
+	_apply_color()
 
 
 ## Erst nach _ready aufrufen (Player sorgt dafür).
@@ -57,7 +54,9 @@ func set_ghosted(ghosted: bool) -> void:
 
 
 func _apply_color() -> void:
-	_body_material.albedo_color = _base_color.lerp(Color(0.8, 0.8, 0.82), 0.45) if _ghosted else _base_color
+	var color: Color = _base_color.lerp(Color(0.8, 0.8, 0.82), 0.45) if _ghosted else _base_color
+	_body_material = Look.character_material(color)
+	body.material_override = _body_material
 
 
 func play_jump() -> void:

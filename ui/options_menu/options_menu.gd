@@ -1,10 +1,9 @@
 extends Node
 ## Optionen (D39): Computer-Stärke, Vibration, Bildschirmwackeln (D55), Lautstärken (D61), Grafik und
-## Leistungsanzeige (D69), Vollbild,
-## Standard-Turnierlänge.
+## Leistungsanzeige (D69), Tageszeit (D86), Vollbild, Standard-Turnierlänge.
 ## Links/rechts ändert, B zurück.
 
-enum Item { DIFFICULTY, VIBRATION, SCREEN_SHAKE, MUSIC, SFX, VOICE, GRAPHICS, PERFORMANCE, FULLSCREEN, ROUNDS, BACK }
+enum Item { DIFFICULTY, VIBRATION, SCREEN_SHAKE, MUSIC, SFX, VOICE, GRAPHICS, TIME_OF_DAY, PERFORMANCE, FULLSCREEN, ROUNDS, BACK }
 
 var menu: MenuList
 var _hint: Label
@@ -29,7 +28,7 @@ func _ready() -> void:
 	panel.custom_minimum_size = Vector2(1000, 0)
 	center.add_child(panel)
 	menu = MenuList.new()
-	menu.font_size = 44
+	menu.font_size = 40
 	panel.add_child(menu)
 	menu.activated.connect(_on_activated)
 	menu.value_changed.connect(_on_value_changed)
@@ -52,6 +51,7 @@ func _build_items() -> void:
 		{"text": "Effekte", "value": "%d %%" % roundi(Settings.volume_sfx * 100.0)},
 		{"text": "Stimme", "value": "%d %%" % roundi(Settings.volume_voice * 100.0)},
 		{"text": "Grafik", "value": Settings.QUALITY_NAMES[Settings.graphics_quality]},
+		{"text": "Tageszeit", "value": Look.TIME_OF_DAY_NAMES[Settings.time_of_day]},
 		{"text": "Leistungsanzeige", "value": "An" if Settings.show_performance else "Aus"},
 		{"text": "Vollbild", "value": "An" if Settings.fullscreen else "Aus"},
 		{"text": "Turnierlänge", "value": "%d Runden" % Settings.tournament_rounds},
@@ -102,6 +102,8 @@ func _on_value_changed(index: int, direction: int) -> void:
 		Item.GRAPHICS:
 			Settings.graphics_quality = clampi(Settings.graphics_quality + direction, 0, 2)
 			Settings.apply_graphics()
+		Item.TIME_OF_DAY:
+			Settings.time_of_day = wrapi(Settings.time_of_day + direction, 0, Look.TIME_OF_DAY_NAMES.size())
 		Item.PERFORMANCE:
 			Settings.show_performance = not Settings.show_performance
 		Item.FULLSCREEN:

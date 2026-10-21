@@ -27,3 +27,6 @@ Godot_v*.x86_64
 
 # Ablage von Claude-Ausgaben
 Claude outputs/
+
+# Rohdownloads freier Asset-Pakete (nur genutzte Dateien kommen nach assets/third_party/)
+assets/_incoming/

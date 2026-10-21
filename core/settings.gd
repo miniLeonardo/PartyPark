@@ -30,6 +30,8 @@ var graphics_quality: int = 1
 var show_performance: bool = false
 ## Vorauswahl der Turnierlänge im Hauptmenü.
 var tournament_rounds: int = 5
+## Tageszeit (D86): 0 Tagesverlauf, 1 Nachmittag, 2 Goldene Stunde, 3 Abend (siehe Look.TimeOfDay).
+var time_of_day: int = 0
 
 
 func _ready() -> void:
@@ -53,6 +55,7 @@ func load_settings() -> void:
 	volume_voice = clampf(float(config.get_value("audio", "voice", volume_voice)), 0.0, 1.0)
 	graphics_quality = clampi(int(config.get_value("display", "quality", graphics_quality)), 0, 2)
 	show_performance = bool(config.get_value("display", "show_performance", show_performance))
+	time_of_day = clampi(int(config.get_value("display", "time_of_day", time_of_day)), 0, 3)
 	var rounds: int = int(config.get_value("game", "tournament_rounds", tournament_rounds))
 	tournament_rounds = rounds if ROUND_CHOICES.has(rounds) else 5
 
@@ -66,6 +69,7 @@ func save_settings() -> void:
 	config.set_value("display", "screen_shake", screen_shake)
 	config.set_value("display", "quality", graphics_quality)
 	config.set_value("display", "show_performance", show_performance)
+	config.set_value("display", "time_of_day", time_of_day)
 	config.set_value("audio", "music", volume_music)
 	config.set_value("audio", "sfx", volume_sfx)
 	config.set_value("audio", "voice", volume_voice)

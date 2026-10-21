@@ -28,6 +28,7 @@ func _ready() -> void:
 	Game.match_running = false
 	camera.position = Vector3(0.0, 3.4, 9.5)
 	camera.look_at(Vector3(0.0, 1.0, 0.0), Vector3.UP)
+	Look.use_mood(Look.menu_mood())
 	StageKit.add_environment(self)
 	StageKit.add_box(self, Vector3(40, 1, 20), Vector3(0, -0.5, -4), Color("#7cc66a"))
 	for i: int in pedestal_positions.size():

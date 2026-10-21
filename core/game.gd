@@ -45,6 +45,11 @@ func _ready() -> void:
 				var path: String = "res://tests/smoke/%s_smoke.gd" % arg.trim_prefix("--smoke-")
 				if ResourceLoader.exists(path):
 					add_child((load(path) as GDScript).new())
+			elif arg.begins_with("--tool-"):
+				# Entwicklerwerkzeuge mit Autoloads, z. B. --tool-asset_audit (nicht im Export enthalten)
+				var tool_path: String = "res://tools/%s.gd" % arg.trim_prefix("--tool-")
+				if ResourceLoader.exists(tool_path):
+					add_child((load(tool_path) as GDScript).new())
 
 
 func _physics_process(_delta: float) -> void:

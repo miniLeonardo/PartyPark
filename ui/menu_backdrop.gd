@@ -15,6 +15,7 @@ var _rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
 	_rng.randomize()
+	Look.use_mood(Look.menu_mood())
 	StageKit.add_environment(self)
 	StageKit.add_box(self, Vector3(60, 1, 40), Vector3(0, -0.5, -8), Color("#7cc66a"))
 	# Platzhalter-Kulisse: Riesenrad-Andeutung und Buden

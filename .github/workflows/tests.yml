@@ -1,0 +1,56 @@
+# Automatische Tests für Partypark (Q09, D74, D79): bei jedem Push und Pull Request
+# lädt GitHub Godot 4.7.2 (Linux, headless) und führt Unit- und Smoke-Tests aus.
+# Vorlage: einmalig nach .github/workflows/tests.yml kopieren (Claude darf den Ordner .github nicht schreiben).
+name: Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GODOT_VERSION: "4.7.2"
+      GODOT: ${{ github.workspace }}/../godot/godot
+    steps:
+      - name: Projekt auschecken
+        uses: actions/checkout@v4
+
+      - name: Godot zwischenspeichern
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/../godot
+          key: godot-${{ env.GODOT_VERSION }}-linux
+
+      - name: Godot laden
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ../godot
+          curl -sSL -o ../godot/godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q ../godot/godot.zip -d ../godot
+          mv "../godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64" ../godot/godot
+          chmod +x ../godot/godot
+
+      - name: Projekt importieren
+        run: |
+          "$GODOT" --headless --path . --import
+          "$GODOT" --headless --path . --import
+
+      - name: Unit-Tests
+        run: '"$GODOT" --headless --path . --script res://tests/run_tests.gd'
+
+      - name: Alle Dateien laden (smoke-compile)
+        run: '"$GODOT" --headless --path . -- --smoke-compile'
+
+      - name: Durchlauf M1 (Beitritt, Steuerung, Pause)
+        run: '"$GODOT" --headless --path . -- --smoke-m1'
+
+      - name: Durchlauf M2 (Turnier, Freies Spiel, Optionen)
+        run: '"$GODOT" --headless --path . --fixed-fps 60 -- --smoke-m2'
+
+      - name: Alle Minispiele mit Computern (smoke-games)
+        run: '"$GODOT" --headless --path . --fixed-fps 60 -- --smoke-games'

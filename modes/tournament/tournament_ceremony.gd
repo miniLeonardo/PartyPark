@@ -19,6 +19,7 @@ func setup(participants: Array[PlayerSlot], totals: Dictionary) -> void:
 
 
 func _ready() -> void:
+	Look.use_mood(Look.menu_mood())
 	StageKit.add_environment(self)
 	StageKit.add_box(self, Vector3(40, 1, 30), Vector3(0, -0.5, -6), Color("#7cc66a"))
 	var camera := Camera3D.new()

@@ -8,6 +8,8 @@ var state: State = State.LIST
 var participants: Array[PlayerSlot] = []
 var flow: MatchFlow
 var selected_info: MinigameInfo
+## Gespielte Runden, für den Tagesverlauf (D86).
+var _rounds_played: int = 0
 var selected_format: int = TeamFormat.Format.FFA
 ## 2 gegen 2: Platzindex → Team (0 oder 1).
 var team_choice: Dictionary = {}
@@ -237,6 +239,9 @@ func _start_game() -> void:
 	_ui.visible = false
 	_backdrop.queue_free()
 	_backdrop = null
+	# Tagesverlauf (D86): jede Runde im Freien Spiel rückt eine Tageszeit weiter
+	Look.use_mood(Look.mood_for_progress(float(_rounds_played % 3) / 2.0))
+	_rounds_played += 1
 	flow = MatchFlow.new()
 	add_child(flow)
 	flow.completed.connect(_on_game_completed)

@@ -65,15 +65,17 @@ Phasen 0 bis 3 sind die Prototyp-Historie (zusammen Version 0.1 bis 0.3). Ab Ver
 
 ### Übersicht
 
-| Version | Titel | Kernidee |
-|---|---|---|
-| v0.4 | Spieleabend | Hörbar, spürbar, flüssig: Effekte, Sound, Ansager, Leistung, zwei neue Spiele, Bauanleitung für Minispiele |
-| v0.5 | Mehr Chaos | Inhaltswelle mit sechs Spielen, Rache-Modus für Ausgeschiedene, Formatvarianten, Wiederholung des besten Moments |
-| v0.6 | Der Park | Herzstück (Q01): Vorschlag „Parkrundfahrt“, ein Brettspiel auf einem begehbaren Freizeitpark |
-| v0.7 | Party-Joker | Regel-Modifikatoren, Mikrospiel-Marathon, Sammelalbum mit Hüten, Saboteur-Format |
-| v0.8 | Rettet den Park | Koop-Kampagne mit Bösewicht, Rätselräumen und mehrphasigem Endboss |
-| v0.9 | Für alle | Zugänglichkeit, Englisch, echte Grafik und Musik, Feinschliff |
-| v1.0 | Eröffnung | Release-Builds Windows und Linux, Bazzite/Steam Deck geprüft, mind. 30 Minispiele |
+Umgestellt am 2026-10-21 (D80, D81): v0.5 setzt den Schwerpunkt auf Grafik; die bisherigen Inhalte rücken je eine Version nach. Ab v0.6 wird in Google Antigravity weitergearbeitet.
+
+| Version | Titel | Kernidee | Umgebung |
+|---|---|---|---|
+| v0.4 | Spieleabend | Hörbar, spürbar, flüssig: Effekte, Sound, Ansager, Leistung, drei neue Spiele, Bauanleitung für Minispiele | Claude (Cowork), umgesetzt |
+| v0.5 | Neuer Look | Grafik im Fokus: Stilrichtung, freie CC0-Assets und eigene Modelle, Themen-Arenen, Park-Kulisse, Figur, Waffen, Licht, Materialien, UI mit Tastensymbolen, Leistung | Claude (Cowork) bis WP 2, Rest in Antigravity (D89) |
+| v0.6 | Mehr Chaos | Sechs neue Spiele, Rache-Modus für Ausgeschiedene, Formatvarianten, Wiederholung des besten Moments, Bonustitel, Finale | Antigravity |
+| v0.7 | Der Park | Herzstück (Q01): Vorschlag „Parkrundfahrt“, ein Brettspiel auf einem begehbaren Freizeitpark | Antigravity |
+| v0.8 | Party-Joker | Regel-Modifikatoren, Mikrospiel-Marathon, Sammelalbum mit Hüten, Saboteur-Format | Antigravity |
+| v0.9 | Rettet den Park, Für alle | Koop-Kampagne, Zugänglichkeit, Englisch, Musik, Feinschliff | Antigravity |
+| v1.0 | Eröffnung | Release-Builds Windows und Linux, Bazzite/Steam Deck geprüft, mind. 30 Minispiele | Antigravity |
 
 ### v0.4 „Spieleabend“ (umgesetzt 2026-10-20, Prompt `docs/prompts/03_patch_v0_4.md`, Versionsplan bestätigt D47; Tests bei Leonardo offen)
 
@@ -91,60 +93,74 @@ Ziel: Das Spiel fühlt sich an einem echten Abend wie ein fertiges Partyspiel an
 | 4.8 | Aufräumen: leere `.gitkeep`, Hinweise zum Klassen-Cache; Q09 klären, bei Zustimmung GitHub-Repository und automatische Tests per GitHub Actions | | erledigt (2026-10-20: Q09 → GitHub privat mit Actions D74, Vorlage `tools/ci/tests.yml` D79; .gitkeep-Liste für Leonardo im DEVLOG) |
 | 4.9 | Export-Vorlagen Windows und Linux (`export_presets.cfg`), erster Test auf Bazzite | | teilweise (2026-10-20: `export_presets.cfg` Windows und Linux, in der Cloud exportiert und gestartet; Test auf Bazzite offen, Anleitung `docs/EXPORT_UND_BAZZITE.md`) |
 
-### v0.5 „Mehr Chaos“ (nächster Patch, Prompt `docs/prompts/04_patch_v0_5.md`)
+### v0.5 „Neuer Look“ (in Arbeit seit 2026-10-21; WP 1 und 2 mit `docs/prompts/04_patch_v0_5.md` in Claude, Rest ab WP 3 in Antigravity mit `docs/prompts/05_uebergabe_antigravity.md` Teil B, D89)
+
+Ziel: Partypark sieht aus wie ein fertiges, liebevolles Partyspiel: einheitlicher Stil, Themen-Arenen in einem Freizeitpark, lebendige Figur, gute Lesbarkeit für vier Spieler, 60 fps auf der Radeon 780M. Asset-Quellen und Lizenzen in `docs/ASSET_QUELLEN.md`.
+
+| Nr | Aufgabe | Status |
+|---|---|---|
+| 5.1 | Testergebnis v0.4 einarbeiten (Q15, Q23, Q24, Autoscooter D51, Messwerte `bench.txt`) | verschoben (2026-10-21, D82: kein Testergebnis; Punkte wandern in `TESTANLEITUNG_V0_5.md`, Messtabelle vorbereitet) |
+| 5.2 | Stilrichtung (Q25) anhand gerenderter Stilproben festlegen: Licht, Farbpalette, Materialien, Umrisslinien ja/nein; Ergebnis als `docs/ART_GUIDE.md` | erledigt (2026-10-21: Spielzeug-Plastik ohne Umriss D85, Tagesverlauf D86, `docs/ART_GUIDE.md`) |
+| 5.3 | Asset-Pipeline: `assets/third_party/<paket>/` mit Lizenzdatei, Importvorgaben, Prüfskript `tools/asset_audit.gd` (Dreiecke, Texturgrößen, Draw Calls je Szene), CREDITS, Größenbudget und Entscheidung zu Git LFS | in Arbeit (Prüfskript und erstes Paket da) |
+| 5.4 | Look-Grundlage: gemeinsame Umgebung (Himmel, AgX-Tonemapping, Nebel, dezenter Glow), Material- und Shaderbibliothek (Toon mit Randlicht, stilisiertes Wasser, Emission für Lichterketten), Grafikstufen erweitert | offen |
+| 5.5 | Spielfigur-Feinschliff im Stil von D15: glattere Form, neues Material, Blinzeln, Gesichtsausdrücke, Zubehör-Platz für Hüte, Sieger- und Verliererposen | offen |
+| 5.5a | Waffen für Schießspiele: Spielzeug-Blaster aus dem Kenney Blaster Kit als Szenen in `core/weapons/`, Einbau in die Zerfetzung, Q24 | offen |
+| 5.6 | Sieben Themen-Arenen als bearbeitbare `.tscn` (Optik getrennt von einfacher Kollision), gemeinsame Park-Kulisse mit Riesenrad, Achterbahn, Zelten und Lichterketten | offen |
+| 5.7 | Effekte veredeln: Partikeltexturen, stilisiertes Wasser mit Schaum, Spuren, Abziehbilder (Schlamm, Ruß), Licht-Akzente | offen |
+| 5.8 | Menüs und UI: Schrift, einheitliches Theme, Tastensymbole statt Text (Kenney Input Prompts) mit Textrückfall, Übergänge, Titel mit 3D-Park, Siegerehrung mit Podest, Ansager-Optik (Q23) | offen |
+| 5.9 | Leistung: Budgets, LOD und Sichtweiten, MultiMesh für Deko, Messung aller Stufen und des Splitscreen-Spiels | offen |
+| 5.10 | Vorher-Nachher-Galerie `docs/screenshots/v0_5/`, Testanleitung, Übergabe an Antigravity vorbereiten | offen |
+
+### v0.6 „Mehr Chaos“ (erster Patch in Antigravity, Prompts `docs/prompts/05_uebergabe_antigravity.md` und `06_patch_v0_6.md`)
 
 Ziel: Doppelt so viele Spiele, und niemand sitzt mehr untätig herum.
 
 | Nr | Aufgabe | Inspiration | Status |
 |---|---|---|---|
-| 5.1 | Rache-Modus: Ausgeschiedene schweben als Geister am Arenarand und werfen kleine Störungen (Bananenschale, Windstoß); einmal gebaut, in jedem Spiel mit Ausscheiden nutzbar | Bomberman-Rachewagen, Mario-Kart-Ballongeister | offen |
-| 5.2 | Formatvarianten: vorhandene Spiele in weiteren Formaten (Autoscooter 2v2, Tauziehen als Vier-Seil-Stern FFA, Schafe hüten 2v2 als Wettstreit) | Mario Party Jamboree (Battle-, 2er-, 4er-Versionen) | offen |
-| 5.3 | Sechs neue Minispiele, mindestens eins je Format, aus GAME_DESIGN Abschnitt 9 | | offen |
-| 5.4 | Wiederholung des entscheidenden Moments: Ringpuffer der letzten Sekunden, andere Kameraperspektive, Zeitlupe | Sport-Wiederholungen, Rocket League | offen |
-| 5.5 | Rundenstatistik und Bonustitel am Turnierende („Meiste Schubser“, „Pechvogel“, „Taktgefühl“), auf Wunsch mit Bonuspunkten | Mario-Party-Bonussterne | offen |
-| 5.6 | Finale: letzte Runde doppelte Punkte, bei Gleichstand Duell im neuen Format 1 gegen 1 | Mario Party „Letzte 5 Runden“ | offen |
+| 6.0 | Übergabe: Antigravity einrichten, Tests unter Windows, Arbeitsweise in `AGENTS.md` umstellen (findet schon vor dem Rest von v0.5 statt, Prompt 05 Teil A) | | offen |
+| 6.1 | Rache-Modus: Ausgeschiedene schweben als Geister am Arenarand und werfen kleine Störungen (Bananenschale, Windstoß); einmal gebaut, in jedem Spiel mit Ausscheiden nutzbar | Bomberman-Rachewagen, Mario-Kart-Ballongeister | offen |
+| 6.2 | Formatvarianten: vorhandene Spiele in weiteren Formaten (Autoscooter 2v2, Tauziehen als Vier-Seil-Stern FFA, Schafe hüten 2v2 als Wettstreit) | Mario Party Jamboree (Battle-, 2er-, 4er-Versionen) | offen |
+| 6.3 | Sechs neue Minispiele, mindestens eins je Format, aus GAME_DESIGN Abschnitt 9, gebaut nach `docs/ART_GUIDE.md` | | offen |
+| 6.4 | Wiederholung des entscheidenden Moments: Ringpuffer der letzten Sekunden, andere Kameraperspektive, Zeitlupe | Sport-Wiederholungen, Rocket League | offen |
+| 6.5 | Rundenstatistik und Bonustitel am Turnierende („Meiste Schubser“, „Pechvogel“, „Taktgefühl“), auf Wunsch mit Bonuspunkten | Mario-Party-Bonussterne | offen |
+| 6.6 | Finale: letzte Runde doppelte Punkte, bei Gleichstand Duell im neuen Format 1 gegen 1 | Mario Party „Letzte 5 Runden“ | offen |
 
-### v0.6 „Der Park“ (Herzstück, Q01)
+### v0.7 „Der Park“ (Herzstück, Q01)
 
-Ziel: Ein Abendmodus mit Spannungsbogen, der über einzelne Minispiele hinausgeht.
+Ziel: Ein Abendmodus mit Spannungsbogen, der über einzelne Minispiele hinausgeht. Baut auf der Park-Kulisse aus v0.5 auf.
 
 | Nr | Aufgabe | Inspiration | Status |
 |---|---|---|---|
-| 6.1 | Q01 entscheiden. Vorschlag Hybrid „Parkrundfahrt“: Brettspiel, dessen Brett ein begehbarer Low-Poly-Freizeitpark ist (Achterbahnschienen als Wege, Attraktionen als Ereignisfelder); Tickets als Währung, Goldene Eintrittskarte als Siegpunkt | Mario Party, Nintendo Land | offen |
-| 6.2 | Ereignisfelder: Wartungsarbeiten sperren Wege, Parade schiebt alle weiter, Riesenrad tauscht Plätze, Glücksrad, Fotoautomat | | offen |
-| 6.3 | Gegenstände im Kiosk: Doppelwürfel, Abkürzungs-Pass, Greifarm (Ticket klauen), Regenschirm (Schutz) | Mario Party | offen |
-| 6.4 | Brett-Kamera, Würfel, Zugreihenfolge, Speichern und Fortsetzen eines Abends | | offen |
-| 6.5 | Regelvarianten: Schnelle Runde (10 Züge), Tag-Team (2er-Teams teilen Tickets) | Jamboree TV (Frenzy, Tag-Team) | offen |
+| 7.1 | Q01 entscheiden. Vorschlag Hybrid „Parkrundfahrt“: Brettspiel, dessen Brett ein begehbarer Low-Poly-Freizeitpark ist (Achterbahnschienen als Wege, Attraktionen als Ereignisfelder); Tickets als Währung, Goldene Eintrittskarte als Siegpunkt | Mario Party, Nintendo Land | offen |
+| 7.2 | Ereignisfelder: Wartungsarbeiten sperren Wege, Parade schiebt alle weiter, Riesenrad tauscht Plätze, Glücksrad, Fotoautomat | | offen |
+| 7.3 | Gegenstände im Kiosk: Doppelwürfel, Abkürzungs-Pass, Greifarm (Ticket klauen), Regenschirm (Schutz) | Mario Party | offen |
+| 7.4 | Brett-Kamera, Würfel, Zugreihenfolge, Speichern und Fortsetzen eines Abends | | offen |
+| 7.5 | Regelvarianten: Schnelle Runde (10 Züge), Tag-Team (2er-Teams teilen Tickets) | Jamboree TV (Frenzy, Tag-Team) | offen |
 
-### v0.7 „Party-Joker“
+### v0.8 „Party-Joker“
 
 Ziel: Kein Abend gleicht dem anderen.
 
 | Nr | Aufgabe | Inspiration | Status |
 |---|---|---|---|
-| 7.1 | Joker-Karten: Vor jeder Runde wählt der Letztplatzierte 1 aus 3 Karten, die die Regeln ändern (Mondschwerkraft, Riesenköpfe, Spiegelsteuerung, Seifenboden, Nebel, doppelte Punkte). Technisch als Modifikatoren auf Figur, Physik und Kamera | Balatro, Hades-Segen, Baba Is You | offen |
-| 7.2 | Mikrospiel-Marathon: Serien aus 3-Sekunden-Spielen mit einem Befehlswort („Duck dich!“, „Fang!“), immer schneller; Gerüst, in das Dutzende winzige Spiele passen | WarioWare | offen |
-| 7.3 | Sammelalbum: Tickets aus Spielen schalten Hüte, Brillen und Sticker frei; Figur im Beitritt anpassen | Fall Guys | offen |
-| 7.4 | Lokale Rekorde und Bestenliste je Minispiel, Solo-Übungsmodus | | offen |
-| 7.5 | Saboteur-Format: Koop-Aufgabe mit geheimem Saboteur, Rolle wird nur per Vibrationsmuster mitgeteilt, am Ende Abstimmung | Among Us | offen |
+| 8.1 | Joker-Karten: Vor jeder Runde wählt der Letztplatzierte 1 aus 3 Karten, die die Regeln ändern (Mondschwerkraft, Riesenköpfe, Spiegelsteuerung, Seifenboden, Nebel, doppelte Punkte). Technisch als Modifikatoren auf Figur, Physik und Kamera | Balatro, Hades-Segen, Baba Is You | offen |
+| 8.2 | Mikrospiel-Marathon: Serien aus 3-Sekunden-Spielen mit einem Befehlswort („Duck dich!“, „Fang!“), immer schneller; Gerüst, in das Dutzende winzige Spiele passen | WarioWare | offen |
+| 8.3 | Sammelalbum: Tickets aus Spielen schalten Hüte, Brillen und Sticker frei; Figur im Beitritt anpassen (nutzt den Zubehör-Platz aus 5.5) | Fall Guys | offen |
+| 8.4 | Lokale Rekorde und Bestenliste je Minispiel, Solo-Übungsmodus | | offen |
+| 8.5 | Saboteur-Format: Koop-Aufgabe mit geheimem Saboteur, Rolle wird nur per Vibrationsmuster mitgeteilt, am Ende Abstimmung | Among Us | offen |
 
-### v0.8 „Rettet den Park“ (Koop-Kampagne)
+### v0.9 „Rettet den Park“ und „Für alle“
 
 | Nr | Aufgabe | Inspiration | Status |
 |---|---|---|---|
-| 8.1 | Geschichte: Ein grauer Direktor will den Park in ein Parkhaus verwandeln; 5 Kapitel aus Koop-Spielen, Zwischenszenen mit Brabbelstimme | | offen |
-| 8.2 | Rätselräume, die nur mit allen vier lösbar sind (Druckplatten, Räuberleiter, gemeinsames Tragen) | Pico Park | offen |
-| 8.3 | Mehrphasiger Endboss (Ausbau des Staubsauger-Bosses), Wiederbelebung, Rücksetzpunkte, Schwierigkeitsgrade | | offen |
-
-### v0.9 „Für alle“
-
-| Nr | Aufgabe | Status |
-|---|---|---|
-| 9.1 | Tastenbelegung frei änderbar, „Halten statt Hämmern“, Spieltempo 80 % | offen |
-| 9.2 | Farbsehschwäche: Formen und Muster zusätzlich zu Farben (Hüte, Ringmuster) | offen |
-| 9.3 | Englisch als zweite Sprache (Übersetzungs-CSV) | offen |
-| 9.4 | Echte Grafik und Musik: Low-Poly-Pakete (D17) plus eigener Toon-Shader, Musik pro Spielart | offen |
-| 9.5 | Kurzer Einführungs-Spaziergang für neue Spieler | offen |
+| 9.1 | Geschichte: Ein grauer Direktor will den Park in ein Parkhaus verwandeln; 5 Kapitel aus Koop-Spielen, Zwischenszenen mit Brabbelstimme | | offen |
+| 9.2 | Rätselräume, die nur mit allen vier lösbar sind (Druckplatten, Räuberleiter, gemeinsames Tragen) | Pico Park | offen |
+| 9.3 | Mehrphasiger Endboss (Ausbau des Staubsauger-Bosses), Wiederbelebung, Rücksetzpunkte, Schwierigkeitsgrade | | offen |
+| 9.4 | Tastenbelegung frei änderbar, „Halten statt Hämmern“, Spieltempo 80 % | | offen |
+| 9.5 | Farbsehschwäche: Formen und Muster zusätzlich zu Farben (Hüte, Ringmuster) | | offen |
+| 9.6 | Englisch als zweite Sprache (Übersetzungs-CSV) | | offen |
+| 9.7 | Musik pro Spielart (selbst erzeugt oder CC0) | | offen |
+| 9.8 | Kurzer Einführungs-Spaziergang für neue Spieler | | offen |
 
 ### v1.0 „Eröffnung“
 

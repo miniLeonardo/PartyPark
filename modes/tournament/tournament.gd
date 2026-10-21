@@ -76,6 +76,8 @@ func _next_round() -> void:
 	_last_game = game_id
 	history.append({"format": format, "game": game_id, "solo": assignment.solo})
 	var context: MinigameContext = MinigameContext.from_assignment(assignment, participants, Settings.cpu_difficulty)
+	# Tagesverlauf (D86): erste Runde Nachmittag, letzte Runde Abendrummel
+	Look.use_mood(Look.mood_for_progress(float(round_number - 1) / float(maxi(1, rounds_total - 1))))
 	flow = MatchFlow.new()
 	add_child(flow)
 	flow.completed.connect(_on_round_completed)
