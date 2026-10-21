@@ -33,7 +33,7 @@ Status: Version 0.4 „Spieleabend“ mit Titel, Beitritt, Hauptmenü, Optionen,
 
 Der gesamte Kontext steckt in den Dateien, nicht im Chatverlauf. So gelingt der Wechsel:
 
-1. **Aktuelle Kopie holen.** Maßgeblich ist der Ordner `C:\Users\wad32muj\Agentenraum\partypark`. Auf einen anderen PC kommt er per Git-Repository (empfohlen, sobald eingerichtet) oder als kopierter Ordner inklusive `.git`.
+1. **Aktuelle Kopie holen.** Maßgeblich ist der Ordner `\Agentenraum\partypark`. Auf einen anderen PC kommt er per Git-Repository (empfohlen, sobald eingerichtet) oder als kopierter Ordner inklusive `.git`.
 2. **Ordner in Antigravity öffnen.** `AGENTS.md` im Projektstamm wird automatisch als Regeldatei geladen.
 3. **Erster Prompt in der neuen Umgebung:**
    > Lies AGENTS.md und befolge die Pflichtlektüre. Fasse mir den Stand zusammen und schlage den nächsten Schritt aus der ROADMAP vor. Stelle Spieldesignfragen immer mir.
