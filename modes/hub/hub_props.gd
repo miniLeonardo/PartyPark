@@ -27,6 +27,7 @@ static func build_hub_world(root: Node3D) -> void:
 	_build_perimeter_walls(terrain)
 	_build_park_props(scenery)
 	_build_foliage_and_stalls(scenery)
+	_build_playground(terrain)
 
 
 # --- 1. Boden & Zentraler Festplatz (Plaza) ---
@@ -409,3 +410,70 @@ static func _build_foliage_and_stalls(parent: Node3D) -> void:
 		stall_info.rotation_degrees = Vector3(0, 30.0, 0)
 		Look.restyle(stall_info, Look.Kind.WOOD)
 		parent.add_child(stall_info)
+
+
+# --- 7. Bewegungs- & Platforming-Spielplatz (D103, D104, D105, D106) ---
+
+static func _build_playground(parent: Node3D) -> void:
+	var playground := Node3D.new()
+	playground.name = "Playground"
+	parent.add_child(playground)
+
+	# 1. Rummelplatz-Karussell (D105: rotierende Zentrifugalkraft)
+	var carousel := HubCarousel.new()
+	carousel.name = "Carousel"
+	carousel.position = Vector3(35.0, 0.25, 0.0)
+	playground.add_child(carousel)
+
+	# 2. Großes Trampolin im Rummel-Bereich (D103: dynamisches Federn)
+	var tramp_east := HubTrampoline.new()
+	tramp_east.name = "TrampolineEast"
+	tramp_east.position = Vector3(35.0, 0.15, -13.0)
+	tramp_east.radius = 2.6
+	playground.add_child(tramp_east)
+
+	# 3. Spielplatz-Rutsche in der West-Zone (D104: Null-Reibungs-Gleitfläche)
+	var slide := HubSlide.new()
+	slide.name = "Slide"
+	slide.position = Vector3(-32.0, 0.15, 14.0)
+	slide.rotation_degrees = Vector3(0, 90.0, 0) # Rutscht nach Osten Richtung Weg
+	playground.add_child(slide)
+
+	# 4. Physikalische Wippe (D106: Gewichts-Reaktion)
+	var seesaw := HubSeesaw.new()
+	seesaw.name = "Seesaw"
+	seesaw.position = Vector3(-34.0, 0.15, 0.0)
+	playground.add_child(seesaw)
+
+	# 5. Zwillings-Trampoline in der West-Zone
+	var tramp_west1 := HubTrampoline.new()
+	tramp_west1.name = "TrampolineWest1"
+	tramp_west1.position = Vector3(-25.0, 0.15, -8.0)
+	tramp_west1.radius = 2.0
+	playground.add_child(tramp_west1)
+
+	var tramp_west2 := HubTrampoline.new()
+	tramp_west2.name = "TrampolineWest2"
+	tramp_west2.position = Vector3(-19.0, 0.15, -8.0)
+	tramp_west2.radius = 2.0
+	playground.add_child(tramp_west2)
+
+	# 6. Schwebeladende Plattform über dem Teich (D106: horizontales Pendel)
+	var pond_ferry := HubMovingPlatform.new()
+	pond_ferry.name = "PondFerry"
+	pond_ferry.position = Vector3(-40.0, 0.4, -14.0)
+	pond_ferry.travel_offset = Vector3(10.0, 0.0, 0.0)
+	pond_ferry.travel_duration = 4.0
+	pond_ferry.platform_size = Vector3(3.4, 0.3, 3.4)
+	pond_ferry.platform_color = Color("#bf9d70")
+	playground.add_child(pond_ferry)
+
+	# 7. Vertikaler Schwebelift nahe Nord-Weg (D106: Vertikallift)
+	var tower_lift := HubMovingPlatform.new()
+	tower_lift.name = "TowerLift"
+	tower_lift.position = Vector3(-5.0, 0.2, -26.0)
+	tower_lift.travel_offset = Vector3(0.0, 6.0, 0.0)
+	tower_lift.travel_duration = 3.2
+	tower_lift.platform_size = Vector3(2.8, 0.35, 2.8)
+	tower_lift.platform_color = Color("#ebd8b0")
+	playground.add_child(tower_lift)

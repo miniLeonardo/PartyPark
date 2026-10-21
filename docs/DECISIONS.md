@@ -109,6 +109,10 @@ Spalte „Von“: **L** = Leonardo, **KI** = technische Entscheidung eines Agent
 | D100 | 2026-10-21 | Kletterturm-Parkour & Belohnung: Freistehender, vertikaler Kletterturm im Zentrum mit fordernden Sprungpassagen. An der Spitze wartet eine tragbare goldene Siegerkrone (beim Rempler auf andere Spieler übertragbar) sowie ein Aussichtspunkt mit Konfetti-Buzzer | Zentraler Blickfang und sportlicher Wettstreit für alle Spieler | L (Empfehlung angenommen) |
 | D101 | 2026-10-21 | Start von Attraktionen: Alle beigetretenen menschlichen Spieler müssen die jeweilige Aktivierungs-Plattform („Ready-Zone“) betreten | Verhindert versehentliche Starts und gibt allen Spielern Zeit zum gemeinsamen Sammeln | L (Empfehlung angenommen) |
 | D102 | 2026-10-21 | Lobby-Aktivitäten & Spielzeuge: Umfangreicher Spielzeugkasten für wartende Spieler (Physik-Bälle zum Kicken, harmlose Spielzeug-Blaster aus core/weapons/ mit Schubser-Effekt, tragbare/werfbare Kisten und kleine Mini-Scooter zum Herumkurven) | Maximaler Warte- und Bewegungsspaß auf dem Festplatz | L |
+| D103 | 2026-10-21 | Trampolin-Mechanik: Dynamisches Federn je nach Fallhöhe; je höher der Absprung / Fall, desto höher der Rückprall (Basis 8 m, bis zu 22 m bei tiefem Fall) | Belohnt wagemutige Sprünge aus großer Höhe und Parkour-Verknüpfungen | L |
+| D104 | 2026-10-21 | Rutsch-Mechanik: Reine Null-Reibungs-Gleitfläche mit Trägheitsphysik; Figur beschleunigt hangabwärts und muss aktiv per Stick gesteuert werden | Anspruchsvoller und dynamischer Bewegungsspaß | L |
+| D105 | 2026-10-21 | Karussell & Drehscheiben: Kontinuierliche Rotation mit spürbarer Fliehkraft, die Spieler nach außen drängt | Erzeugt heitere Rempler-Duelle im Rummel-Bereich | L (Empfehlung angenommen) |
+| D106 | 2026-10-21 | Bewegliche Plattformen: Vielfältiger Mix aus physikalischen Wippen (Gewichtsreaktion), Schwebeliften und horizontalen Pendeln | Bietet abwechslungsreiche Platforming-Elemente in der Spielplatz-Zone | L (Empfehlung angenommen) |
 
 ## Offene Fragen
 

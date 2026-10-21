@@ -53,6 +53,15 @@ func _run() -> void:
 		_check(terrain.get_node_or_null("Arch_ATTRAKTIONEN") != null, "Tor zum Attraktions-Boulevard vorhanden")
 		_check(terrain.get_node_or_null("Arch_SPIELZEUG-WIESE") != null, "Tor zur Spielzeug-Wiese vorhanden")
 		_check(terrain.get_node_or_null("Perimeter") != null, "Umlaufende Parkbegrenzung (Perimeter) vorhanden")
+		var pg: Node = terrain.get_node_or_null("Playground")
+		_check(pg != null, "Playground-Knoten im Gelände vorhanden")
+		if pg != null:
+			_check(pg.get_node_or_null("Carousel") is HubCarousel, "Rummelplatz-Karussell (HubCarousel) vorhanden")
+			_check(pg.get_node_or_null("TrampolineEast") is HubTrampoline, "Ost-Trampolin (HubTrampoline) vorhanden")
+			_check(pg.get_node_or_null("Slide") is HubSlide, "Spielplatz-Rutsche (HubSlide) vorhanden")
+			_check(pg.get_node_or_null("Seesaw") is HubSeesaw, "Physikalische Wippe (HubSeesaw) vorhanden")
+			_check(pg.get_node_or_null("PondFerry") is HubMovingPlatform, "Teich-Pendelplattform (HubMovingPlatform) vorhanden")
+			_check(pg.get_node_or_null("TowerLift") is HubMovingPlatform, "Turm-Schwebelift (HubMovingPlatform) vorhanden")
 
 	if scenery != null:
 		_check(scenery.get_node_or_null("FerrisWheel") != null, "Riesenrad in der Kulisse vorhanden")
@@ -90,6 +99,13 @@ func _run() -> void:
 	p1.global_position = Vector3(0, -10.0, 0)
 	await _frames(3)
 	_check(p1.global_position.y >= -1.0, "Absturz-Sicherung: Spieler wird nach Fall unter kill_height sicher respawnt")
+
+	# Trampolin-Sprungfunktion testen (D103)
+	var tramp: HubTrampoline = terrain.get_node("Playground/TrampolineEast") as HubTrampoline
+	p1.global_position = tramp.global_position + Vector3(0, 1.5, 0)
+	p1.velocity = Vector3(0, -10.0, 0)
+	await _frames(5)
+	_check(p1.velocity.y > 10.0, "Trampolin: Dynamischer Katapult-Impuls nach unten gerichtetem Fall aktiv")
 
 	_finish()
 

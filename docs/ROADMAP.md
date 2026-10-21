@@ -132,7 +132,7 @@ Ziel: Ein interaktives 3D-Lobby-Areal im Freizeitpark, das als nahtlose Brücke 
 | Nr | Aufgabe | Inspiration | Status |
 |---|---|---|---|
 | 7.1 | Q01 entschieden (D98): 3D-Freizeitpark-Lobby als interaktiver Hub zwischen Minispielen statt Brettspiel | Mario 64 Schlossgarten, Nintendo Land Plaza, Fall Guys Lobby | erledigt (2026-10-21, WP 1: 3D-Gelände modes/hub/, Plaza, Sternwege, Kulisse, Schnellstart --hub, smoke-hub grün) |
-| 7.2 | Bewegungs- & Platforming-Spielplatz: Trampoline, Rutschen, bewegliche Hindernisse, Rempler-Zonen | Fall Guys, A Hat in Time | offen |
+| 7.2 | Bewegungs- & Platforming-Spielplatz: Trampoline, Rutschen, bewegliche Hindernisse, Rempler-Zonen | Fall Guys, A Hat in Time | erledigt (2026-10-21, WP 2: Trampoline D103, Rutschen D104, Karussell D105, Wippen & Plattformen D106 in modes/hub/playground/) |
 | 7.3 | Forderndes Jump'n'Run (Parkour / Turm): Knifflige Sprungpassagen mit Belohnung an der Spitze (Aussichtspunkt, Krone, Sound) | Mario Sunshine Klettergerüste, Roblox Obby | offen |
 | 7.4 | Minispiel-Stationen: Attraktionen im Park mit Anmelde-Podesten („Drücke A für Start“); Turniermodus führt von Station zu Station | Mario Party Hub, Nintendo Land | offen |
 | 7.5 | Hub-Kamera, Parkbesucher (Kenney Mini Characters) und Rummelplatz-Atmosphäre | | offen |

@@ -267,6 +267,15 @@ func add_knockback(impulse: Vector3) -> void:
 	_knockback += Vector3(impulse.x, 0.0, impulse.z)
 
 
+## Katapultiert die Figur nach oben und optional waagerecht (z. B. Trampolin, Schanze).
+func launch(vertical: float, horizontal: Vector3 = Vector3.ZERO) -> void:
+	velocity.y = vertical
+	if horizontal.length_squared() > 0.001:
+		_knockback = Vector3(horizontal.x, 0.0, horizontal.z)
+	if visual != null:
+		visual.play_jump()
+
+
 ## Wird von PushAbility eines anderen Spielers aufgerufen.
 func receive_push(impulse: Vector3, lift: float, stun_time: float, by: Player) -> void:
 	_knockback = Vector3(impulse.x, 0.0, impulse.z)

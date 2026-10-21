@@ -13,6 +13,17 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-10-21: Patch v0.7 „Der Park“ – WP 2 abgeschlossen
+
+Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
+Erledigt: Fragerunde zu Spielplatz- und Physikmechaniken durchgeführt und Entscheidungen D103 bis D106 in `docs/DECISIONS.md` festgehalten (D103: dynamisches Federn nach Fallhöhe; D104: Null-Reibungs-Gleitfläche mit Trägheitslenkung und Schanze; D105: Karussell mit kontinuierlicher Rotation und Zentrifugalkraft; D106: Plattform-Mix aus Wippen, Schwebeliften und horizontalen Pendeln). Implementierungsplan für WP 2 vorgelegt. WP 2 (ROADMAP 7.2) umgesetzt: Modulare Spielplatz-Komponenten in `modes/hub/playground/` (`trampoline.gd`, `slide.gd`, `carousel.gd`, `moving_platform.gd`, `seesaw.gd`). `Player` um `launch()` erweitert. Spielplatz-Elemente in `HubProps` in die Ost- und West-Zonen integriert (Karussell und Großtrampolin im Rummel; Schanzenrutsche, physikalische Wippe, Zwillings-Trampoline und Teich-Fähre auf der Spielzeug-Wiese; Vertikallift zum Parkour). Smoke-Test `tests/smoke/hub_smoke.gd` um Spielplatz-Prüfungen und Trampolin-Sprungdynamik erweitert (31/31 bestanden).
+Entscheidungen: D103, D104, D105, D106
+Getestet: Unit-Tests 31/31; compile_smoke 138/0; smoke-hub 31/31; smoke-m1 50/50; smoke-m2 39/39; asset_audit erfolgreich.
+Probleme / Bekannte Fehler: keine.
+Nächster Schritt: WP 3 (Schwieriges Jump'n'Run: Fordernder Parkour & Kletterturm mit Rückfall-Sicherung und Siegerkrone an der Spitze).
+Aktuelle Kopie liegt in: Git-Repo `https://github.com/sudoMrMCaffe/PartyPark.git` und lokal in `c:\Users\VM\Desktop\PartyPark`
+
+
 ## 2026-10-21: Patch v0.7 „Der Park“ – WP 1 abgeschlossen
 
 Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
