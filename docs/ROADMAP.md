@@ -72,7 +72,7 @@ Umgestellt am 2026-10-21 (D80, D81): v0.5 setzt den Schwerpunkt auf Grafik; die 
 | v0.4 | Spieleabend | Hörbar, spürbar, flüssig: Effekte, Sound, Ansager, Leistung, drei neue Spiele, Bauanleitung für Minispiele | Claude (Cowork), umgesetzt |
 | v0.5 | Neuer Look | Grafik im Fokus: Stilrichtung, freie CC0-Assets und eigene Modelle, Themen-Arenen, Park-Kulisse, Figur, Waffen, Licht, Materialien, UI mit Tastensymbolen, Leistung | Claude (Cowork) bis WP 2, Rest in Antigravity (D89) |
 | v0.6 | Mehr Chaos | Sechs neue Spiele, Rache-Modus für Ausgeschiedene, Formatvarianten, Wiederholung des besten Moments, Bonustitel, Finale | Antigravity |
-| v0.7 | Der Park | Herzstück (Q01): Vorschlag „Parkrundfahrt“, ein Brettspiel auf einem begehbaren Freizeitpark | Antigravity |
+| v0.7 | Der Park | Herzstück (Q01, D98): Voll begehbarer 3D-Freizeitpark als interaktive Lobby zwischen den Minispielen | Antigravity, erledigt (2026-10-21) |
 | v0.8 | Party-Joker | Regel-Modifikatoren, Mikrospiel-Marathon, Sammelalbum mit Hüten, Saboteur-Format | Antigravity |
 | v0.9 | Rettet den Park, Für alle | Koop-Kampagne, Zugänglichkeit, Englisch, Musik, Feinschliff | Antigravity |
 | v1.0 | Eröffnung | Release-Builds Windows und Linux, Bazzite/Steam Deck geprüft, mind. 30 Minispiele | Antigravity |
@@ -138,7 +138,7 @@ Ziel: Ein interaktives 3D-Lobby-Areal im Freizeitpark, das als nahtlose Brücke 
 | 7.5 | Dynamische Großraum-Kamera für bis zu 4 Spieler (Zoom-Limits, Offscreen-Indikatoren D113, Turm-Neigung D114) | Super Smash Bros, Mario 3D World | erledigt (2026-10-21, WP 5: HubCamera modes/hub/hub_camera.gd, Höhen-Lerp 48°->38°, 2D-Indikatoren mit Distanz, Haltepunkt 2 erreicht) |
 | 7.6 | Parkbesucher & Rummelplatz-Atmosphäre: Kenney Mini Characters am Wegrand, Lichterketten-Beleuchtung, Park-Geräusche | RollerCoaster Tycoon, Theme Park World | erledigt (2026-10-21, WP 6: Parkbesucher D115 modes/hub/crowd/park_visitor.gd, pulsierende Lichterketten D116 hub_string_lights.gd, zonenabhängiges Ambiente D117 hub_ambiance.gd, neue SFX cheer/bell/breeze) |
 | 7.7 | Übergänge & MatchFlow: Nahtloser Wechsel zwischen Lobby und Minispielen mit Rückkehr in den Park, Menü-Einbindung | Nintendo Land, Fall Guys | erledigt (2026-10-21, WP 7: Hauptmenü-Eintrag Freizeitpark, Pavillon-Rückkehr in den Park nach Turniersiegerehrung) |
-| 7.8 | Polishing, Testanleitung v0.7, Build & Export der `.exe` über partypark-patch-abschluss | | in Arbeit |
+| 7.8 | Polishing, Testanleitung v0.7, Build & Export der `.exe` über partypark-patch-abschluss | | erledigt (2026-10-21, WP 8: Testanleitung docs/TESTANLEITUNG_V0_7.md, Partypark.exe 114 MB gebaut, Version 0.7.0 gesetzt) |
 
 ### v0.8 „Party-Joker“
 

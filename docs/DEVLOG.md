@@ -13,6 +13,25 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-10-21: Patch v0.7 „Der Park“ – Vollständig abgeschlossen (Version 0.7.0)
+
+Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
+Erledigt: Patch v0.7 „Der Park“ vollständig umgesetzt und abgeschlossen. Alle 8 Arbeitspakete (WP 1 bis WP 8) fertiggestellt:
+- 3D-Freizeitpark-Lobby (`modes/hub/`) mit zentraler Plaza, 4 Themenzonen (Parkour/Turm, Rummelplatz, Attraktions-Boulevard, Spielzeug-Wiese), Umrandung und Kulisse (D99).
+- Platforming-Spielplatz: Dynamisches Trampolin (D103), Schanzen-Rutsche (D104), Karussell mit Zentrifugalkraft (D105), physikalische Wippe (D106), Schwebelifte und Teich-Fähre.
+- Knackiges Jump'n'Run: 20m Kletterturm mit Sicherheitsnetzen (D107), schwebender Siegerkrone mit physikalischem Bogenflug bei Schubsern (D108) und Konfetti-Buzzer.
+- Minispiel-Portale: 7 Kirmes-Buden mit Themenwimpeln (D109), großer Turnier-Pavillon mit Rundenzahl-Umschaltung (D110), 3-Sekunden-Ready-Countdown (D111) und Holz-Wegweiser (D112).
+- Dynamische Großraum-Kamera: Zoom-Limits bei 46m, Offscreen-Indikatoren in Spielerfarben (D113), dynamische Turm-Höhenneigung von 48° auf 38° (D114).
+- Parkbesucher & Atmosphäre: 30 animierte Kenney Mini Characters mit Jubel-/Hüpf-Reaktionen (D115), pulsierende Lichterketten mit Abend-Verstärkung (D116), zonenabhängiges Audio-Ambiente (D117) und neue SFX (`cheer`, `bell`, `breeze`).
+- Übergänge & MatchFlow: Nahtloser Wechsel zwischen Park und Minispielen, Rückkehr nach Turnieren, Einbindung in das Hauptmenü.
+- Patch-Abschluss: `project.godot` Version auf `0.7.0` gesetzt, ausführliche Testanleitung `docs/TESTANLEITUNG_V0_7.md` geschrieben, eigenständige Windows-Executable `builds/windows/Partypark.exe` (114 MB) gebaut.
+Entscheidungen: D98 bis D117
+Getestet: Unit-Tests 31/31; compile_smoke 148/0; smoke-hub 58/58; smoke-m1 50/50; smoke-m2 39/39; smoke-games 12/12; asset_audit erfolgreich; Windows-Export `builds/windows/Partypark.exe` erfolgreich gebaut.
+Probleme / Bekannte Fehler: keine.
+Nächster Schritt: Leonardos Test mit Controllern anhand `docs/TESTANLEITUNG_V0_7.md`, danach Patch v0.8 „Party-Joker“.
+Aktuelle Kopie liegt in: Git-Repo `https://github.com/sudoMrMCaffe/PartyPark.git` und lokal in `c:\Users\VM\Desktop\PartyPark`
+
+
 ## 2026-10-21: Patch v0.7 „Der Park“ – WP 7 abgeschlossen
 
 Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
