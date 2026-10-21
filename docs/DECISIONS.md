@@ -105,6 +105,10 @@ Spalte „Von“: **L** = Leonardo, **KI** = technische Entscheidung eines Agent
 | D96 | 2026-10-21 | Schafe hüten Gameplay-Überarbeitung: Komplexere Aufgaben, Schafarten (z. B. störrischer Widder, Gold-Schaf) und Arena-Mechaniken für mehr Dynamik | Feedback „zu langweilig“, braucht mehr Spieltiefe | L |
 | D97 | 2026-10-21 | Tastensymbole aus kenney_input-prompts in Menüs und HUD grafisch einbinden (WP 8) | Text-Platzhalter wie [A] durch saubere Controller-Grafiken ersetzen | L |
 | D98 | 2026-10-21 | Q01 entschieden: Kein Brettspiel (Idee verworfen). Stattdessen 3D-Lobby-Areal (Freizeitpark-Hub) als Brücke zwischen Minispielen mit spaßiger Bewegung und spielerischen Elementen (z. B. schwieriges Jump'n'Run) | Wunsch von Leonardo: mehr Action und Bewegungsspaß statt Würfel-Runden | L |
+| D99 | 2026-10-21 | Lobby-Aufbau: Zentraler Festplatz (Plaza) mit Sternwegen zu vier thematischen Zonen (Rummel-Karussells, Parkour-Areal, Minispiel-Buden, Wasser-/Ruhebereich) | Bietet sofortigen Überblick, kurze Wege und klare Orientierung | L (Empfehlung angenommen) |
+| D100 | 2026-10-21 | Kletterturm-Parkour & Belohnung: Freistehender, vertikaler Kletterturm im Zentrum mit fordernden Sprungpassagen. An der Spitze wartet eine tragbare goldene Siegerkrone (beim Rempler auf andere Spieler übertragbar) sowie ein Aussichtspunkt mit Konfetti-Buzzer | Zentraler Blickfang und sportlicher Wettstreit für alle Spieler | L (Empfehlung angenommen) |
+| D101 | 2026-10-21 | Start von Attraktionen: Alle beigetretenen menschlichen Spieler müssen die jeweilige Aktivierungs-Plattform („Ready-Zone“) betreten | Verhindert versehentliche Starts und gibt allen Spielern Zeit zum gemeinsamen Sammeln | L (Empfehlung angenommen) |
+| D102 | 2026-10-21 | Lobby-Aktivitäten & Spielzeuge: Umfangreicher Spielzeugkasten für wartende Spieler (Physik-Bälle zum Kicken, harmlose Spielzeug-Blaster aus core/weapons/ mit Schubser-Effekt, tragbare/werfbare Kisten und kleine Mini-Scooter zum Herumkurven) | Maximaler Warte- und Bewegungsspaß auf dem Festplatz | L |
 
 ## Offene Fragen
 

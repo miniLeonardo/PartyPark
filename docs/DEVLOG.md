@@ -13,6 +13,17 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-10-21: Patch v0.7 „Der Park“ – WP 1 abgeschlossen
+
+Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
+Erledigt: Schritt 0 und 1 von Prompt 07 umgesetzt: Alle Systemtests grün, Version in `project.godot` auf 0.6.0 gesetzt, Entwickler-Schnellstart über `--hub` / `--lobby` in `core/game.gd` integriert. Fragerunde zu Park-Layout, Kletterturm, Startlogik und Spielzeugen durchgeführt und Entscheidungen D99 bis D102 in `docs/DECISIONS.md` festgehalten. Implementierungsplan für WP 1 vorgelegt und freigegeben. WP 1 (ROADMAP 7.1) umgesetzt: Begehbares 3D-Lobby-Areal in `modes/hub/` (`hub.tscn`, `hub.gd`, `hub_camera.gd`, `hub_props.gd`) mit zentraler Plaza, Springbrunnen, vier thematischen Sternwegen mit Torbögen (Parkour/Turm, Rummelplatz, Attraktionen, Spielzeug-Wiese), umlaufender Parkmauer mit Hecken, rotierendem Riesenrad, Achterbahn-Horizont, Zirkuszelten, Lichterketten, Laternen, Buden und Bäumen aus dem Kenney Coaster Kit. Dynamische Großraumkamera `HubCamera`, automatisches Spawning für 4 Spieler, Zonen-Erkennung und Absturz-Sicherung. Neuer Smoke-Test `tests/smoke/hub_smoke.gd` (--smoke-hub, 23/23 bestanden).
+Entscheidungen: D99, D100, D101, D102
+Getestet: Unit-Tests 31/31; compile_smoke 133/0; smoke-m1 50/50; smoke-m2 39/39; smoke-hub 23/23; asset_audit erfolgreich.
+Probleme / Bekannte Fehler: keine.
+Nächster Schritt: WP 2 (Bewegungs- & Platforming-Spielplatz: Trampoline, Rutschen, Karussell, bewegliche Plattformen).
+Aktuelle Kopie liegt in: Git-Repo `https://github.com/sudoMrMCaffe/PartyPark.git` und lokal in `c:\Users\VM\Desktop\PartyPark`
+
+
 ## 2026-10-21: Spieltest-Feedback eingearbeitet, Prompt 07 für v0.7 erstellt
 
 Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal

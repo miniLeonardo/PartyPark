@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://modes/hub/hub.gd" id="1_hub"]
+[ext_resource type="Script" path="res://modes/hub/hub_camera.gd" id="2_camera"]
+
+[node name="Hub" type="Node3D"]
+script = ExtResource("1_hub")
+
+[node name="HubCamera" type="Camera3D" parent="."]
+current = true
+script = ExtResource("2_camera")

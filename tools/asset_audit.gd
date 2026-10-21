@@ -38,6 +38,20 @@ func _run() -> void:
 			row["id"], row["triangles"], row["meshes"], row["mm_instances"], row["materials"], row["draw_calls"], row["max_texture"], row["lights"]])
 		sandbox.stop()
 		await get_tree().process_frame
+	if ResourceLoader.exists("res://modes/hub/hub.tscn"):
+		var hub_packed: PackedScene = load("res://modes/hub/hub.tscn")
+		var hub_inst: Node = hub_packed.instantiate()
+		add_child(hub_inst)
+		await get_tree().process_frame
+		await get_tree().process_frame
+		var hub_row: Dictionary = audit(hub_inst)
+		hub_row["name"] = "Freizeitpark (Hub)"
+		hub_row["id"] = "hub"
+		_rows.append(hub_row)
+		print("AUDIT %-16s Dreiecke %7d  Meshes %4d  MultiMesh-Instanzen %5d  Materialien %3d  Draw Calls ~%4d  Textur max %4d  Lichter %d" % [
+			hub_row["id"], hub_row["triangles"], hub_row["meshes"], hub_row["mm_instances"], hub_row["materials"], hub_row["draw_calls"], hub_row["max_texture"], hub_row["lights"]])
+		hub_inst.queue_free()
+		await get_tree().process_frame
 	var table: String = make_table(_rows)
 	print(table)
 	if OS.get_cmdline_user_args().has("--write"):

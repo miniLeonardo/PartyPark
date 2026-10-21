@@ -12,6 +12,7 @@ const OPTIONS_SCENE: String = "res://ui/options_menu/options_menu.tscn"
 const ARENA_SCENE: String = "res://modes/test_arena/test_arena.tscn"
 const TOURNAMENT_SCENE: String = "res://modes/tournament/tournament.tscn"
 const FREE_PLAY_SCENE: String = "res://modes/free_play/free_play.tscn"
+const HUB_SCENE: String = "res://modes/hub/hub.tscn"
 const PAUSE_MENU_SCENE: PackedScene = preload("res://ui/pause_menu/pause_menu.tscn")
 const DISCONNECT_OVERLAY_SCENE: PackedScene = preload("res://ui/disconnect_overlay/disconnect_overlay.tscn")
 
@@ -55,6 +56,9 @@ func _ready() -> void:
 		for arg: String in all_cmd_args:
 			if arg.begins_with("--play="):
 				add_child(MinigamePlayRunner.new())
+				break
+			elif arg == "--hub" or arg == "--lobby":
+				_start_hub_quickstart.call_deferred()
 				break
 
 
@@ -112,6 +116,30 @@ func start_tournament(rounds: int) -> void:
 
 func start_free_play() -> void:
 	_start_mode(FREE_PLAY_SCENE)
+
+
+func start_hub() -> void:
+	_start_mode(HUB_SCENE)
+
+
+func _start_hub_quickstart() -> void:
+	if not ResourceLoader.exists(HUB_SCENE):
+		printerr("[Schnellstart] Hub-Szene '%s' existiert noch nicht." % HUB_SCENE)
+		return
+	if get_tree().current_scene != null:
+		get_tree().current_scene.queue_free()
+		await get_tree().process_frame
+	PlayerRoster.clear_cpus()
+	for source: InputSource in InputRouter.get_sources():
+		if source is GamepadInput and source.is_available():
+			PlayerRoster.join(source)
+	if PlayerRoster.get_human_slots().is_empty():
+		for source: InputSource in InputRouter.get_sources():
+			if source is KeyboardInput and source.key == "kb:left":
+				PlayerRoster.join(source)
+				break
+	PlayerRoster.fill_with_cpu()
+	start_hub()
 
 
 ## Kompatibel zu M1: startet die Testarena.
