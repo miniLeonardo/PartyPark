@@ -21,12 +21,18 @@ Fasse dem Nutzer danach in zwei bis drei Sätzen zusammen, wo das Projekt steht,
 ## Goldene Regeln
 
 1. **Spieldesign entscheidet Leonardo.** Bevor du etwas umsetzt, das beeinflusst, wie sich das Spiel spielt, anfühlt, aussieht oder anhört, frage nach. Biete 2 bis 4 konkrete Optionen an, markiere deine Empfehlung und begründe sie in einem Satz. Bündle mehrere Fragen, statt einzeln nachzuhaken. Bis zur Antwort darfst du an technisch unabhängigen Teilen weiterarbeiten oder einen klar gekennzeichneten Platzhalter verwenden.
-2. **Was als Spieldesignentscheidung gilt:** Steuerung und Tastenbelegung, Bewegungsgefühl (Tempo, Sprunghöhe, Trägheit), Kameraperspektive, Regeln, Siegbedingungen und Punktevergabe eines Minispiels, Dauer von Runden, Teamzuweisung, Schwierigkeit und Verhalten der KI-Gegner, Figuren, Thema, Grafikstil, Farben, Sound und Musik, Texte und Namen, Menüabläufe, Auswahl und Reihenfolge der Minispiele.
-3. **Technische Entscheidungen** (Code-Struktur, Benennung, Algorithmen, Hilfsklassen) triffst du selbst. Größere Weichenstellungen trägst du in `docs/DECISIONS.md` ein.
-4. **Kontext sichern.** Eine Sitzung oder ein Meilenstein ist erst abgeschlossen, wenn `docs/DEVLOG.md` (neuer Eintrag oben), `docs/ROADMAP.md` (Status) und `docs/DECISIONS.md` (neue Entscheidungen und offene Fragen) aktualisiert sind. Schreibe so, dass eine andere KI auf einem anderen PC ohne Chatverlauf weitermachen kann.
-5. **Immer lauffähig.** Das Projekt muss nach jedem Schritt fehlerfrei starten. Lieber kleine, getestete Schritte als große Umbauten.
-6. **Keine neuen Abhängigkeiten ohne Rückfrage.** Addons, Plugins und fremde Assets nur nach Zustimmung. Erlaubte Lizenzen: CC0, CC-BY, MIT, vergleichbar freie. Jede fremde Datei wird in `assets/CREDITS.md` mit Quelle und Lizenz eingetragen.
-7. **Doku nicht umschreiben, sondern ergänzen.** Alte Einträge in DEVLOG und DECISIONS bleiben stehen. Überholte Entscheidungen werden als „ersetzt durch Dxx“ markiert.
+2. **Rückfragen und Abstimmung:**
+   - Designfragen im Chat immer als nummerierte Fragen mit Optionen A, B, C formulieren.
+   - Die Empfehlung steht als erste Option mit einer einzeiligen Begründung voran.
+   - Maximal 4 Fragen auf einmal bündeln, dann auf Antwort warten und die Entscheidung sofort in `docs/DECISIONS.md` eintragen.
+   - Bei optischen Gestaltungsfragen immer erst 2 bis 3 gerenderte Bildvarianten derselben Ansicht vorlegen, dann fragen.
+   - Vor jedem größeren Arbeitspaket einen Implementierungsplan als Artefakt zur Freigabe vorlegen.
+3. **Was als Spieldesignentscheidung gilt:** Steuerung und Tastenbelegung, Bewegungsgefühl (Tempo, Sprunghöhe, Trägheit), Kameraperspektive, Regeln, Siegbedingungen und Punktevergabe eines Minispiels, Dauer von Runden, Teamzuweisung, Schwierigkeit und Verhalten der KI-Gegner, Figuren, Thema, Grafikstil, Farben, Sound und Musik, Texte und Namen, Menüabläufe, Auswahl und Reihenfolge der Minispiele.
+4. **Technische Entscheidungen** (Code-Struktur, Benennung, Algorithmen, Hilfsklassen) triffst du selbst. Größere Weichenstellungen trägst du in `docs/DECISIONS.md` ein.
+5. **Kontext sichern.** Eine Sitzung oder ein Meilenstein ist erst abgeschlossen, wenn `docs/DEVLOG.md` (neuer Eintrag oben), `docs/ROADMAP.md` (Status) und `docs/DECISIONS.md` (neue Entscheidungen und offene Fragen) aktualisiert sind. Schreibe so, dass eine andere KI auf einem anderen PC ohne Chatverlauf weitermachen kann.
+6. **Immer lauffähig.** Das Projekt muss nach jedem Schritt fehlerfrei starten. Lieber kleine, getestete Schritte als große Umbauten.
+7. **Keine neuen Abhängigkeiten ohne Rückfrage.** Addons, Plugins und fremde Assets nur nach Zustimmung. Erlaubte Lizenzen: CC0, CC-BY, MIT, vergleichbar freie. Jede fremde Datei wird in `assets/CREDITS.md` mit Quelle und Lizenz eingetragen.
+8. **Doku nicht umschreiben, sondern ergänzen.** Alte Einträge in DEVLOG und DECISIONS bleiben stehen. Überholte Entscheidungen werden als „ersetzt durch Dxx“ markiert.
 
 ## Technik
 
@@ -42,37 +48,43 @@ Fasse dem Nutzer danach in zwei bis drei Sätzen zusammen, wo das Projekt steht,
 
 ### Nützliche Befehle
 
-```
+```powershell
+# Unter Windows lautet der Aufruf .\Godot_v4.7.2-stable_win64_console.exe (oder godot unter Linux)
+
 # Projekt importieren und auf Ladefehler prüfen (ohne Fenster)
-godot --headless --path . --import
+.\Godot_v4.7.2-stable_win64_console.exe --headless --path . --import
 
 # Einzelnes Skript auf Syntaxfehler prüfen
-godot --headless --path . --check-only --script res://pfad/zum/skript.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless --path . --check-only --script res://pfad/zum/skript.gd
 
-# Unit-Tests (TeamAssigner, Punkte, Registry)
-godot --headless --path . --script res://tests/run_tests.gd
+# Unit-Tests (TeamAssigner, Punkte, Registry, Fx, Sfx, Announcer)
+.\Godot_v4.7.2-stable_win64_console.exe --headless --path . --script res://tests/run_tests.gd
 
 # Alle Skripte und Szenen laden (findet Parse-Fehler, auch mit Autoloads)
-godot --headless --path . -- --smoke-compile
+.\Godot_v4.7.2-stable_win64_console.exe --headless --path . -- --smoke-compile
 
 # Durchläufe mit simulierten Eingaben (Exit-Code 0 = grün)
-godot --headless --path . -- --smoke-m1
-godot --headless --path . --fixed-fps 60 -- --smoke-m2
-godot --headless --path . --fixed-fps 60 -- --smoke-games
+.\Godot_v4.7.2-stable_win64_console.exe --headless --path . -- --smoke-m1
+.\Godot_v4.7.2-stable_win64_console.exe --headless --path . --fixed-fps 60 -- --smoke-m2
+.\Godot_v4.7.2-stable_win64_console.exe --headless --path . --fixed-fps 60 -- --smoke-games
+
+# Asset-Audit je Arena (Dreiecke, Meshes, Draw Calls, Lichter)
+.\Godot_v4.7.2-stable_win64_console.exe --headless --path . -- --tool-asset_audit
+
+# Bildschirmfotos / Stilproben rendern (1280x720, alle Stimmungen)
+.\Godot_v4.7.2-stable_win64_console.exe --path . --resolution 1280x720 -- --smoke-style_probe --shots=docs/screenshots/check --moods=noon,golden,evening
 
 # Geräusche aus tools/sfx_recipes.gd neu erzeugen, danach --import
-godot --headless --path . --script res://tools/sfx_gen.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless --path . --script res://tools/sfx_gen.gd
 
 # Neues Minispiel anlegen (Anleitung docs/MINIGAME_GUIDE.md)
-godot --headless --path . --script res://tools/new_minigame.gd -- --id=<id> --name="<Name>" --formats=ffa
+.\Godot_v4.7.2-stable_win64_console.exe --headless --path . --script res://tools/new_minigame.gd -- --id=<id> --name="<Name>" --formats=ffa
 
 # Messmodus (mit Fenster, Ergebnis in user://bench.txt, siehe docs/PERFORMANCE.md)
-godot --path . -- --bench
+.\Godot_v4.7.2-stable_win64_console.exe --path . -- --bench
 ```
 
 `--check-only` kennt keine Autoloads; stattdessen `--smoke-compile` nutzen. `--smoke-m2` spielt ein ganzes Turnier und jedes Minispiel durch; mit `--fixed-fps 60` ohne Echtzeit in Sekunden.
-
-`godot` steht für die Programmdatei von Godot 4.7.x auf dem jeweiligen System.
 
 ## Code-Konventionen
 
@@ -110,9 +122,10 @@ godot --path . -- --bench
 
 ## Arbeitsumgebungen
 
-1. **Hauptablage:** `C:\Users\wad32muj\Agentenraum\partypark` auf Leonardos Rechner `ulb-pc10039`. Git-Commits entstehen dort lokal (Leonardo, Antigravity oder eine lokale Shell). Claude (Cowork) arbeitet über den verbundenen Ordner, Details in `CLAUDE.md`.
-2. **Antigravity oder andere IDE:** Ordner öffnen, `AGENTS.md` wird automatisch gelesen. Git-Historie liegt im Ordner `.git`.
-3. Wechselt die Umgebung, wird das im DEVLOG vermerkt, damit klar ist, welche Kopie die aktuelle ist.
+1. **Hauptumgebung:** Lokale Arbeitsumgebung unter Windows mit echter Grafikkarte (Terminal, Godot, Git). Alle Änderungen werden lokal getestet und committet.
+2. **Austauschweg:** Das GitHub-Repository `https://github.com/sudoMrMCaffe/PartyPark.git` dient als zentraler Austauschweg zwischen Arbeitsrechnern, CI (GitHub Actions) und Bazzite.
+3. **Claude (Cowork):** Holt den aktuellen Stand über Git (Details in `CLAUDE.md`).
+4. Wechselt die Umgebung, wird das im DEVLOG vermerkt, damit klar ist, welche Kopie die aktuelle ist.
 
 ## Definition of Done für eine Aufgabe
 

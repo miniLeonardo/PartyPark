@@ -13,6 +13,16 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-10-21: Übergabe an Antigravity abgeschlossen
+
+Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
+Erledigt: Teil A abgeschlossen: Alle automatischen Tests ausgeführt und grün (Unit 31/31, compile 122 Dateien 0 Fehler, smoke-m1 50/50, smoke-m2 39/39, smoke-games 12/12). Asset-Audit ausgeführt. Import-Problem durch `.gdignore` in `assets/_incoming/` dauerhaft gelöst (alle 52 WAVs und GLBs sauber importiert). Stilproben in 1280x720 in allen drei Stimmungen erfolgreich gerendert und geprüft (`docs/screenshots/check/`). Spiel sichtbar gestartet. `AGENTS.md` um Windows-Befehle, Asset-Audit, Screenshots und Rückfrageregeln erweitert (bleibt unter 12.000 Zeichen). `CLAUDE.md` mit Hinweis auf Antigravity als Hauptumgebung versehen. Vier Antigravity-Skills in `.agents/skills/` angelegt (`partypark-tests`, `partypark-screenshots`, `partypark-minigame`, `partypark-patch-abschluss`). ROADMAP 6.0 auf erledigt.
+Entscheidungen: D90
+Getestet: Unit-Tests 31/31; compile_smoke 122/0; smoke-m1 50/50; smoke-m2 39/39; smoke-games 12/12; asset_audit erfolgreich; smoke-style_probe 6 Screenshots erzeugt.
+Probleme / Bekannte Fehler: Intel UHD 630 meldet in Windows CM_PROB_FAILED_POST_START; Godot rendert Forward+ sauber und flüssig über Direct3D 12. Draw Calls bei Wackelwaben noch bei 604 (wird in WP 6 optimiert).
+Nächster Schritt: Teil B, Arbeitspaket 3 (Asset-Pipeline: genutzte Pakete aus `assets/_incoming/` nach `assets/third_party/` überführen, CREDITS.md).
+Aktuelle Kopie liegt in: Git-Repo `https://github.com/sudoMrMCaffe/PartyPark.git` und lokal in `c:\Users\VM\Desktop\PartyPark`
+
 ## 2026-10-21: Antigravity-Übernahme begonnen, Git-Sync und Vorbereitung GPU-Neustart
 
 Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal

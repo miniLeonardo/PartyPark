@@ -2,6 +2,9 @@
 
 # Ergänzungen für Claude
 
+> [!NOTE]
+> **Hinweis zur Umgebung (Stand 2026-10-21, D89):** Diese Datei beschreibt die historische Arbeitsweise von Claude (Cowork) über die Dateibrücke. Seit dem 21.10.2026 ist Google Antigravity die primäre Entwicklungsumgebung (lokal unter Windows mit echter Hardware und Shell). Claude holt den aktuellen Stand immer über das zentrale Git-Repository (`https://github.com/sudoMrMCaffe/PartyPark.git`).
+
 Alle Regeln aus `AGENTS.md` gelten. Diese Datei beschreibt nur, wie Claude in Cowork mit dem Projektordner auf Leonardos Rechner arbeitet.
 
 ## Wo das Projekt liegt
