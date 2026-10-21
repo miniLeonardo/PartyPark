@@ -97,6 +97,10 @@ Spalte „Von“: **L** = Leonardo, **KI** = technische Entscheidung eines Agent
 | D88 | 2026-10-21 | Entwicklerwerkzeuge mit Autoloads starten über `-- --tool-<name>` (lädt `res://tools/<name>.gd`, nur Debug-Builds); erstes Werkzeug `tools/asset_audit.gd` | `--script` kennt keine Autoloads | KI (Claude, Cowork) |
 | D89 | 2026-10-21 | Der Wechsel zu Antigravity erfolgt schon während v0.5: Claude (Cowork) hat Schritt 0 bis WP 2 umgesetzt, WP 3 bis 10 (inklusive neuem WP 5a „Waffen“) und alle weiteren Patches laufen in Antigravity; Übergabe und Rest von v0.5 über `docs/prompts/05_uebergabe_antigravity.md` (ergänzt D81) | Wunsch von Leonardo | L |
 | D90 | 2026-10-21 | Remote origin ist https://github.com/sudoMrMCaffe/PartyPark.git; compile_smoke.gd schließt _incoming aus | Synchronisation über GitHub eingerichtet; Rohdownloads in assets/_incoming/ werden beim Kompilier-Test übersprungen | L / KI (Antigravity) |
+| D91 | 2026-10-21 | Teststatus v0.6: Weiterarbeit erfolgt rein testgetrieben (alle Tests grün, Entwickler-Schnellstart über `--play=<id>` eingerichtet). Messwerte und Controller-Feedback werden bei Vorliegen nachgetragen | schneller Fortschritt ohne Blockaden | L (Empfehlung angenommen) |
+| D92 | 2026-10-21 | Rache-Modus (Q18): Ausgeschiedene Spieler agieren als Geister in Spielerfarbe am Rand und werfen auf Cooldown kleine Störungen (z. B. Bananenschale, Windstoß), ohne den Führenden unberechenbar zu ruinieren | hält alle 4 Spieler bis zum Rundenende aktiv am Controller | L (Empfehlung angenommen) |
+| D93 | 2026-10-21 | Die 6 neuen Spiele in v0.6: target_rally (FFA, Schießbude mit Blastern), coaster_brake (FFA, Achterbahn-Bremser), snack_stand (2v2, Imbissbude), log_flume (2v2, Wildwasserbahn), game_master (1v3, Der Spielleiter), track_builder (4vCPU, Gleisbau) | ausgewogener Mix aus Geschick, Tempo, Koop und Blaster-Einsatz über alle 4 Formate | L (Empfehlung angenommen) |
+| D94 | 2026-10-21 | Autoscooter-Steuerung (D51): Aktuelle Steuerung (Stick lenkt, A Gas, X Turbo-Rempler) bleibt bestehen | ermöglicht feines Dosieren, Rangieren und Lauer-Taktik am Gamepad | L (Empfehlung angenommen) |
 
 ## Offene Fragen
 
@@ -121,7 +125,7 @@ Beim Klären in die Tabelle oben übernehmen und hier als erledigt markieren.
 | Q15 | Balance der vier Minispiele nach dem ersten Spieleabend: Zeitlimits, Seilzahl, Stampfradius, Zugkraft im Tauziehen, Schafverhalten, Wolf. Stand 2026-10-20: Tauziehen und Riese angepasst (D53, D58); Computer gegen Computer endet Riese gegen Zwerge nach 10 bis 35 s, Tauziehen hat 7 bis 14 Kraftakte pro Runde | nach Test M3 | teilweise (D53, D58) |
 | Q16 | Versionsplan v0.4 bis v1.0 (ROADMAP) bestätigen oder umsortieren | vor Patch v0.4 | erledigt (D47) |
 | Q17 | Welche zwei Spiele aus der Schnellbau-Liste (GAME_DESIGN 9.5) kommen in v0.4? | Beginn Patch v0.4 | erledigt (D48, D49) |
-| Q18 | Rache-Modus für Ausgeschiedene grundsätzlich gewünscht? | vor v0.5 | offen |
+| Q18 | Rache-Modus für Ausgeschiedene grundsätzlich gewünscht? | vor v0.5 | erledigt (D92) |
 | Q19 | Joker-Karten (Regel-Modifikatoren) grundsätzlich gewünscht, und wer wählt (Letztplatzierter, Zufall, Abstimmung)? | vor v0.7 | offen |
 | Q20 | Veröffentlichungsziel: nur privat, itch.io oder Steam? | vor v1.0 | offen |
 | Q21 | Ansager: Brabbelstimme mit Sprechblasen, nur Text oder später echte Sprachaufnahmen? | Beginn Patch v0.4 | erledigt (D50) |

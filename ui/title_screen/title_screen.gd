@@ -51,6 +51,8 @@ func _update_prompt() -> void:
 
 
 func _process(delta: float) -> void:
+	if _prompt == null:
+		return
 	_pulse += delta
 	_prompt.modulate.a = 0.65 + 0.35 * sin(_pulse * 3.0)
 

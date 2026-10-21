@@ -12,6 +12,17 @@ var result: MinigameResult
 var running: bool = false
 
 
+## Startet ein Minispiel anhand seiner ID (D06). Wählt info.formats[0], falls format < 0.
+func start_by_id(id: StringName, format: int = -1, difficulty: int = 1, time_limit_override: float = -1.0, seed_value: int = 0) -> bool:
+	var info: MinigameInfo = MinigameRegistry.get_info(id)
+	if info == null:
+		push_error("MinigameSandbox: Unbekanntes Minispiel '%s'" % id)
+		return false
+	var chosen_format: int = format if format >= 0 else info.formats[0]
+	start(info, chosen_format, difficulty, time_limit_override, seed_value)
+	return true
+
+
 ## Baut das Minispiel auf und startet die Runde sofort (ohne Regeln und Countdown).
 ## time_limit_override > 0 ersetzt das Zeitlimit des Spiels.
 func start(info: MinigameInfo, format: int, difficulty: int = 1, time_limit_override: float = -1.0, seed_value: int = 0) -> void:

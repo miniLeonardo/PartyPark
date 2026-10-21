@@ -50,6 +50,12 @@ func _ready() -> void:
 				var tool_path: String = "res://tools/%s.gd" % arg.trim_prefix("--tool-")
 				if ResourceLoader.exists(tool_path):
 					add_child((load(tool_path) as GDScript).new())
+		var all_cmd_args: PackedStringArray = OS.get_cmdline_args()
+		all_cmd_args.append_array(OS.get_cmdline_user_args())
+		for arg: String in all_cmd_args:
+			if arg.begins_with("--play="):
+				add_child(MinigamePlayRunner.new())
+				break
 
 
 func _physics_process(_delta: float) -> void:

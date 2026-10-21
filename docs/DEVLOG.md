@@ -13,6 +13,16 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-10-21: Patch v0.6 „Mehr Chaos“ gestartet, Schritt 0 und 1 abgeschlossen
+
+Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
+Erledigt: Schritt 0 und 1 von Prompt 06 umgesetzt: Alle automatischen Tests ausgeführt und grün (Unit 31/31, compile 123 Dateien 0 Fehler, smoke-m1 50/50, smoke-m2 39/39, smoke-games 12/12, asset_audit erfolgreich). Entwickler-Schnellstart über `--play=<id>` (optional `--format=<format>`, `--mood=<mood>`, `--instant`) in `core/game.gd` und `MinigameSandbox` (`start_by_id`) eingerichtet; Minigames starten ohne Menü direkt auf dem Desktop oder im Headless-Modus. Fragerunde durchgeführt und Entscheidungen D91 bis D94 in `docs/DECISIONS.md` festgehalten (D91: rein testgetriebene Weiterarbeit; D92: Rache-Modus als Geister am Rand mit Störungen auf Cooldown; D93: 6 neue Spiele target_rally, coaster_brake, snack_stand, log_flume, game_master, track_builder; D94: Autoscooter-Steuerung beibehalten). Q18 als erledigt markiert. Implementierungsplan für WP 2 (Rache-Modus) als Artefakt vorgelegt.
+Entscheidungen: D91, D92, D93, D94; Q18 erledigt
+Getestet: Unit-Tests 31/31; compile_smoke 123/0; smoke-m1 50/50; smoke-m2 39/39; smoke-games 12/12; asset_audit erfolgreich; `--play=bumper_cars --instant`, `--play=tug_of_war --format=2v2 --instant` und `--play=sheep_herding` (MatchFlow) erfolgreich ausgeführt.
+Probleme / Bekannte Fehler: keine neuen Fehler.
+Nächster Schritt: WP 2 (Rache-Modus in `core/ghosts/`) nach Freigabe des Implementierungsplans umsetzen.
+Aktuelle Kopie liegt in: Git-Repo `https://github.com/sudoMrMCaffe/PartyPark.git` und lokal in `c:\Users\VM\Desktop\PartyPark`
+
 ## 2026-10-21: Übergabe an Antigravity abgeschlossen
 
 Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal

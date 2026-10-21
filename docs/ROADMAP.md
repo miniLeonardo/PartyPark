@@ -118,7 +118,7 @@ Ziel: Doppelt so viele Spiele, und niemand sitzt mehr untätig herum.
 | Nr | Aufgabe | Inspiration | Status |
 |---|---|---|---|
 | 6.0 | Übergabe: Antigravity einrichten, Tests unter Windows, Arbeitsweise in `AGENTS.md` umstellen (findet schon vor dem Rest von v0.5 statt, Prompt 05 Teil A) | | erledigt (2026-10-21, Antigravity als Hauptumgebung eingerichtet, alle Tests grün, Skills und Windows-Befehle da) |
-| 6.1 | Rache-Modus: Ausgeschiedene schweben als Geister am Arenarand und werfen kleine Störungen (Bananenschale, Windstoß); einmal gebaut, in jedem Spiel mit Ausscheiden nutzbar | Bomberman-Rachewagen, Mario-Kart-Ballongeister | offen |
+| 6.1 | Rache-Modus: Ausgeschiedene schweben als Geister am Arenarand und werfen kleine Störungen (Bananenschale, Windstoß); einmal gebaut, in jedem Spiel mit Ausscheiden nutzbar | Bomberman-Rachewagen, Mario-Kart-Ballongeister | in Arbeit (Plan vorgelegt, D92) |
 | 6.2 | Formatvarianten: vorhandene Spiele in weiteren Formaten (Autoscooter 2v2, Tauziehen als Vier-Seil-Stern FFA, Schafe hüten 2v2 als Wettstreit) | Mario Party Jamboree (Battle-, 2er-, 4er-Versionen) | offen |
 | 6.3 | Sechs neue Minispiele, mindestens eins je Format, aus GAME_DESIGN Abschnitt 9, gebaut nach `docs/ART_GUIDE.md` | | offen |
 | 6.4 | Wiederholung des entscheidenden Moments: Ringpuffer der letzten Sekunden, andere Kameraperspektive, Zeitlupe | Sport-Wiederholungen, Rocket League | offen |
