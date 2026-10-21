@@ -31,3 +31,10 @@ Vorgehen beim Fertigstellen eines Arbeitspakets, Meilensteins oder Release-Patch
    - Sinnvolle deutsche Commit-Nachricht mit Präfix (z. B. `v0.5 WP6: Themen-Arenen`).
    - `git push origin main` nach Freigabe ausführen.
    - GitHub Actions auf Erfolg prüfen.
+
+5. **Build & Export (.exe bereitstellen):**
+   - Windows-Export bauen:
+     ```powershell
+     .\Godot_v4.7.2-stable_win64_console.exe --headless --path . --export-release "Windows Desktop" builds/windows/Partypark.exe
+     ```
+   - Die eigenständige Datei `builds/windows/Partypark.exe` für Tests auf anderen PCs bereitstellen.
