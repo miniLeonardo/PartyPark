@@ -49,7 +49,7 @@ func _physics_process(delta: float) -> void:
 		State.CEREMONY, State.EMPTY:
 			if _timer > 1.5 and _any_human_confirm():
 				set_physics_process(false)
-				Game.goto_main_menu()
+				Game.return_after_tournament()
 
 
 func _next_round() -> void:

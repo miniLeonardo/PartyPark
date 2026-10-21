@@ -20,6 +20,8 @@ const DISCONNECT_OVERLAY_SCENE: PackedScene = preload("res://ui/disconnect_overl
 var match_running: bool = false
 ## Gewählte Rundenzahl für das nächste Schnellturnier.
 var tournament_rounds: int = 5
+## Wurde das Turnier aus dem Freizeitpark-Hub heraus gestartet?
+var launched_from_hub: bool = false
 
 var pause_menu: PauseMenu
 var disconnect_overlay: DisconnectOverlay
@@ -120,6 +122,14 @@ func start_free_play() -> void:
 
 func start_hub() -> void:
 	_start_mode(HUB_SCENE)
+
+
+func return_after_tournament() -> void:
+	if launched_from_hub:
+		launched_from_hub = false
+		start_hub()
+	else:
+		goto_main_menu()
 
 
 func _start_hub_quickstart() -> void:

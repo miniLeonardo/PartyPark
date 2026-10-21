@@ -135,6 +135,7 @@ func _on_flow_completed(_result: MinigameResult, _points: Dictionary) -> void:
 
 ## Startet das Schnellturnier am Pavillon (D110).
 func start_tournament_from_hub(rounds: int) -> void:
+	Game.launched_from_hub = true
 	Game.start_tournament(rounds)
 
 

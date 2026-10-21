@@ -2,7 +2,7 @@ extends Node
 ## Hauptmenü (D29): Schnellturnier (Rundenzahl mit links/rechts), Freies Spiel, Testarena, Optionen, Beenden.
 ## Jeder beigetretene Spieler kann navigieren; B führt zurück zum Beitritt.
 
-enum Item { TOURNAMENT, FREE_PLAY, TEST_ARENA, OPTIONS, QUIT }
+enum Item { TOURNAMENT, FREE_PLAY, TEST_ARENA, OPTIONS, HUB, QUIT }
 
 var menu: MenuList
 var _hint: Label
@@ -59,6 +59,7 @@ func _build_items() -> void:
 		{"text": "Freies Spiel"},
 		{"text": "Testarena"},
 		{"text": "Optionen"},
+		{"text": "Freizeitpark (Lobby)"},
 		{"text": "Beenden"},
 	]
 	menu.set_items(items)
@@ -113,6 +114,8 @@ func _on_activated(index: int) -> void:
 			Game.start_test_arena()
 		Item.OPTIONS:
 			Game.goto_options()
+		Item.HUB:
+			Game.start_hub()
 		Item.QUIT:
 			Game.quit_game()
 

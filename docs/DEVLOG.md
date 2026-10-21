@@ -13,6 +13,17 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-10-21: Patch v0.7 „Der Park“ – WP 7 abgeschlossen
+
+Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
+Erledigt: WP 7 (ROADMAP 7.7) umgesetzt: Nahtloser Übergang und MatchFlow zwischen Hauptmenü, Lobby-Hub und Minispielen/Turnieren. Hauptmenü `ui/main_menu/main_menu.gd` um Eintrag „Freizeitpark (Lobby)“ erweitert, ohne bestehende Index-Reihenfolgen der automatisierten Smoke-Tests zu stören. `core/game.gd` um `launched_from_hub` und `return_after_tournament()` ergänzt, sodass am Pavillon gestartete Turniere nach der Siegerehrung wieder direkt in den Freizeitpark zurückführen (während aus dem Menü gestartete Turniere ins Hauptmenü zurückkehren). Alle automatisierten Testläufe inklusive M1- und M2-Turnierflüsse erfolgreich verifiziert.
+Entscheidungen: D98, D109, D110
+Getestet: Unit-Tests 31/31; compile_smoke 148/0; smoke-hub 58/58; smoke-m1 50/50; smoke-m2 39/39; asset_audit erfolgreich.
+Probleme / Bekannte Fehler: keine.
+Nächster Schritt: WP 8 (Polishing, Testanleitung v0.7, Build & Export der `.exe` über partypark-patch-abschluss).
+Aktuelle Kopie liegt in: Git-Repo `https://github.com/sudoMrMCaffe/PartyPark.git` und lokal in `c:\Users\VM\Desktop\PartyPark`
+
+
 ## 2026-10-21: Patch v0.7 „Der Park“ – WP 6 abgeschlossen
 
 Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
