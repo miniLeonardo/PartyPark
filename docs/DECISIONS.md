@@ -101,6 +101,9 @@ Spalte „Von“: **L** = Leonardo, **KI** = technische Entscheidung eines Agent
 | D92 | 2026-10-21 | Rache-Modus (Q18): Ausgeschiedene Spieler agieren als Geister in Spielerfarbe am Rand und werfen auf Cooldown kleine Störungen (z. B. Bananenschale, Windstoß), ohne den Führenden unberechenbar zu ruinieren | hält alle 4 Spieler bis zum Rundenende aktiv am Controller | L (Empfehlung angenommen) |
 | D93 | 2026-10-21 | Die 6 neuen Spiele in v0.6: target_rally (FFA, Schießbude mit Blastern), coaster_brake (FFA, Achterbahn-Bremser), snack_stand (2v2, Imbissbude), log_flume (2v2, Wildwasserbahn), game_master (1v3, Der Spielleiter), track_builder (4vCPU, Gleisbau) | ausgewogener Mix aus Geschick, Tempo, Koop und Blaster-Einsatz über alle 4 Formate | L (Empfehlung angenommen) |
 | D94 | 2026-10-21 | Autoscooter-Steuerung (D51): Aktuelle Steuerung (Stick lenkt, A Gas, X Turbo-Rempler) bleibt bestehen | ermöglicht feines Dosieren, Rangieren und Lauer-Taktik am Gamepad | L (Empfehlung angenommen) |
+| D95 | 2026-10-21 | Steuerung: Trigger (RT / R2) für Primäraktionen (Gas/Boost in Autoscooter, Schuss in Zerfetzung, Scheuchen in Schafe hüten); A bleibt Bestätigen/Springen, B Zurück/Aktion | ergonomischeres Gefühl am Gamepad, Standard für Fahr- und Schießaktionen | L |
+| D96 | 2026-10-21 | Schafe hüten Gameplay-Überarbeitung: Komplexere Aufgaben, Schafarten (z. B. störrischer Widder, Gold-Schaf) und Arena-Mechaniken für mehr Dynamik | Feedback „zu langweilig“, braucht mehr Spieltiefe | L |
+| D97 | 2026-10-21 | Tastensymbole aus kenney_input-prompts in Menüs und HUD grafisch einbinden (WP 8) | Text-Platzhalter wie [A] durch saubere Controller-Grafiken ersetzen | L |
 
 ## Offene Fragen
 

@@ -13,6 +13,16 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-10-21: Spieltest-Feedback eingearbeitet, Prompt 07 für v0.7 erstellt
+
+Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
+Erledigt: Spieltest-Notizen von Leonardo aus dem Build ausgewertet und in `docs/DECISIONS.md` festgehalten: D95 (Trigger RT/R2 als Standard für Gas/Boost in Autoscooter, Schuss in Zerfetzung, Scheuchen in Schafe hüten; A Bestätigen/Springen, B Zurück/Aktion), D96 (Schafe hüten Gameplay-Rework für mehr Dynamik und komplexere Aufgaben), D97 (Tastensymbole aus `kenney_input-prompts` in Menüs und HUD grafisch einbinden). Prompt `docs/prompts/07_patch_v0_7.md` für Patch v0.7 „Der Park“ (Brettspiel-Modus „Parkrundfahrt“, Würfel, Ereignisfelder, Kiosk-Items) nach Vorlage ausgearbeitet.
+Entscheidungen: D95, D96, D97
+Getestet: Exportierte `Partypark.exe` läuft auf Windows.
+Probleme / Bekannte Fehler: keine.
+Nächster Schritt: Trigger-Steuerung und Schafe-Gameplay vorbereiten, dann Weiterarbeit nach Aufgabenplan.
+Aktuelle Kopie liegt in: Git-Repo `https://github.com/sudoMrMCaffe/PartyPark.git` und lokal in `c:\Users\VM\Desktop\PartyPark`
+
 ## 2026-10-21: Patch v0.6 „Mehr Chaos“ gestartet, Schritt 0 und 1 abgeschlossen
 
 Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
