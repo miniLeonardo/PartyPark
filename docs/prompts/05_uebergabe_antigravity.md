@@ -2,8 +2,8 @@
 
 Stand 2026-10-21: v0.5 „Neuer Look“ wurde in Claude (Cowork) nur bis einschließlich WP 2 umgesetzt (Stil steht, Look-System, ART_GUIDE, Prüfskript, erstes Asset-Paket). Der Rest von v0.5 (WP 3 bis 10) und alle weiteren Patches laufen in Antigravity (D89).
 
-**Vorher durch Leonardo:** Im Projektordner den aktuellen Stand committen und auf GitHub pushen (Commit-Vorschlag: `v0.5 WP1-2: Stil, Look-System, ART_GUIDE, Asset-Audit`). Dann in Antigravity den Ordner `C:\Users\wad32muj\Agentenraum\partypark` öffnen und diesen Text als erste Nachricht schicken. Teil A und Teil B können im selben Gespräch laufen; wird es lang, gilt der Abschnitt „Kontext sichern“.
-
+Im Projektordner den aktuellen Stand committen und auf GitHub pushen (Commit-Vorschlag: `v0.5 WP1-2: Stil, Look-System, ART_GUIDE, Asset-Audit`). Dann in Antigravity den Ordner `C:\Users\wad32muj\Agentenraum\partypark` öffnen und diesen Text als erste Nachricht schicken. Teil A und Teil B können im selben Gespräch laufen; wird es lang, gilt der Abschnitt „Kontext sichern“.
+Das lokale Git soll auf mein online Git repo https://github.com/sudoMrMCaffe/PartyPark übertragen werden
 ---
 
 Du übernimmst ab jetzt die Entwicklung von **Partypark**, einem lokalen 3D-Partyspiel für bis zu 4 Spieler an einem Bildschirm (Godot 4.7, GDScript, Jolt, Forward+, Windows und Linux/Bazzite). Bisher hat Claude (Cowork) daran gearbeitet, über eine Dateibrücke ohne eigene Shell auf meinem Rechner und mit Software-Rendering in der Cloud. Du arbeitest jetzt direkt lokal: Terminal, Godot mit echter Grafikkarte, Git. Ich bin Leonardo, Ideengeber und Spieldesigner.
