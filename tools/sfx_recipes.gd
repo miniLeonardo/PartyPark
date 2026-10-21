@@ -137,4 +137,13 @@ static func all() -> Dictionary:
 			{"wave": "triangle", "freq": 220.0, "freq_end": 235.0 + 10.0 * i, "attack": 0.008, "sustain": 0.05, "decay": 0.04, "lowpass": float(formant[0]) * 2.2},
 			{"wave": "sine", "freq": float(formant[0]), "attack": 0.008, "sustain": 0.04, "decay": 0.04, "volume": 0.35},
 			{"wave": "sine", "freq": float(formant[1]), "attack": 0.008, "sustain": 0.03, "decay": 0.03, "volume": 0.15}], "volume": 0.7}
+	# --- Freizeitpark & Besucher (D115, D117) ---
+	r["cheer"] = {"layers": [
+		{"wave": "sine", "freq": 440.0, "freq_end": 720.0, "vibrato": [0.8, 12.0], "attack": 0.01, "sustain": 0.15, "decay": 0.25, "volume": 0.65},
+		{"wave": "triangle", "freq": 660.0, "freq_end": 880.0, "vibrato": [1.0, 15.0], "attack": 0.015, "sustain": 0.12, "decay": 0.22, "delay": 0.03, "volume": 0.45},
+		{"wave": "sine", "freq": 880.0, "freq_end": 1100.0, "attack": 0.02, "sustain": 0.1, "decay": 0.2, "delay": 0.06, "volume": 0.3}], "volume": 0.75}
+	r["bell"] = {"layers": [
+		{"wave": "sine", "freq": 1318.5, "attack": 0.001, "sustain": 0.03, "decay": 0.35, "punch": 0.4},
+		{"wave": "triangle", "freq": 2637.0, "attack": 0.001, "sustain": 0.02, "decay": 0.2, "volume": 0.4}], "volume": 0.6}
+	r["breeze"] = {"wave": "noise", "freq": 1200.0, "freq_end": 600.0, "attack": 0.1, "sustain": 0.4, "decay": 0.4, "lowpass": 1800.0, "highpass": 300.0, "volume": 0.4, "seed": 44}
 	return r

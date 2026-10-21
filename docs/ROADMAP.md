@@ -136,8 +136,8 @@ Ziel: Ein interaktives 3D-Lobby-Areal im Freizeitpark, das als nahtlose Brücke 
 | 7.3 | Forderndes Jump'n'Run (Parkour / Turm): Knifflige Sprungpassagen mit Belohnung an der Spitze (Aussichtspunkt, Krone, Sound) | Mario Sunshine Klettergerüste, Roblox Obby | erledigt (2026-10-21, WP 3: Kletterturm modes/hub/tower/, 3 Passagen, Sicherheitsnetze D107, Siegerkrone mit Bogenflug D108, Konfetti-Buzzer, Haltepunkt 1 erreicht) |
 | 7.4 | Minispiel-Stationen: Attraktionen im Park mit Anmelde-Podesten („Drücke A für Start“); Turniermodus führt von Station zu Station | Mario Party Hub, Nintendo Land | erledigt (2026-10-21, WP 4: Attraktions-Boulevard, Minispiel-Buden D109, Turnier-Pavillon D110, Ready-Pads mit 3s-Countdown D111, Wegweiser D112) |
 | 7.5 | Dynamische Großraum-Kamera für bis zu 4 Spieler (Zoom-Limits, Offscreen-Indikatoren D113, Turm-Neigung D114) | Super Smash Bros, Mario 3D World | erledigt (2026-10-21, WP 5: HubCamera modes/hub/hub_camera.gd, Höhen-Lerp 48°->38°, 2D-Indikatoren mit Distanz, Haltepunkt 2 erreicht) |
-| 7.6 | Parkbesucher & Rummelplatz-Atmosphäre: Kenney Mini Characters am Wegrand, Lichterketten-Beleuchtung, Park-Geräusche | RollerCoaster Tycoon, Theme Park World | in Arbeit |
-| 7.7 | Übergänge & MatchFlow: Nahtloser Wechsel zwischen Lobby und Minispielen mit Rückkehr in den Park, Menü-Einbindung | Nintendo Land, Fall Guys | offen |
+| 7.6 | Parkbesucher & Rummelplatz-Atmosphäre: Kenney Mini Characters am Wegrand, Lichterketten-Beleuchtung, Park-Geräusche | RollerCoaster Tycoon, Theme Park World | erledigt (2026-10-21, WP 6: Parkbesucher D115 modes/hub/crowd/park_visitor.gd, pulsierende Lichterketten D116 hub_string_lights.gd, zonenabhängiges Ambiente D117 hub_ambiance.gd, neue SFX cheer/bell/breeze) |
+| 7.7 | Übergänge & MatchFlow: Nahtloser Wechsel zwischen Lobby und Minispielen mit Rückkehr in den Park, Menü-Einbindung | Nintendo Land, Fall Guys | in Arbeit |
 | 7.8 | Polishing, Testanleitung v0.7, Build & Export der `.exe` über partypark-patch-abschluss | | offen |
 
 ### v0.8 „Party-Joker“

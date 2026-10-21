@@ -30,6 +30,7 @@ static func build_hub_world(root: Node3D) -> void:
 	_build_playground(terrain)
 	_build_attractions(terrain)
 	_build_signposts(scenery)
+	_build_crowd(scenery)
 
 
 # --- 1. Boden & Zentraler Festplatz (Plaza) ---
@@ -333,9 +334,16 @@ static func _build_park_props(parent: Node3D) -> void:
 	tent_west.position = Vector3(-36.0, 0.0, -26.0)
 	parent.add_child(tent_west)
 
-	# 4. Lichterketten über dem zentralen Festplatz
-	parent.add_child(ParkProps.string_lights(Vector3(-10, 4.5, -10), Vector3(10, 4.5, 10), 14, 1.0))
-	parent.add_child(ParkProps.string_lights(Vector3(10, 4.5, -10), Vector3(-10, 4.5, 10), 14, 1.0))
+	# 4. Lichterketten über dem zentralen Festplatz (D116: dynamisch pulsierend)
+	var sl1 := HubStringLights.new()
+	sl1.name = "StringLights1"
+	sl1.add_child(ParkProps.string_lights(Vector3(-10, 4.5, -10), Vector3(10, 4.5, 10), 14, 1.0))
+	parent.add_child(sl1)
+
+	var sl2 := HubStringLights.new()
+	sl2.name = "StringLights2"
+	sl2.add_child(ParkProps.string_lights(Vector3(10, 4.5, -10), Vector3(-10, 4.5, 10), 14, 1.0))
+	parent.add_child(sl2)
 
 	# 5. Park-Laternen entlang der Wege und um die Plaza
 	var lamp_positions: Array[Vector3] = [
@@ -534,3 +542,60 @@ static func _build_signposts(parent: Node3D) -> void:
 		sp.name = "Signpost_%d" % i
 		sp.position = corners[i]
 		parent.add_child(sp)
+
+
+# --- 10. Lebendige Parkbesucher (D115) ---
+
+static func _build_crowd(parent: Node3D) -> void:
+	var crowd := Node3D.new()
+	crowd.name = "Crowd"
+	parent.add_child(crowd)
+
+	var visitor_positions: Array[Dictionary] = [
+		# Plaza & Brunnen
+		{"pos": Vector3(-4.5, 0.1, -4.5), "yaw": 45.0},
+		{"pos": Vector3(4.5, 0.1, 4.5), "yaw": -135.0},
+		{"pos": Vector3(5.0, 0.1, -3.5), "yaw": -45.0},
+		{"pos": Vector3(-5.0, 0.1, 3.5), "yaw": 135.0},
+		# An den Portal-Bögen
+		{"pos": Vector3(-3.2, 0.1, -11.0), "yaw": 20.0},
+		{"pos": Vector3(3.2, 0.1, -11.0), "yaw": -20.0},
+		{"pos": Vector3(11.0, 0.1, -3.2), "yaw": -70.0},
+		{"pos": Vector3(11.0, 0.1, 3.2), "yaw": -110.0},
+		{"pos": Vector3(-11.0, 0.1, -3.2), "yaw": 70.0},
+		{"pos": Vector3(-11.0, 0.1, 3.2), "yaw": 110.0},
+		# Attraktions-Boulevard (entlang der Buden)
+		{"pos": Vector3(-3.5, 0.1, 17.5), "yaw": 90.0},
+		{"pos": Vector3(-3.5, 0.1, 24.5), "yaw": 90.0},
+		{"pos": Vector3(-3.5, 0.1, 31.5), "yaw": 90.0},
+		{"pos": Vector3(3.5, 0.1, 18.5), "yaw": -90.0},
+		{"pos": Vector3(3.5, 0.1, 25.5), "yaw": -90.0},
+		{"pos": Vector3(3.5, 0.1, 32.5), "yaw": -90.0},
+		# Vor dem Turnier-Pavillon
+		{"pos": Vector3(-3.0, 0.1, 39.5), "yaw": 30.0},
+		{"pos": Vector3(3.0, 0.1, 39.5), "yaw": -30.0},
+		# Rummelplatz (Karussell, Trampolin, Buden)
+		{"pos": Vector3(28.0, 0.1, 0.0), "yaw": -90.0},
+		{"pos": Vector3(35.0, 0.1, 6.5), "yaw": 180.0},
+		{"pos": Vector3(41.5, 0.1, 0.0), "yaw": 90.0},
+		{"pos": Vector3(31.0, 0.1, -12.5), "yaw": -45.0},
+		{"pos": Vector3(25.5, 0.1, 6.0), "yaw": 110.0},
+		{"pos": Vector3(25.5, 0.1, -6.0), "yaw": 70.0},
+		# Spielzeug-Wiese & Teich
+		{"pos": Vector3(-26.0, 0.1, 12.0), "yaw": -60.0},
+		{"pos": Vector3(-37.5, 0.1, 14.0), "yaw": 90.0},
+		{"pos": Vector3(-30.0, 0.1, -2.5), "yaw": 30.0},
+		{"pos": Vector3(-36.0, 0.1, 3.0), "yaw": -45.0},
+		# Turm-Zuschauer
+		{"pos": Vector3(-4.5, 0.1, -33.0), "yaw": 30.0},
+		{"pos": Vector3(4.5, 0.1, -33.0), "yaw": -30.0},
+	]
+
+	for i: int in visitor_positions.size():
+		var data: Dictionary = visitor_positions[i]
+		var vis := ParkVisitor.new()
+		vis.name = "Visitor_%d" % i
+		vis.position = data["pos"]
+		vis.rotation_degrees = Vector3(0, data["yaw"], 0)
+		vis.model_index = i % ParkVisitor.CHARACTER_MODELS.size()
+		crowd.add_child(vis)

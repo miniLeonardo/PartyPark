@@ -13,6 +13,17 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-10-21: Patch v0.7 „Der Park“ – WP 6 abgeschlossen
+
+Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
+Erledigt: Fragerunde zu Besucher-Verhalten, Lichterketten-Dynamik und Audio-Atmosphäre durchgeführt und Entscheidungen D115 bis D117 in `docs/DECISIONS.md` festgehalten (D115: lebendige Zuschauer mit Idle-Animationen und freudiger Jubel-/Hüpf-Reaktion bei Spielernähe; D116: dynamisch pulsierende Lichterketten mit Verstärkung am Abend; D117: zonenabhängiges Park-Ambiente mit Murmeln, Rummel-Glocken und Turmwind). Kenney Mini Characters aus `assets/_incoming/` nach `assets/third_party/kenney_mini-characters/` übernommen und in `assets/CREDITS.md` eingetragen. Komponenten `ParkVisitor` (`modes/hub/crowd/park_visitor.gd`), `HubStringLights` (`modes/hub/crowd/hub_string_lights.gd`) und `HubAmbiance` (`modes/hub/crowd/hub_ambiance.gd`) implementiert. Neue Soundrezepte `cheer`, `bell`, `breeze` in `tools/sfx_recipes.gd` ergänzt und per `tools/sfx_gen.gd` erzeugt. 30 Parkbesucher an strategischen Orten (Plaza, Buden, Karussell, Spielplatz, Turm) platziert. Smoke-Test `tests/smoke/hub_smoke.gd` um Besucher-Reaktion, Lichterketten und Audio-Ambiente erweitert (58/58 bestanden).
+Entscheidungen: D115, D116, D117
+Getestet: Unit-Tests 31/31; compile_smoke 148/0; smoke-hub 58/58; asset_audit erfolgreich (360k Tris, 1360 Draw Calls).
+Probleme / Bekannte Fehler: keine.
+Nächster Schritt: WP 7 (Übergänge & MatchFlow: Nahtloser Wechsel zwischen Lobby und Minispielen, Menü-Einbindung).
+Aktuelle Kopie liegt in: Git-Repo `https://github.com/sudoMrMCaffe/PartyPark.git` und lokal in `c:\Users\VM\Desktop\PartyPark`
+
+
 ## 2026-10-21: Patch v0.7 „Der Park“ – WP 5 & Haltepunkt 2 erreicht
 
 Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal

@@ -209,6 +209,30 @@ func _run() -> void:
 		p1.global_position = Vector3(0, 0.4, 0)
 		await _frames(5)
 
+	# Parkbesucher & Atmosphäre prüfen (D115, D116, D117)
+	var crowd: Node = scenery.get_node_or_null("Crowd")
+	_check(crowd != null, "Parkbesucher-Knoten (Crowd) vorhanden (D115)")
+	if crowd != null:
+		var visitor_count: int = crowd.get_child_count()
+		_check(visitor_count >= 20, "Mindestens 20 Parkbesucher platziert (%d)" % visitor_count)
+		var vis0: ParkVisitor = crowd.get_node_or_null("Visitor_0") as ParkVisitor
+		_check(vis0 != null and vis0._model_node != null, "Parkbesucher-Modell erfolgreich instanziiert (Kenney Mini Characters)")
+		if vis0 != null:
+			# Reaktion bei Annäherung prüfen (D115)
+			p1.global_position = vis0.global_position + Vector3(0.5, 0, 0.5)
+			await _frames(10)
+			_check(vis0._hop_time > 0.0 or vis0._cheer_cooldown > 0.0, "Parkbesucher: Reagiert mit Hüpfen/Jubel auf Spielernähe (D115)")
+			p1.global_position = Vector3(0, 0.4, 0)
+			await _frames(5)
+
+	# Dynamisch pulsierende Lichterketten prüfen (D116)
+	var sl1: HubStringLights = scenery.get_node_or_null("StringLights1") as HubStringLights
+	_check(sl1 != null and not sl1._bulb_materials.is_empty(), "Dynamisch pulsierende Lichterketten aktiv (D116)")
+
+	# Audio-Atmosphäre prüfen (D117)
+	var ambiance: HubAmbiance = hub.get_node_or_null("Ambiance") as HubAmbiance
+	_check(ambiance != null, "Zonenabhängige Park-Audio-Atmosphäre (HubAmbiance) aktiv (D117)")
+
 	if not _shot_dir.is_empty():
 		p1.global_position = Vector3(32.0, 0.4, 0.0)
 		await _frames(15)

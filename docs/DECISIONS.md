@@ -121,6 +121,9 @@ Spalte „Von“: **L** = Leonardo, **KI** = technische Entscheidung eines Agent
 | D112 | 2026-10-21 | Wegweiser: Holz-Wegweiserpfähle mit bunten, beschrifteten Richtungspfeilen stehen an zentralen Weggabelungen | Bietet intuitive Orientierung zu Turm, Rummel, Attraktionen und Wiese | L (Empfehlung angenommen) |
 | D113 | 2026-10-21 | Kamera-Zoom & Offscreen-Pfeile: Sanfte Obergrenze des Kamera-Zooms auf max. 46 m Distanz, damit Figuren gut lesbar bleiben; Spieler außerhalb des Viewports erhalten farbige Indikator-Pfeile am Bildschirmrand | Klare Lesbarkeit und verlässliche Orientierung bei weit verteilten Spielern | L (Empfehlung angenommen) |
 | D114 | 2026-10-21 | Dynamische Turm-Neigung: Neigungswinkel passt sich an die Höhe der Kletternden an (48° am Boden, bis zu 38° bei Kletterhöhe) | Bietet optimalen Panoramablick und gute Tiefenwahrnehmung bei Präzisionssprüngen | L (Empfehlung angenommen) |
+| D115 | 2026-10-21 | Parkbesucher-Verhalten: Lebendige Zuschauer mit Idle-Animationen (Klatschen, Winken, Hüpfen), die freudig reagieren (Jubeln/Ausweichen), wenn Spieler nah vorbeirennen oder landen | Bringt maximale Lebendigkeit in den Park, ohne Wege zu blockieren oder CPU-Last durch Pfadfindung zu erzeugen | L (Empfehlung angenommen) |
+| D116 | 2026-10-21 | Beleuchtungs-Dynamik: Festliche Lichterketten mit sanft pulsierenden bunten Birnen, die am Tag dezent glimmen und am Abend hell strahlen | Schafft optimalen Freizeitpark-Flair und nutzt das 3-Stufen-Beleuchtungssystem stimmungsvoll | L (Empfehlung angenommen) |
+| D117 | 2026-10-21 | Park-Klangkulisse: Zonenabhängiges Ambiente mit sanftem Parkgemurmel und Blätterrauschen überall, dezenten Kirmes-Klängen im Rummel und Turmwind in der Höhe | Verstärkt das Entdeckungsgefühl und die Eigenheiten der Themenbereiche | L (Empfehlung angenommen) |
 
 ## Offene Fragen
 

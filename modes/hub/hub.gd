@@ -65,6 +65,13 @@ func _ready() -> void:
 
 	Announcer.say(&"round_start", {"game": "Freizeitpark"})
 	_connect_stations()
+	_setup_ambiance()
+
+
+func _setup_ambiance() -> void:
+	var amb := HubAmbiance.new()
+	amb.name = "Ambiance"
+	add_child(amb)
 
 
 func _connect_stations() -> void:
