@@ -13,6 +13,17 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-10-21: Patch v0.7 „Der Park“ – WP 4 abgeschlossen
+
+Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
+Erledigt: Fragerunde zu Stations-Optik, Turnier-Pavillon, Ready-Countdown und Wegweisern durchgeführt und Entscheidungen D109 bis D112 in `docs/DECISIONS.md` festgehalten (D109: bunte Kirmes-Buden mit Themenwimpel, Namensschild und leuchtender Bodenplatte; D110: prachtvoller Turnier-Pavillon am Kopf des Süd-Boulevards mit Rundenzahl-Umschaltung; D111: 3-Sekunden-Countdown mit Tonsignalen bei Vollzähligkeit, Abbruch beim Verlassen; D112: Holz-Wegweiserpfähle an Wegkreuzungen). Implementierungsplan für WP 4 vorgelegt. WP 4 (ROADMAP 7.4) umgesetzt: Komponenten in `modes/hub/stations/` (`activation_pad.gd`, `minigame_station.gd`, `tournament_pavilion.gd`, `signpost.gd`). Attraktions-Boulevard auf der Süd-Plaza errichtet mit 7 Minispiel-Buden, dem großen Turnier-Pavillon und 4 Wegweiserpfählen auf der Plaza. Signalverknüpfung in `Hub` (`play_minigame`, `start_tournament_from_hub`) integriert. Smoke-Test `tests/smoke/hub_smoke.gd` um Stations-, Pavillon- und Countdown-Prüfungen erweitert (45/45 bestanden).
+Entscheidungen: D109, D110, D111, D112
+Getestet: Unit-Tests 31/31; compile_smoke 145/0; smoke-hub 45/45; smoke-m1 50/50; smoke-m2 39/39; asset_audit erfolgreich.
+Probleme / Bekannte Fehler: keine.
+Nächster Schritt: WP 5 (Dynamische Kamera für bis zu 4 Spieler im großen Areal, Haltepunkt 2).
+Aktuelle Kopie liegt in: Git-Repo `https://github.com/sudoMrMCaffe/PartyPark.git` und lokal in `c:\Users\VM\Desktop\PartyPark`
+
+
 ## 2026-10-21: Patch v0.7 „Der Park“ – WP 3 & Haltepunkt 1 erreicht
 
 Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal

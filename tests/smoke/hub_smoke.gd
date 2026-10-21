@@ -149,6 +149,33 @@ func _run() -> void:
 		await _frames(5)
 		_check(tower.buzzer._cooldown > 0.0, "Konfetti-Buzzer: Löst bei Betreten der Turmspitze aus")
 
+	# Attraktionen, Minispiel-Buden & Turnier-Pavillon testen (D109, D110, D111, D112)
+	var attractions: Node = terrain.get_node_or_null("Attractions")
+	_check(attractions != null, "Attractions-Knoten auf dem Süd-Boulevard vorhanden")
+	if attractions != null:
+		var pavilion: HubTournamentPavilion = attractions.get_node_or_null("TournamentPavilion") as HubTournamentPavilion
+		_check(pavilion != null, "Turnier-Pavillon (HubTournamentPavilion) vorhanden")
+		if pavilion != null:
+			_check(pavilion.activation_pad != null, "Turnier-Pavillon besitzt eigenes ActivationPad")
+			# Rundenzahl-Umschalter testen
+			pavilion.rounds = 5
+			pavilion._on_switcher_entered(p1)
+			_check(pavilion.rounds == 10, "Turnier-Pavillon: Umschaltung auf 10 Runden erfolgreich")
+
+		var st_cars: HubMinigameStation = attractions.get_node_or_null("Station_bumper_cars") as HubMinigameStation
+		_check(st_cars != null and st_cars.info != null, "Minispiel-Bude Autoscooter (HubMinigameStation) vorhanden")
+		if st_cars != null and st_cars.activation_pad != null:
+			p1.global_position = st_cars.activation_pad.global_position + Vector3(0, 0.2, 0)
+			await _frames(5)
+			_check(st_cars.activation_pad._is_counting, "Aktivierungs-Pad: Countdown startet, wenn alle Menschen die Platte betreten")
+			# Verlassen bricht ab (D111)
+			p1.global_position = Vector3(0, 0.4, 0) # Zurück zur Plaza
+			await _frames(5)
+			_check(not st_cars.activation_pad._is_counting, "Aktivierungs-Pad: Countdown bricht sofort ab, wenn ein Spieler die Platte verlässt")
+
+	# Wegweiser prüfen (D112)
+	_check(scenery.get_node_or_null("Signpost_0") is HubSignpost, "Holz-Wegweiser (HubSignpost) an den Wegkreuzungen vorhanden")
+
 	if not _shot_dir.is_empty():
 		p1.global_position = Vector3(32.0, 0.4, 0.0)
 		await _frames(15)

@@ -64,6 +64,71 @@ func _ready() -> void:
 		players.append(player)
 
 	Announcer.say(&"round_start", {"game": "Freizeitpark"})
+	_connect_stations()
+
+
+func _connect_stations() -> void:
+	for station: HubMinigameStation in find_children("*", "HubMinigameStation", true, false):
+		station.activated.connect(play_minigame)
+	for pavilion: HubTournamentPavilion in find_children("*", "HubTournamentPavilion", true, false):
+		pavilion.tournament_requested.connect(start_tournament_from_hub)
+
+
+var active_flow: MatchFlow = null
+
+
+## Startet ein Minispiel direkt aus dem Park heraus (D109).
+func play_minigame(info: MinigameInfo) -> void:
+	if active_flow != null or info == null:
+		return
+
+	var format: int = info.formats[0]
+	var player_indices: Array[int] = []
+	for slot: PlayerSlot in PlayerRoster.get_active_slots():
+		player_indices.append(slot.index)
+	var assignment: TeamAssigner.Assignment = TeamAssigner.assign(RandomNumberGenerator.new(), format, player_indices, {})
+	var context: MinigameContext = MinigameContext.from_assignment(assignment, PlayerRoster.get_active_slots(), Settings.cpu_difficulty)
+
+	# Spielerfiguren im Hub für die Dauer des Spiels pausieren
+	for p: Player in players:
+		p.visible = false
+		p.controls_enabled = false
+
+	var hud: Node = get_node_or_null("Hud")
+	if hud != null:
+		(hud as CanvasLayer).visible = false
+	if camera != null:
+		camera.current = false
+
+	active_flow = MatchFlow.new()
+	add_child(active_flow)
+	active_flow.completed.connect(_on_flow_completed)
+	active_flow.start(info, context, info.display_name, false)
+
+
+func _on_flow_completed(_result: MinigameResult, _points: Dictionary) -> void:
+	if active_flow != null:
+		active_flow.queue_free()
+		active_flow = null
+
+	for p: Player in players:
+		p.visible = true
+		p.controls_enabled = true
+
+	var hud: Node = get_node_or_null("Hud")
+	if hud != null:
+		(hud as CanvasLayer).visible = true
+	if camera != null:
+		camera.current = true
+
+	Look.use_mood(Look.menu_mood())
+	StageKit.add_environment(self)
+	Game.match_running = true
+
+
+## Startet das Schnellturnier am Pavillon (D110).
+func start_tournament_from_hub(rounds: int) -> void:
+	Game.start_tournament(rounds)
 
 
 func _physics_process(delta: float) -> void:

@@ -115,6 +115,10 @@ Spalte „Von“: **L** = Leonardo, **KI** = technische Entscheidung eines Agent
 | D106 | 2026-10-21 | Bewegliche Plattformen: Vielfältiger Mix aus physikalischen Wippen (Gewichtsreaktion), Schwebeliften und horizontalen Pendeln | Bietet abwechslungsreiche Platforming-Elemente in der Spielplatz-Zone | L (Empfehlung angenommen) |
 | D107 | 2026-10-21 | Kletterturm-Schwierigkeit: Knackig fordernder Parkour mit schmalen Balken und vertikalen Sprüngen, abgesichert durch Sicherheitsnetze alle 6 Höhenmeter | Verlangt gutes Sprungtiming und verhindert frustrierende Abstürze bis ganz nach unten | L (Empfehlung angenommen) |
 | D108 | 2026-10-21 | Siegerkrone-Verhalten: Krone schwebt auf der Turmspitze; wird sie getragen und der Spieler geschubst, springt sie als Physik-Item mit Bogenflug ab, prallt am Boden ab und kann von jedem neu aufgesammelt werden | Sorgt für chaotische, spannende Gerangel um die Krone | L |
+| D109 | 2026-10-21 | Stations-Optik: Minispiel-Stationen sind als bunte Kirmes-Buden mit Themenwimpel, Namensschild und leuchtender Aktivierungs-Platte (pulsiert grün bei Betreten) gestaltet | Fügt sich harmonisch in den Kirmes-Stil des Parks ein | L (Empfehlung angenommen) |
+| D110 | 2026-10-21 | Turnier-Pavillon: Das Schnellturnier startet an einem prachtvollen Pavillon am Kopf des Süd-Boulevards mit Rundenzahl-Einstellung und vierfarbigen Spieler-Podesten | Bildet den repräsentativen Abschluss des Attraktions-Boulevards | L (Empfehlung angenommen) |
+| D111 | 2026-10-21 | Ready-Countdown: Stehen alle menschlichen Spieler auf der Ready-Zone, läuft ein 3-Sekunden-Countdown mit Tonsignal (3, 2, 1, Los!), der beim Verlassen abbricht | Gibt maximale Kontrolle und verhindert Fehlstarts | L (Empfehlung angenommen) |
+| D112 | 2026-10-21 | Wegweiser: Holz-Wegweiserpfähle mit bunten, beschrifteten Richtungspfeilen stehen an zentralen Weggabelungen | Bietet intuitive Orientierung zu Turm, Rummel, Attraktionen und Wiese | L (Empfehlung angenommen) |
 
 ## Offene Fragen
 

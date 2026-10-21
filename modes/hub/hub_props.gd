@@ -28,6 +28,8 @@ static func build_hub_world(root: Node3D) -> void:
 	_build_park_props(scenery)
 	_build_foliage_and_stalls(scenery)
 	_build_playground(terrain)
+	_build_attractions(terrain)
+	_build_signposts(scenery)
 
 
 # --- 1. Boden & Zentraler Festplatz (Plaza) ---
@@ -483,3 +485,52 @@ static func _build_playground(parent: Node3D) -> void:
 	tower.name = "ClimbingTower"
 	tower.position = Vector3(0.0, 0.2, -36.0)
 	playground.add_child(tower)
+
+
+# --- 8. Attraktions-Portale & Minispiel-Stationen (D109, D110) ---
+
+static func _build_attractions(parent: Node3D) -> void:
+	var attractions := Node3D.new()
+	attractions.name = "Attractions"
+	parent.add_child(attractions)
+
+	# 1. Großer Turnier-Pavillon am Kopf des Süd-Boulevards (D110)
+	var pavilion := HubTournamentPavilion.new()
+	pavilion.name = "TournamentPavilion"
+	pavilion.position = Vector3(0, 0.15, 42.0)
+	attractions.add_child(pavilion)
+
+	# 2. Minispiel-Buden entlang des Boulevards (D109)
+	var station_configs: Array[Dictionary] = [
+		{"id": &"blaster_brawl", "pos": Vector3(-5.5, 0.15, 18.0), "rot_y": 90.0},
+		{"id": &"bumper_cars", "pos": Vector3(-5.5, 0.15, 25.0), "rot_y": 90.0},
+		{"id": &"giant_vs_dwarfs", "pos": Vector3(-5.5, 0.15, 32.0), "rot_y": 90.0},
+		{"id": &"hex_fall", "pos": Vector3(5.5, 0.15, 18.0), "rot_y": -90.0},
+		{"id": &"hot_potato", "pos": Vector3(5.5, 0.15, 25.0), "rot_y": -90.0},
+		{"id": &"sheep_herding", "pos": Vector3(5.5, 0.15, 32.0), "rot_y": -90.0},
+		{"id": &"tug_of_war", "pos": Vector3(-14.0, 0.15, 14.0), "rot_y": 45.0},
+	]
+
+	for cfg: Dictionary in station_configs:
+		var st := HubMinigameStation.new()
+		st.name = "Station_" + String(cfg["id"])
+		st.minigame_id = cfg["id"]
+		st.position = cfg["pos"]
+		st.rotation_degrees = Vector3(0, cfg["rot_y"], 0)
+		attractions.add_child(st)
+
+
+# --- 9. Wegweiser (D112) ---
+
+static func _build_signposts(parent: Node3D) -> void:
+	var corners: Array[Vector3] = [
+		Vector3(7.0, 0.12, 7.0),
+		Vector3(-7.0, 0.12, 7.0),
+		Vector3(7.0, 0.12, -7.0),
+		Vector3(-7.0, 0.12, -7.0),
+	]
+	for i: int in corners.size():
+		var sp := HubSignpost.new()
+		sp.name = "Signpost_%d" % i
+		sp.position = corners[i]
+		parent.add_child(sp)
