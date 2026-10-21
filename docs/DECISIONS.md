@@ -96,6 +96,7 @@ Spalte „Von“: **L** = Leonardo, **KI** = technische Entscheidung eines Agent
 | D87 | 2026-10-21 | Look-System in `core/look/`: Klasse `Look` (Umgebung je Stimmung, Materialien je Stoffart, Figurenmaterial, `restyle()` für fremde Modelle mit Material-Zwischenspeicher), `ParkProps` (Riesenrad, Zelt, Achterbahn aus Kontrollpunkten, Lichterkette, Fahnenmast, Laterne), Wasser-Shader mit Schaumkante; StageKit nutzt `Look` | ein Ort für den Stil, alte Teile sehen sofort besser aus | KI (Claude, Cowork) |
 | D88 | 2026-10-21 | Entwicklerwerkzeuge mit Autoloads starten über `-- --tool-<name>` (lädt `res://tools/<name>.gd`, nur Debug-Builds); erstes Werkzeug `tools/asset_audit.gd` | `--script` kennt keine Autoloads | KI (Claude, Cowork) |
 | D89 | 2026-10-21 | Der Wechsel zu Antigravity erfolgt schon während v0.5: Claude (Cowork) hat Schritt 0 bis WP 2 umgesetzt, WP 3 bis 10 (inklusive neuem WP 5a „Waffen“) und alle weiteren Patches laufen in Antigravity; Übergabe und Rest von v0.5 über `docs/prompts/05_uebergabe_antigravity.md` (ergänzt D81) | Wunsch von Leonardo | L |
+| D90 | 2026-10-21 | Remote origin ist https://github.com/sudoMrMCaffe/PartyPark.git; compile_smoke.gd schließt _incoming aus | Synchronisation über GitHub eingerichtet; Rohdownloads in assets/_incoming/ werden beim Kompilier-Test übersprungen | L / KI (Antigravity) |
 
 ## Offene Fragen
 

@@ -13,7 +13,16 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
-## 2026-10-21: Übergabe-Prompt an Antigravity mit Rest von v0.5
+## 2026-10-21: Antigravity-Übernahme begonnen, Git-Sync und Vorbereitung GPU-Neustart
+
+Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
+Erledigt: Teil A Schritt A1 durchgeführt (Einlesen, Bestandsaufnahme); A2.1 Git-Status geprüft, Prompt 05 mit Online-Repo-URL committet, Remote `origin` auf `https://github.com/sudoMrMCaffe/PartyPark.git` gesetzt, Leonardo hat Branch `main` per `--force-with-lease` auf GitHub gepusht; A2.5 Vorhandensein von `.github/workflows/tests.yml` geprüft; `compile_smoke.gd` um `_incoming` in `SKIP_DIRS` ergänzt (jetzt grün: 122 Dateien, 0 Fehler). Unit-Tests 31/31 grün. Fortsetzungsprompt `docs/prompts/05b_v0_5_fortsetzung.md` zur nahtlosen Weiterarbeit nach GPU-Durchreichung und VM-Neustart erstellt.
+Entscheidungen: D90
+Getestet: Unit-Tests 31/31 bestanden; `godot --headless --path . -- --smoke-compile` 122 Dateien, 0 Fehler.
+Probleme / Bekannte Fehler: GPU war in Entwickler-VM noch nicht durchgereicht (wird beim Neustart erledigt). Audio-Samples im headless-Modus ohne Audio-Treiber melden Ladefehler beim direkten WAV-Laden; Godot-Editor importiert nach GPU-Aktivierung vollständig.
+Nächster Schritt: Nach dem VM-Neustart neuen Chat mit `docs/prompts/05b_v0_5_fortsetzung.md` starten (Schritte A2.2 bis A3, danach Teil B).
+Aktuelle Kopie liegt in: Git-Repo `https://github.com/sudoMrMCaffe/PartyPark.git` und lokal in `c:\Users\VM\Desktop\PartyPark`
+
 
 Agent und Umgebung: Claude (Cowork), nur Doku, kein Spielcode geändert
 Erledigt: Stand geprüft: In der v0.5-Sitzung lief eine frühere Fassung von Prompt 04 (ohne Waffen-Abschnitt und ohne Download-Skript); umgesetzt sind Schritt 0 bis WP 2 (Stil D85, Tageszeiten D86, `core/look/`, ART_GUIDE, Asset-Audit, Coaster Kit in `assets/third_party/`). Version noch 0.4.0. Prompt 05 neu: Teil A Übergabe an Antigravity (Windows-Befehle, Bildschirmfotos mit echter Grafikkarte, Skills, Rückfrageregeln), Teil B Rest von v0.5 (WP 3 bis 10) mit zehn Nachbesserungen: Waffen aus dem Blaster Kit als `core/weapons/` (neues WP 5a), keine Umrisslinien, alle drei Stimmungen je Arena, Draw Calls Wackelwaben und Dreiecke Schafe, Wasser-Spiegelung, Arenathemen Q26 mit Bildern, doppelte Pakete in `_incoming`, Hüte selbst bauen, offene Testpunkte, kein Dateibrücken-Ablauf mehr. Prompt 06 setzt den Abschluss von v0.5 voraus und schlägt mindestens ein Schießspiel vor. Prompt 04 mit Hinweis versehen, ROADMAP (5.5a, Umgebung v0.5), D89.
