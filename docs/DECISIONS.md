@@ -119,6 +119,8 @@ Spalte „Von“: **L** = Leonardo, **KI** = technische Entscheidung eines Agent
 | D110 | 2026-10-21 | Turnier-Pavillon: Das Schnellturnier startet an einem prachtvollen Pavillon am Kopf des Süd-Boulevards mit Rundenzahl-Einstellung und vierfarbigen Spieler-Podesten | Bildet den repräsentativen Abschluss des Attraktions-Boulevards | L (Empfehlung angenommen) |
 | D111 | 2026-10-21 | Ready-Countdown: Stehen alle menschlichen Spieler auf der Ready-Zone, läuft ein 3-Sekunden-Countdown mit Tonsignal (3, 2, 1, Los!), der beim Verlassen abbricht | Gibt maximale Kontrolle und verhindert Fehlstarts | L (Empfehlung angenommen) |
 | D112 | 2026-10-21 | Wegweiser: Holz-Wegweiserpfähle mit bunten, beschrifteten Richtungspfeilen stehen an zentralen Weggabelungen | Bietet intuitive Orientierung zu Turm, Rummel, Attraktionen und Wiese | L (Empfehlung angenommen) |
+| D113 | 2026-10-21 | Kamera-Zoom & Offscreen-Pfeile: Sanfte Obergrenze des Kamera-Zooms auf max. 46 m Distanz, damit Figuren gut lesbar bleiben; Spieler außerhalb des Viewports erhalten farbige Indikator-Pfeile am Bildschirmrand | Klare Lesbarkeit und verlässliche Orientierung bei weit verteilten Spielern | L (Empfehlung angenommen) |
+| D114 | 2026-10-21 | Dynamische Turm-Neigung: Neigungswinkel passt sich an die Höhe der Kletternden an (48° am Boden, bis zu 38° bei Kletterhöhe) | Bietet optimalen Panoramablick und gute Tiefenwahrnehmung bei Präzisionssprüngen | L (Empfehlung angenommen) |
 
 ## Offene Fragen
 

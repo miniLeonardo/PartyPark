@@ -173,8 +173,41 @@ func _run() -> void:
 			await _frames(5)
 			_check(not st_cars.activation_pad._is_counting, "Aktivierungs-Pad: Countdown bricht sofort ab, wenn ein Spieler die Platte verlässt")
 
+			# Vollständigen Ablauf Hub -> Minispiel -> zurück in Hub prüfen (Haltepunkt 2)
+			hub.play_minigame(st_cars.info)
+			await _frames(5)
+			_check(hub.active_flow != null, "Ablauf: Minispiel-MatchFlow erfolgreich aus Hub gestartet")
+			_check(not p1.visible and not p1.controls_enabled, "Ablauf: Hub-Spieler während Minispiel pausiert")
+			# Spielende simulieren
+			hub._on_flow_completed(MinigameResult.new(), {})
+			await _frames(5)
+			_check(hub.active_flow == null, "Ablauf: Nach MatchFlow wieder nahtlos in der Park-Lobby")
+			_check(p1.visible and p1.controls_enabled, "Ablauf: Spielerfiguren in der Lobby wieder aktiv")
+
 	# Wegweiser prüfen (D112)
 	_check(scenery.get_node_or_null("Signpost_0") is HubSignpost, "Holz-Wegweiser (HubSignpost) an den Wegkreuzungen vorhanden")
+
+	# Großraum-Kamera mit dynamischer Turm-Neigung und Offscreen-Pfeilen prüfen (D113, D114)
+	var hcam: HubCamera = hub.camera as HubCamera
+	_check(hcam != null and hcam._indicator_layer != null, "HubCamera besitzt OffscreenIndicators-Layer (D113)")
+	if hcam != null:
+		p1.global_position = Vector3(0, 0.4, 0)
+		await _frames(5)
+		var initial_pitch: float = hcam.pitch_deg
+		# Spieler 1 auf Turmspitze setzen -> Neigungswinkel verflacht sich Richtung high_pitch_deg (D114)
+		p1.global_position = Vector3(0, 20.5, -34.0)
+		hcam._center = p1.global_position
+		await _frames(15)
+		_check(hcam.pitch_deg < initial_pitch - 1.0, "HubCamera: Neigung flacht bei Höhe dynamisch ab (D114)")
+
+		# Offscreen-Indikatoren prüfen: Wenn Spieler weit weg platziert wird (D113)
+		p1.global_position = Vector3(150.0, 0.4, 150.0)
+		await _frames(5)
+		var ind_p1: Control = hcam._indicators.get(p1.slot) as Control
+		_check(ind_p1 != null and ind_p1.visible, "HubCamera: Offscreen-Pfeil für entfernten Spieler sichtbar (D113)")
+		# Zurückstellen
+		p1.global_position = Vector3(0, 0.4, 0)
+		await _frames(5)
 
 	if not _shot_dir.is_empty():
 		p1.global_position = Vector3(32.0, 0.4, 0.0)

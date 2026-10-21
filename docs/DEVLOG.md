@@ -13,6 +13,17 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-10-21: Patch v0.7 „Der Park“ – WP 5 & Haltepunkt 2 erreicht
+
+Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
+Erledigt: Fragerunde zu Kameraführung, Zoom-Grenzen und Neigung durchgeführt und Entscheidungen D113 und D114 in `docs/DECISIONS.md` festgehalten (D113: Zoom-Clamp bei max. 46 m mit farbigen Offscreen-Indikatoren inklusive Distanzanzeige; D114: Dynamische Turm-Neigung von 48° am Boden auf bis zu 38° bei Kletterhöhe). Implementierungsplan für WP 5 vorgelegt. WP 5 (ROADMAP 7.5) umgesetzt: `HubCamera` in `modes/hub/hub_camera.gd` mit Neigungs-Lerp und 2D-Overlay (`CanvasLayer`) für Pfeil-Indikatoren in Spielerfarben erweitert. Haltepunkt 2 erreicht: Kompletter Zyklus (Lobby → Minispiel über Ready-Pad → Minispiel spielen → Rückkehr in die Lobby mit Reaktivierung aller Spieler) nahtlos spielbar und im Smoke-Test verifiziert.
+Entscheidungen: D113, D114
+Getestet: Unit-Tests 31/31; compile_smoke 145/0; smoke-hub 52/52 (inkl. Höhen-Neigungstest, Offscreen-Pfeil und MatchFlow-Zyklus); smoke-m1 50/50; smoke-m2 39/39; smoke-games 12/12; asset_audit erfolgreich.
+Probleme / Bekannte Fehler: keine.
+Nächster Schritt: WP 6 (Parkbesucher & Atmosphäre: Kenney Mini Characters, Lichterketten-Beleuchtung, Park-Geräusche).
+Aktuelle Kopie liegt in: Git-Repo `https://github.com/sudoMrMCaffe/PartyPark.git` und lokal in `c:\Users\VM\Desktop\PartyPark`
+
+
 ## 2026-10-21: Patch v0.7 „Der Park“ – WP 4 abgeschlossen
 
 Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
