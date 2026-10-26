@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+Log="*res://core/log.gd"
 Settings="*res://core/settings.gd"
 Sfx="*res://core/audio/sfx.gd"
 Fx="*res://core/fx/fx.gd"

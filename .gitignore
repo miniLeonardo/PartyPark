@@ -1,6 +1,7 @@
 # Godot 4 Cache und Editor-Daten (werden lokal neu erzeugt)
 .godot/
 *.tmp
+*.log
 
 # Export-Ergebnisse
 builds/*

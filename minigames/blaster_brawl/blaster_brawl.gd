@@ -186,7 +186,8 @@ func _round_process(delta: float) -> void:
 			_heat[index] = maxf(0.0, float(_heat[index]) - cool_rate * delta)
 			continue
 		var source: InputSource = player.get_input()
-		if source != null and source.is_down(InputBindings.PUSH) and float(_fire_ready[index]) <= 0.0:
+		var firing: bool = source != null and (source.is_down(InputBindings.TRIGGER) or source.is_down(InputBindings.PUSH))
+		if firing and float(_fire_ready[index]) <= 0.0:
 			_fire(player)
 		else:
 			_heat[index] = maxf(0.0, float(_heat[index]) - cool_rate * delta)
@@ -405,6 +406,7 @@ func _update_ai(player: Player, ai: AIInput, delta: float) -> void:
 	var aligned: bool = absf(yaw_error) < deg_to_rad(6.0) and absf(pitch_error) < deg_to_rad(8.0)
 	state["aligned_time"] = float(state.get("aligned_time", 0.0)) + delta if aligned and target != null else 0.0
 	var ready: bool = float(state["aligned_time"]) > ai_fire_delay * (1.6 - AIProfile.skill(context.difficulty))
+	ai.hold(InputBindings.TRIGGER, ready and float(_heat[index]) < 0.75)
 	ai.hold(InputBindings.PUSH, ready and float(_heat[index]) < 0.75)
 	if player.is_on_floor() and rng.randf() < 0.004:
 		ai.tap(InputBindings.JUMP)

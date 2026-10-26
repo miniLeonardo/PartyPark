@@ -14,7 +14,7 @@ goal_text = "Ego-Sicht mit geteiltem Bildschirm: Triff die anderen mit dem Krawu
 controls = {
 "move": "Laufen",
 "aim": "Umsehen und Zielen",
-"push": "Feuern (halten = Dauerfeuer)",
+"trigger": "Feuern (halten = Dauerfeuer)",
 "jump": "Springen"
 }
 solo_goal_text = ""

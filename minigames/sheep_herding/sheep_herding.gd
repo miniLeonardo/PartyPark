@@ -145,7 +145,8 @@ func _handle_barks(delta: float) -> void:
 		var index: int = player.slot.index
 		_bark_ready_in[index] = float(_bark_ready_in.get(index, 0.0)) - delta
 		var source: InputSource = player.get_input()
-		if source == null or not source.just_pressed(InputBindings.PUSH) or float(_bark_ready_in[index]) > 0.0:
+		var bark_pressed: bool = source != null and (source.just_pressed(InputBindings.TRIGGER) or source.just_pressed(InputBindings.PUSH))
+		if not bark_pressed or float(_bark_ready_in[index]) > 0.0:
 			continue
 		_bark_ready_in[index] = bark_cooldown
 		_spawn_bark_ring(player.global_position, player.slot.color)
@@ -313,6 +314,7 @@ func _update_ai(player: Player, ai: AIInput, delta: float) -> void:
 		ai_steer_to(player, ai, wolf.global_position, speed)
 		if to_wolf.length() < 1.4 and float(state["think"]) <= 0.0:
 			state["think"] = AIProfile.reaction_time(context.difficulty)
+			ai.tap(InputBindings.TRIGGER)
 			ai.tap(InputBindings.PUSH)
 		_ai_state[index] = state
 		return
@@ -335,6 +337,7 @@ func _update_ai(player: Player, ai: AIInput, delta: float) -> void:
 	else:
 		ai_steer_to(player, ai, target_sheep.global_position, 0.55 * speed)
 		if to_entrance.length() > 4.0 and float(_bark_ready_in.get(index, 0.0)) <= 0.0 and rng.randf() < AIProfile.skill(context.difficulty) * 0.03:
+			ai.tap(InputBindings.TRIGGER)
 			ai.tap(InputBindings.PUSH)
 	_ai_state[index] = state
 

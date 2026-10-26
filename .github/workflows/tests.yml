@@ -54,3 +54,6 @@ jobs:
 
       - name: Alle Minispiele mit Computern (smoke-games)
         run: '"$GODOT" --headless --path . --fixed-fps 60 -- --smoke-games'
+
+      - name: Freizeitpark-Hub (smoke-hub)
+        run: '"$GODOT" --headless --path . --fixed-fps 60 -- --smoke-hub'

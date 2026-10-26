@@ -258,6 +258,7 @@ func _update_ai(player: Player, ai: AIInput, delta: float) -> void:
 	if wanted.length() > 0.1:
 		ai.move = player.world_to_input(wanted.normalized())
 	ai.hold(InputBindings.JUMP, true)
+	ai.hold(InputBindings.TRIGGER, true)
 	var aligned: bool = scooter.heading.dot(wanted.normalized()) > 0.93
 	if aligned and wanted.length() < 6.0 and scooter.turbo_ready_in <= 0.0 and rng.randf() < AIProfile.skill(context.difficulty) * 0.05:
 		ai.tap(InputBindings.PUSH)

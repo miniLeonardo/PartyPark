@@ -47,14 +47,15 @@ func physics_update(delta: float) -> void:
 		var max_turn: float = deg_to_rad(turn_speed_deg) * delta
 		heading = heading.rotated(Vector3.UP, clampf(angle, -max_turn, max_turn)).normalized()
 	turbo_ready_in -= delta
-	if source != null and source.just_pressed(InputBindings.PUSH) and turbo_ready_in <= 0.0:
+	var turbo_pressed: bool = source != null and (source.just_pressed(InputBindings.PUSH) or source.just_pressed(InputBindings.ACTION) or (source.is_down(InputBindings.TRIGGER) and source.just_pressed(InputBindings.JUMP)))
+	if turbo_pressed and turbo_ready_in <= 0.0:
 		_turbo_time = turbo_duration
 		turbo_ready_in = turbo_cooldown
 		player.visual.play_push()
 		source.rumble(0.4, 0.0, 0.15)
 		Fx.burst(&"dust", player.global_position - heading * 0.9 + Vector3.UP * 0.3, Color(0, 0, 0, 0), 0.8)
 		Sfx.play(&"turbo", player.global_position)
-	var gas: bool = source != null and source.is_down(InputBindings.JUMP)
+	var gas: bool = source != null and (source.is_down(InputBindings.TRIGGER) or source.is_down(InputBindings.JUMP))
 	if _turbo_time > 0.0:
 		_turbo_time -= delta
 		speed = maxf(speed, turbo_speed)

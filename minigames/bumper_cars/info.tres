@@ -13,8 +13,8 @@ duration_sec = 90.0
 goal_text = "Schubs die anderen durch die Lücken in der Bande! Jeder hat 3 Leben, wer zuletzt noch fährt, gewinnt."
 controls = {
 "move": "Lenken",
-"jump": "Gas (halten)",
-"push": "Turbo-Rempler"
+"trigger": "Gas geben (halten)",
+"jump": "Turbo-Rempler"
 }
 solo_goal_text = ""
 solo_controls = {}

@@ -12,8 +12,8 @@ height = 1.3
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_body"]
 radius = 0.45
 height = 1.3
-radial_segments = 24
-rings = 6
+radial_segments = 32
+rings = 10
 
 [sub_resource type="SphereMesh" id="SphereMesh_eye"]
 radius = 0.13
@@ -40,6 +40,28 @@ radius = 0.14
 height = 0.16
 radial_segments = 12
 rings = 6
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_hat"]
+top_radius = 0.01
+bottom_radius = 0.22
+height = 0.42
+radial_segments = 16
+
+[sub_resource type="SphereMesh" id="SphereMesh_pompom"]
+radius = 0.05
+height = 0.1
+radial_segments = 12
+rings = 6
+
+[sub_resource type="StandardMaterial3D" id="Mat_hat"]
+albedo_color = Color(0.95, 0.75, 0.2, 1)
+roughness = 0.35
+clearcoat_enabled = true
+clearcoat = 0.4
+
+[sub_resource type="StandardMaterial3D" id="Mat_pompom"]
+albedo_color = Color(0.9, 0.2, 0.3, 1)
+roughness = 0.8
 
 [node name="Player" type="CharacterBody3D"]
 floor_snap_length = 0.2
@@ -77,6 +99,22 @@ surface_material_override/0 = SubResource("Mat_eye")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.09)
 mesh = SubResource("SphereMesh_pupil")
 surface_material_override/0 = SubResource("Mat_dark")
+
+[node name="Accessory" type="Node3D" parent="Visual/Pivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, 0)
+
+[node name="PartyHat" type="Node3D" parent="Visual/Pivot/Accessory"]
+visible = false
+
+[node name="Cone" type="MeshInstance3D" parent="Visual/Pivot/Accessory/PartyHat"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.21, 0)
+mesh = SubResource("CylinderMesh_hat")
+surface_material_override/0 = SubResource("Mat_hat")
+
+[node name="Pompom" type="MeshInstance3D" parent="Visual/Pivot/Accessory/PartyHat"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.43, 0)
+mesh = SubResource("SphereMesh_pompom")
+surface_material_override/0 = SubResource("Mat_pompom")
 
 [node name="FootLeft" type="MeshInstance3D" parent="Visual"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0.08, 0)

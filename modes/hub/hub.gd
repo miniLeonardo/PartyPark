@@ -39,6 +39,7 @@ var _current_zone: int = ParkZone.PLAZA
 var _zone_display_timer: float = 0.0
 
 @onready var camera: HubCamera = $HubCamera
+var active_flow: MatchFlow = null
 
 
 func _ready() -> void:
@@ -48,8 +49,10 @@ func _ready() -> void:
 	HubProps.build_hub_world(self)
 	_build_hud()
 
-	if PlayerRoster.get_active_slots().is_empty() and OS.is_debug_build():
+	if PlayerRoster.get_human_slots().is_empty() and OS.is_debug_build():
 		_debug_autojoin()
+	elif PlayerRoster.get_active_slots().size() < 4:
+		PlayerRoster.fill_with_cpu()
 
 	Game.match_running = true
 
@@ -62,6 +65,12 @@ func _ready() -> void:
 		player.respawn(spawn_pos)
 		player.face(Vector3.FORWARD)
 		players.append(player)
+
+	Log.info("HUB", "Lobby mit %d Spielern gestartet (%d menschlich, %d CPU)" % [
+		players.size(),
+		PlayerRoster.get_human_slots().size(),
+		players.size() - PlayerRoster.get_human_slots().size()
+	])
 
 	Announcer.say(&"round_start", {"game": "Freizeitpark"})
 	_connect_stations()
@@ -81,13 +90,16 @@ func _connect_stations() -> void:
 		pavilion.tournament_requested.connect(start_tournament_from_hub)
 
 
-var active_flow: MatchFlow = null
-
-
 ## Startet ein Minispiel direkt aus dem Park heraus (D109).
 func play_minigame(info: MinigameInfo) -> void:
 	if active_flow != null or info == null:
 		return
+
+	Log.info("HUB", "Minispiel '%s' betreten -> sperre Pads und isoliere Hub-Spieler" % info.display_name)
+
+	# Alle Aktivierungs-Pads im Park sperren
+	for pad: HubActivationPad in find_children("*", "HubActivationPad", true, false):
+		pad.lock()
 
 	var format: int = info.formats[0]
 	var player_indices: Array[int] = []
@@ -96,9 +108,9 @@ func play_minigame(info: MinigameInfo) -> void:
 	var assignment: TeamAssigner.Assignment = TeamAssigner.assign(RandomNumberGenerator.new(), format, player_indices, {})
 	var context: MinigameContext = MinigameContext.from_assignment(assignment, PlayerRoster.get_active_slots(), Settings.cpu_difficulty)
 
-	# Spielerfiguren im Hub für die Dauer des Spiels pausieren
+	# Hub-Spielerfiguren für die Dauer des Spiels vollständig isolieren (aus Gruppe "players" und Physik nehmen)
 	for p: Player in players:
-		p.visible = false
+		p.set_active(false)
 		p.controls_enabled = false
 
 	var hud: Node = get_node_or_null("Hud")
@@ -106,6 +118,11 @@ func play_minigame(info: MinigameInfo) -> void:
 		(hud as CanvasLayer).visible = false
 	if camera != null:
 		camera.current = false
+		camera.set_indicators_visible(false)
+
+	var amb: Node = get_node_or_null("Ambiance")
+	if amb != null:
+		amb.process_mode = Node.PROCESS_MODE_DISABLED
 
 	active_flow = MatchFlow.new()
 	add_child(active_flow)
@@ -114,12 +131,15 @@ func play_minigame(info: MinigameInfo) -> void:
 
 
 func _on_flow_completed(_result: MinigameResult, _points: Dictionary) -> void:
+	Log.info("HUB", "Minispiel beendet -> Reaktiviere Park-Lobby")
+
 	if active_flow != null:
 		active_flow.queue_free()
 		active_flow = null
 
+	# Hub-Spieler reaktivieren
 	for p: Player in players:
-		p.visible = true
+		p.set_active(true)
 		p.controls_enabled = true
 
 	var hud: Node = get_node_or_null("Hud")
@@ -127,6 +147,16 @@ func _on_flow_completed(_result: MinigameResult, _points: Dictionary) -> void:
 		(hud as CanvasLayer).visible = true
 	if camera != null:
 		camera.current = true
+		camera.set_indicators_visible(true)
+		camera.snap_to_targets()
+
+	var amb: Node = get_node_or_null("Ambiance")
+	if amb != null:
+		amb.process_mode = Node.PROCESS_MODE_INHERIT
+
+	# Pads mit Cooldown von 3 Sekunden entsperren
+	for pad: HubActivationPad in find_children("*", "HubActivationPad", true, false):
+		pad.unlock(3.0)
 
 	Look.use_mood(Look.menu_mood())
 	StageKit.add_environment(self)
@@ -135,12 +165,19 @@ func _on_flow_completed(_result: MinigameResult, _points: Dictionary) -> void:
 
 ## Startet das Schnellturnier am Pavillon (D110).
 func start_tournament_from_hub(rounds: int) -> void:
+	Log.info("HUB", "Schnellturnier gestartet (%d Runden)" % rounds)
 	Game.launched_from_hub = true
 	Game.start_tournament(rounds)
 
 
 func _physics_process(delta: float) -> void:
+	if active_flow != null:
+		return
+
 	for player: Player in players:
+		if not player.is_inside_tree() or not player.visible:
+			continue
+
 		# Absturz-Sicherung: Zurück zur Plaza teleportieren
 		if player.global_position.y < kill_height or player.global_position.length() > 55.0:
 			var safe_pos: Vector3 = spawn_points[player.slot.index % spawn_points.size()] + Vector3.UP * 1.5
@@ -149,7 +186,7 @@ func _physics_process(delta: float) -> void:
 			if source != null:
 				source.rumble(0.4, 0.4, 0.2)
 
-		# Einfaches KI-Verhalten für Computergegner in der Lobby
+		# KI-Verhalten für Computergegner in der Lobby
 		if player.slot.is_cpu:
 			_update_cpu_wander(player, delta)
 
@@ -160,7 +197,6 @@ func _update_zone_detection(delta: float) -> void:
 	if players.is_empty():
 		return
 
-	# Zone anhand des ersten menschlichen Spielers (oder erstem Spieler) ermitteln
 	var ref_player: Player = players[0]
 	for p: Player in players:
 		if not p.slot.is_cpu:
@@ -191,7 +227,6 @@ func _update_zone_detection(delta: float) -> void:
 	if _zone_display_timer > 0.0:
 		_zone_display_timer -= delta
 		if _zone_display_timer <= 0.0 and _zone_label != null:
-			# Ausblenden oder dezent halten
 			_zone_label.text = ZONE_NAMES[_current_zone]
 
 
@@ -210,18 +245,18 @@ func _update_cpu_wander(player: Player, _delta: float) -> void:
 			break
 
 	if not human_found:
-		target_pos = Vector3(sin(Time.get_ticks_msec() * 0.001 + player.slot.index) * 6.0, 0, cos(Time.get_ticks_msec() * 0.001 + player.slot.index) * 6.0)
+		var time_val: float = Time.get_ticks_msec() * 0.001 + float(player.slot.index) * 1.5
+		target_pos = Vector3(sin(time_val) * 6.0, 0, cos(time_val) * 6.0)
 
 	var to_target: Vector3 = target_pos - player.global_position
 	var dist: float = to_target.length()
 
 	if dist > 4.5:
-		var dir := Vector2(to_target.x, to_target.z).normalized()
-		ai.move = dir * 0.7
+		# Bot bewegt sich mit world_to_input zielgenau in Richtung Mensch/Ziel
+		ai.move = player.world_to_input(to_target.normalized()) * 0.65
 	elif dist < 2.0:
-		# Etwas Abstand halten
-		var dir := Vector2(-to_target.x, -to_target.z).normalized()
-		ai.move = dir * 0.5
+		# Bot hält etwas Abstand
+		ai.move = player.world_to_input(-to_target.normalized()) * 0.45
 	else:
 		ai.move = Vector2.ZERO
 

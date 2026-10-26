@@ -123,7 +123,7 @@ Fasse dem Nutzer danach in zwei bis drei Sätzen zusammen, wo das Projekt steht,
 ## Arbeitsumgebungen
 
 1. **Hauptumgebung:** Lokale Arbeitsumgebung unter Windows mit echter Grafikkarte (Terminal, Godot, Git). Alle Änderungen werden lokal getestet und committet.
-2. **Austauschweg:** Das GitHub-Repository `https://github.com/sudoMrMCaffe/PartyPark.git` dient als zentraler Austauschweg zwischen Arbeitsrechnern, CI (GitHub Actions) und Bazzite.
+2. **Austauschweg:** Das GitHub-Repository `https://github.com/miniLeonardo/PartyPark.git` dient als zentraler Austauschweg zwischen Arbeitsrechnern, CI (GitHub Actions) und Bazzite.
 3. **Claude (Cowork):** Holt den aktuellen Stand über Git (Details in `CLAUDE.md`).
 4. Wechselt die Umgebung, wird das im DEVLOG vermerkt, damit klar ist, welche Kopie die aktuelle ist.
 

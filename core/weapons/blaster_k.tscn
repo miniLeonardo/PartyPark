@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://core/weapons/blaster.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://assets/third_party/kenney_blaster-kit/blaster-k.glb" id="2_model"]
+
+[node name="BlasterK" type="Node3D"]
+script = ExtResource("1_script")
+weapon_name = "Karabiner-Blaster"
+
+[node name="Model" type="Node3D" parent="."]
+
+[node name="blaster-k" parent="Model" instance=ExtResource("2_model")]
+
+[node name="Grip" type="Marker3D" parent="."]
+
+[node name="Muzzle" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, -0.65)

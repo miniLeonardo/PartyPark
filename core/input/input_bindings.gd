@@ -10,6 +10,7 @@ const SPECIAL: StringName = &"special"
 const CONFIRM: StringName = &"confirm"
 const BACK: StringName = &"back"
 const PAUSE: StringName = &"pause"
+const TRIGGER: StringName = &"trigger"
 
 ## Aus dem Bewegungsvektor abgeleitete Menü-Richtungen, damit Menüs just_pressed nutzen können.
 const NAV_UP: StringName = &"nav_up"
@@ -17,7 +18,7 @@ const NAV_DOWN: StringName = &"nav_down"
 const NAV_LEFT: StringName = &"nav_left"
 const NAV_RIGHT: StringName = &"nav_right"
 
-const BUTTON_ACTIONS: Array[StringName] = [JUMP, ACTION, PUSH, SPECIAL, CONFIRM, BACK, PAUSE]
+const BUTTON_ACTIONS: Array[StringName] = [JUMP, ACTION, PUSH, SPECIAL, CONFIRM, BACK, PAUSE, TRIGGER]
 const NAV_ACTIONS: Array[StringName] = [NAV_UP, NAV_DOWN, NAV_LEFT, NAV_RIGHT]
 
 ## Ab welchem Stickausschlag eine Menü-Richtung als gedrückt gilt.
@@ -32,6 +33,7 @@ const GAMEPAD: Dictionary = {
 	PUSH: [JOY_BUTTON_X],
 	SPECIAL: [JOY_BUTTON_Y],
 	PAUSE: [JOY_BUTTON_START],
+	TRIGGER: [JOY_BUTTON_RIGHT_SHOULDER],
 }
 
 ## Anzeigenamen für Tastatur-Tasten in Tastenhinweisen (physische Position, deutsches Layout).
@@ -61,6 +63,7 @@ const KEYBOARD_LEFT: Dictionary = {
 	BACK: [KEY_E],
 	PUSH: [KEY_F],
 	SPECIAL: [KEY_Q],
+	TRIGGER: [KEY_F],
 	PAUSE: [KEY_ESCAPE],
 }
 
@@ -75,5 +78,6 @@ const KEYBOARD_RIGHT: Dictionary = {
 	BACK: [KEY_BACKSPACE, KEY_KP_2],
 	PUSH: [KEY_SEMICOLON, KEY_KP_1],
 	SPECIAL: [KEY_APOSTROPHE, KEY_KP_3],
+	TRIGGER: [KEY_SEMICOLON, KEY_KP_1],
 	PAUSE: [KEY_P, KEY_KP_ADD],
 }

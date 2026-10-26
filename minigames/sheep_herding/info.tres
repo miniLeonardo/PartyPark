@@ -14,7 +14,7 @@ goal_text = "Treibt 10 der 12 Schafe ins Gehege, bevor die Zeit abläuft! Schafe
 controls = {
 "move": "Laufen",
 "jump": "Springen",
-"push": "Bellen und Schubsen"
+"trigger": "Bellen und Scheuchen"
 }
 solo_goal_text = ""
 solo_controls = {}

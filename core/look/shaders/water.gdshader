@@ -48,6 +48,6 @@ void fragment() {
 	float sparkle = step(0.94, noise(world_pos.xz * 5.5 + vec2(t * 0.9, t * 0.6))) * step(0.5, noise(world_pos.xz * 0.7 - vec2(t * 0.2))) * sparkle_amount;
 	col = mix(col, foam_color.rgb, clamp(foam_line + sparkle, 0.0, 1.0));
 	ALBEDO = col;
-	ROUGHNESS = 0.25;
-	SPECULAR = 0.4;
+	ROUGHNESS = 0.42;
+	SPECULAR = 0.2;
 }

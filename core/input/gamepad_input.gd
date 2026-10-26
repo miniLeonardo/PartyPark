@@ -50,11 +50,18 @@ func _read_buttons() -> Dictionary[StringName, bool]:
 				pressed = true
 				break
 		result[action] = pressed
+	if Input.get_joy_axis(device, JOY_AXIS_TRIGGER_RIGHT) > 0.35:
+		result[InputBindings.TRIGGER] = true
 	return result
 
 
 func _actions_for_event(event: InputEvent) -> Array[StringName]:
 	var result: Array[StringName] = []
+	var motion_event := event as InputEventJoypadMotion
+	if motion_event != null and motion_event.device == device:
+		if motion_event.axis == JOY_AXIS_TRIGGER_RIGHT and motion_event.axis_value > 0.35:
+			result.append(InputBindings.TRIGGER)
+		return result
 	var button_event := event as InputEventJoypadButton
 	if button_event == null or button_event.device != device:
 		return result
@@ -112,6 +119,14 @@ func get_kind_name() -> String:
 
 
 func get_action_label(action: StringName) -> String:
+	if action == InputBindings.TRIGGER:
+		match label_style:
+			"playstation":
+				return "R2"
+			"nintendo":
+				return "ZR"
+			_:
+				return "RT"
 	var buttons: Array = InputBindings.GAMEPAD.get(action, [])
 	if buttons.is_empty():
 		return String(action)

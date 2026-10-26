@@ -13,6 +13,23 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-10-26: Patch v0.7 Polish Run – Pad-Status, Hub-Kamera, Spieler-Isolation & Logging-System
+
+Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
+Erledigt:
+- Umfassender Polish-Run für den Freizeitpark-Hub (v0.7) nach Nutzer-Rückmeldung:
+  1. Aktivierungs-Plattformen: Vollständiger Zustandsautomat (`IDLE`, `COUNTING`, `TRIGGERED`, `LOCKED`, `COOLDOWN`) in `HubActivationPad`. Beim Minispiel-Start werden alle Pads gesperrt (`lock()`) und bei Rückkehr mit 3.0s Cooldown entsperrt (`unlock(3.0)`). Countdown-Ticks, Abbruch bei Verlassen, leuchtende Emission-Effekte und A-Taste für Sofort-Start.
+  2. Hub-Kamera (`HubCamera`): Fokussiert und umschließt primär menschliche Spieler, statt von weit entfernten Plaza-Bots bis ans Limit (46 m) herausgezoomt zu werden. Dynamische Neigung passt sich der tatsächlichen Kletterhöhe an. Schnapp-Funktion (`snap_to_targets()`) verhindert Kamerasprünge bei Szenenrückkehr. Offscreen-Indikatoren drehen nur den Pfeil, halten das P-Label aufrecht und werden während Minispielen sauber ausgeblendet.
+  3. Spieler-Isolation & automatische Teilnahme: In `Hub.play_minigame()` werden Hub-Spieler per `p.set_active(false)` aus der Gruppe `players`, Sichtbarkeit und Physik genommen, sodass Minispiele nicht mehr mit 8 Spielern kollidieren. Bei Spielstart werden fehlende Plätze immer per `PlayerRoster.fill_with_cpu()` auf 4 aufgefüllt.
+  4. Bot-Navigation korrigiert: Wanderlogik von Computergegnern nutzt `player.world_to_input()`, wodurch Bots zielgenau menschlichen Spielern folgen, anstatt invers wegzulaufen.
+  5. Zentrales Logging-System (`core/log.gd`, Autoload `Log`): Gepuffertes Datei-Logging in `user://partypark.log` mit Timestamp, Loglevel und Tag-Filterung (`[HUB]`, `[MATCH]`, `[SYS]`).
+  6. Frische Windows-Executable `builds/windows/Partypark.exe` (108.9 MB) fehlerfrei gebaut.
+Entscheidungen: D118, D119
+Getestet: Unit-Tests 31/31; compile_smoke 149/0; smoke-hub 58/58; smoke-m1 50/50; smoke-m2 39/39; smoke-games 12/12; asset_audit erfolgreich; Windows-Export `builds/windows/Partypark.exe` erfolgreich exportiert.
+Probleme / Bekannte Fehler: Neues Git-Repository / Account-Details noch von Leonardo einzutragen bzw. anzugeben.
+Nächster Schritt: Git-Remote auf neues Repo umstellen, Committen & Pushen, danach Controllertest v0.7.
+Aktuelle Kopie liegt in: PC von Leonardo / lokal in `c:\Users\VM\Desktop\PartyPark`
+
 ## 2026-10-21: Patch v0.7 „Der Park“ – Vollständig abgeschlossen (Version 0.7.0)
 
 Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal
