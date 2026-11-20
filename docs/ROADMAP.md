@@ -4,54 +4,7 @@ Status: **offen**, **in Arbeit**, **erledigt**, **verschoben**. Beim Abschluss e
 
 Phasen 0 bis 3 sind die Prototyp-Historie (zusammen Version 0.1 bis 0.3). Ab Version 0.4 gilt der Versionsplan weiter unten. Alle Inhalte des Versionsplans sind **Vorschläge**: Jede Spielidee und jede spielrelevante Funktion wird vor der Umsetzung mit Leonardo abgestimmt (D08).
 
-## Phase 0: Einrichtung
-
-| Nr | Aufgabe | Status | Notiz |
-|---|---|---|---|
-| 0.1 | Projektverzeichnis, Godot-Projekt, Git, Doku für KI-Übergabe | erledigt | 2026-10-19, Claude (Cowork) |
-| 0.2 | Godot 4.6.x bei Leonardo installiert (Windows und Bazzite) | offen | |
-| 0.3 | 4 Controller unter Windows und Bazzite erkannt (Godot Joypad-Demo oder Prototyp) | offen | |
-
-## Phase 1: Prototyp, Meilenstein M1 „Kern“
-
-| Nr | Aufgabe | Status |
-|---|---|---|
-| 1.1 | `InputRouter` mit `GamepadInput`, `KeyboardInput` (Debug), Verbindungsabbruch | erledigt (2026-10-19, headless und Smoke-Test grün, Controllertest offen) |
-| 1.2 | `PlayerRoster`, Spielerfarben | erledigt (2026-10-19, headless und Smoke-Test grün, Controllertest offen) |
-| 1.3 | Beitrittsbildschirm „Drücke A zum Mitspielen“ | erledigt (2026-10-19, headless und Smoke-Test grün, Controllertest offen) |
-| 1.4 | Spielfigur: Laufen, Springen, Schubsen | erledigt (2026-10-19, headless und Smoke-Test grün, Controllertest offen) |
-| 1.5 | Testarena mit `ArenaCamera` für 4 Spieler | erledigt (2026-10-19, headless und Smoke-Test grün, Controllertest offen) |
-| 1.6 | Pause-Menü | erledigt (2026-10-19, headless und Smoke-Test grün, Controllertest offen) |
-| 1.7 | Testanleitung für Leonardo, Test bestanden | erledigt (2026-10-19, Leonardo: „klappt alles“, Windows, Godot 4.7, vor allem Tastatur) |
-
-## Phase 2: Prototyp, Meilenstein M2 „Minispiel-Framework“
-
-| Nr | Aufgabe | Status |
-|---|---|---|
-| 2.1 | `TeamFormat`, `MinigameInfo`, `MinigameRegistry` | erledigt (2026-10-19) |
-| 2.2 | `Minigame`-Basisklasse, `MinigameContext`, `MinigameResult` | erledigt (2026-10-19) |
-| 2.3 | `MatchFlow`: Ankündigung, Regeln mit Bereit (ohne Übung, D33), Countdown, Zeitlupe, Ergebnis | erledigt (2026-10-19) |
-| 2.4 | `TeamAssigner` mit Tests | erledigt (2026-10-19) |
-| 2.5 | Schnellturnier mit Punktestand und Siegerehrung | erledigt (2026-10-19) |
-| 2.6 | Testläufer `tests/run_tests.gd` | erledigt (2026-10-19) |
-
-## Phase 3: Prototyp, Meilenstein M3 „Vertical Slice“
-
-| Nr | Aufgabe | Status |
-|---|---|---|
-| 3.1 | Minispiel FFA: Autoscooter `bumper_cars` (D30, D34) | erledigt (2026-10-19, Smoke-Test grün, Controllertest offen) |
-| 3.2 | Minispiel 2v2: Tauziehen `tug_of_war` (D35) | erledigt (2026-10-19, Smoke-Test grün, Controllertest offen) |
-| 3.3 | Minispiel 1v3: Riese gegen Zwerge `giant_vs_dwarfs` (D36) | erledigt (2026-10-19, Smoke-Test grün, Controllertest offen) |
-| 3.4 | Minispiel 4vCPU: Schafe hüten `sheep_herding` (D37) | erledigt (2026-10-19, Smoke-Test grün, Controllertest offen) |
-| 3.5 | Einfache Computergegner über `AIInput`, Stärke einstellbar (D38, D45) | erledigt (2026-10-19) |
-| 3.6 | Erster gemeinsamer Spieleabend als Test, Feedback im DEVLOG | teilweise (2026-10-20 kurz angespielt, Q22; voller Test mit Controllern offen) |
-
-## Zwischenschritt: Menüs (2026-10-19 vorgezogen)
-
-| Nr | Aufgabe | Status |
-|---|---|---|
-| M.1 | Titelbildschirm, Hauptmenü, Optionen (D29, D39) | erledigt (2026-10-19) |
-| M.2 | Freies Spiel mit Teamwahl (D40) | erledigt (2026-10-19) |
+Abgeschlossen und archiviert: Phase 0 bis M3, Menüs, v0.4 (`docs/archiv/ROADMAP_erledigt.md`).
 
 ## Versionsplan v0.4 bis v1.0 (Vorschlag, Stand 2026-10-20)
 
@@ -77,23 +30,7 @@ Umgestellt am 2026-10-21 (D80, D81): v0.5 setzt den Schwerpunkt auf Grafik; die 
 | v0.9 | Rettet den Park, Für alle | Koop-Kampagne, Zugänglichkeit, Englisch, Musik, Feinschliff | Antigravity |
 | v1.0 | Eröffnung | Release-Builds Windows und Linux, Bazzite/Steam Deck geprüft, mind. 30 Minispiele | Antigravity |
 
-### v0.4 „Spieleabend“ (umgesetzt 2026-10-20, Prompt `docs/prompts/03_patch_v0_4.md`, Versionsplan bestätigt D47; Tests bei Leonardo offen)
-
-Ziel: Das Spiel fühlt sich an einem echten Abend wie ein fertiges Partyspiel an.
-
-| Nr | Aufgabe | Inspiration | Status |
-|---|---|---|---|
-| 4.1 | Spieleabend-Feedback (ROADMAP 3.6) einarbeiten, Balance Q15, Teampunkte Q13, Teamfarben Q14 | | erledigt (2026-10-20: Seile sichtbar D52, Tauziehen mit Kraftakt D53, Computer-Zwerge D58, Q13/Q14 bleiben; Autoscooter wartet auf Controllertest D51) |
-| 4.2 | Effekt-Baukasten `core/fx/`: Kamera-Wackeln über Trauma-Wert, Hitstop, Partikel-Vorlagen (Staub, Platscher, Konfetti, Sterne), Squash-Impulse an der Figur; in alle vorhandenen Minispiele einbauen | „The Art of Screenshake“, Nintendo-Feedback | erledigt (2026-10-20, D55, D56, D63; Hörtest/Sichttest bei Leonardo offen) |
-| 4.3 | Sound-Grundgerüst: Busse Musik/Effekte/Stimme, Autoload `Sfx` mit Stimmen-Pool und Tonhöhen-Streuung, Lautstärke in den Optionen; Effekt-Generator `tools/sfx_gen.gd` nach dem sfxr-Prinzip erzeugt eigene `.wav` (keine Lizenzfrage) | sfxr/jsfxr | erledigt (2026-10-20, D59 bis D62, D65; 42 Geräusche, Hörtest bei Leonardo offen) |
-| 4.4 | Ansager mit „Brabbelstimme“: Sprechblasen mit silbenweisem Geplapper für Ankündigung, Countdown, Sieg, Pech; Spruchlisten pro Ereignis | Animal Crossing, Wii-Party-Moderator | erledigt (2026-10-20, D67, D68: trockener Kommentator „Hodenhüpfer“, 8 Ereignisse, Spruchliste `core/announcer/announcer_lines.json`) |
-| 4.5 | Leistung: FPS- und Frametime-Anzeige (Debug), Grafikoption Niedrig/Mittel/Hoch (Schatten, MSAA, 3D-Auflösung mit FSR), Messprotokoll je Minispiel in `docs/PERFORMANCE.md` | | erledigt (2026-10-20, D69: Grafikstufen, Leistungsanzeige F3/Option, Messmodus `-- --bench`; Messung auf Radeon 780M offen) |
-| 4.6 | Zwei neue Minispiele aus der Schnellbau-Liste (GAME_DESIGN 9.5) | Bomberman, Fall Guys | erledigt (2026-10-20: Wackelwaben D70/D73, Heiße Kartoffel D71, zusätzlich Zerfetzung mit Splitscreen D72/D49) |
-| 4.7 | Bauanleitung `docs/MINIGAME_GUIDE.md` und Gerüst-Skript `tools/new_minigame.gd` (legt Ordner, info.tres, Skript, Szene, Registry-Test an) | | erledigt (2026-10-20: `docs/MINIGAME_GUIDE.md`, `tools/new_minigame.gd` mit Test) |
-| 4.8 | Aufräumen: leere `.gitkeep`, Hinweise zum Klassen-Cache; Q09 klären, bei Zustimmung GitHub-Repository und automatische Tests per GitHub Actions | | erledigt (2026-10-20: Q09 → GitHub privat mit Actions D74, Vorlage `tools/ci/tests.yml` D79; .gitkeep-Liste für Leonardo im DEVLOG) |
-| 4.9 | Export-Vorlagen Windows und Linux (`export_presets.cfg`), erster Test auf Bazzite | | teilweise (2026-10-20: `export_presets.cfg` Windows und Linux, in der Cloud exportiert und gestartet; Test auf Bazzite offen, Anleitung `docs/EXPORT_UND_BAZZITE.md`) |
-
-### v0.5 „Neuer Look“ (in Arbeit seit 2026-10-21; WP 1 und 2 mit `docs/prompts/04_patch_v0_5.md` in Claude, Rest ab WP 3 in Antigravity mit `docs/prompts/05_uebergabe_antigravity.md` Teil B, D89)
+### v0.5 „Neuer Look“ (in Arbeit seit 2026-10-21; WP 1 und 2 mit `docs/archiv/prompts/04_patch_v0_5.md` in Claude, Rest ab WP 3 in Antigravity mit `docs/archiv/prompts/05_uebergabe_antigravity.md` Teil B, D89)
 
 Ziel: Partypark sieht aus wie ein fertiges, liebevolles Partyspiel: einheitlicher Stil, Themen-Arenen in einem Freizeitpark, lebendige Figur, gute Lesbarkeit für vier Spieler, 60 fps auf der Radeon 780M. Asset-Quellen und Lizenzen in `docs/ASSET_QUELLEN.md`.
 
@@ -111,7 +48,7 @@ Ziel: Partypark sieht aus wie ein fertiges, liebevolles Partyspiel: einheitliche
 | 5.9 | Leistung: Budgets, LOD und Sichtweiten, MultiMesh für Deko, Messung aller Stufen und des Splitscreen-Spiels | offen |
 | 5.10 | Vorher-Nachher-Galerie `docs/screenshots/v0_5/`, Testanleitung, Übergabe an Antigravity vorbereiten | offen |
 
-### v0.6 „Mehr Chaos“ (erster Patch in Antigravity, Prompts `docs/prompts/05_uebergabe_antigravity.md` und `06_patch_v0_6.md`)
+### v0.6 „Mehr Chaos“ (erster Patch in Antigravity, Prompts `docs/archiv/prompts/05_uebergabe_antigravity.md` und `06_patch_v0_6.md`)
 
 Ziel: Doppelt so viele Spiele, und niemand sitzt mehr untätig herum.
 
@@ -138,7 +75,7 @@ Ziel: Ein interaktives 3D-Lobby-Areal im Freizeitpark, das als nahtlose Brücke 
 | 7.5 | Dynamische Großraum-Kamera für bis zu 4 Spieler (Zoom-Limits, Offscreen-Indikatoren D113, Turm-Neigung D114) | Super Smash Bros, Mario 3D World | erledigt (2026-10-21, WP 5: HubCamera modes/hub/hub_camera.gd, Höhen-Lerp 48°->38°, 2D-Indikatoren mit Distanz, Haltepunkt 2 erreicht) |
 | 7.6 | Parkbesucher & Rummelplatz-Atmosphäre: Kenney Mini Characters am Wegrand, Lichterketten-Beleuchtung, Park-Geräusche | RollerCoaster Tycoon, Theme Park World | erledigt (2026-10-21, WP 6: Parkbesucher D115 modes/hub/crowd/park_visitor.gd, pulsierende Lichterketten D116 hub_string_lights.gd, zonenabhängiges Ambiente D117 hub_ambiance.gd, neue SFX cheer/bell/breeze) |
 | 7.7 | Übergänge & MatchFlow: Nahtloser Wechsel zwischen Lobby und Minispielen mit Rückkehr in den Park, Menü-Einbindung | Nintendo Land, Fall Guys | erledigt (2026-10-21, WP 7: Hauptmenü-Eintrag Freizeitpark, Pavillon-Rückkehr in den Park nach Turniersiegerehrung) |
-| 7.8 | Polishing, Testanleitung v0.7, Build & Export der `.exe` über partypark-patch-abschluss | | erledigt (2026-10-21, WP 8: Testanleitung docs/TESTANLEITUNG_V0_7.md, Partypark.exe 114 MB gebaut, Version 0.7.0 gesetzt) |
+| 7.8 | Polishing, Testanleitung v0.7, Build & Export der `.exe` über partypark-patch-abschluss | | erledigt (2026-10-21, WP 8: Testanleitung docs/archiv/testanleitungen/TESTANLEITUNG_V0_7.md, Partypark.exe 114 MB gebaut, Version 0.7.0 gesetzt) |
 | 7.9 | **Spielbarkeit v0.7.1** (nach Leonardos Test 2026-11-20: „sehr buggy, Turm nicht lösbar, Kamera“): Turm neu als Außenspirale (D122), Kamera-Leine (D121), Minispiele in eigener Szene (D125), Pads ohne A-Start (D123), keine Computer im Park (D124), Stufenhilfe, Rutsche/Trampolin/Karussell/Wippe/Pavillon repariert, Hub-Test mit echter Eingabe | | erledigt in Claude (2026-11-20); Controllertest bei Leonardo offen (`docs/TESTANLEITUNG_V0_7_1.md`) |
 | 7.10 | Rest-Fehler aus der Prüfung (klein): Trigger-Hysterese am Gamepad, Parkbesucher fragen Spielergruppe jedes Bild ab, `MinigamePlayRunner` überlebt „Zum Hauptmenü“, Log schreibt jede Zeile sofort, Teichwasser begehbar; aus der Minispiel-Durchsicht 2026-11-20: Zerfetzung-Trefferschutz (0,4 s) länger als der Schussabstand, Ego-Kamera ruckelt über 60 Hz (Physik-Interpolation), Schüsse im Splitscreen ohne Raumklang, Speicher-Neuanlagen je Bild (Strahlabfragen, KI-Zustände), Riesenseil wird bei Fortschritt jedes Bild neu gebaut, `wander_speed` der Schafe wirkungslos, Tauziehen-Bild zur Hälfte leer | | offen, vor v0.8 |
 | 7.11 | **Minispiel-Durchsicht** (2026-11-20): alle 7 Spiele mit Spieltest-Werkzeug (D131), Codeprüfung und Bildschirmfotos durchgesehen, Fehler behoben, D126 bis D130 | | erledigt in Claude; Controllertest offen (`docs/TESTANLEITUNG_V0_7_1.md`, Teil Minispiele) |

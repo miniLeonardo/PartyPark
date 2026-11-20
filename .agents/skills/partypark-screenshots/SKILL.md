@@ -24,8 +24,8 @@ Ergebnisdateien in `docs/screenshots/check/`:
 
 ## Galerie-Generierung für Versionen
 
-Für Vorher-Nachher-Vergleiche (z. B. nach `docs/screenshots/v0_5/nachher/`):
+Für Vorher-Nachher-Vergleiche (z. B. nach `docs/screenshots/<version>/`; der Ordner ist nicht versioniert, verbindliche Stilvorlagen liegen in `docs/stil/`):
 1. Zielordner anlegen (`New-Item -ItemType Directory ...`).
 2. Screenshots mit `--shots=<zielordner>` rendern.
 3. Bilder prüfen (Glanz, Schatten, Lesbarkeit, Farbharmonie).
-4. Dokumentation in `docs/screenshots/v0_5/README.md` aktualisieren.
+4. Ergebnis kurz im DEVLOG vermerken; Bilder, die dauerhaft gelten sollen, nach `docs/stil/` legen.

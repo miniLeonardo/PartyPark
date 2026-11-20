@@ -6,7 +6,7 @@ Verbindlich für alle Agenten und Menschen, die an Partypark Grafik, Arenen, Men
 
 **Lackiertes Spielzeug in einem Freizeitpark:** glatte, glänzende Oberflächen mit Klarlack und weichem Randlicht, kräftige, aber nicht grelle Farben, weiche Schatten, Low-Poly-Formen mit runden Kanten, **keine Umrisslinien**.
 
-Vorbildbilder: `docs/screenshots/v0_5/stilproben/plastic_noon_held.png`, `plastic_golden_held.png`, `plastic_evening_held.png` (Variante A). Die verworfenen Varianten B (Toon) und C (Flach) liegen zum Vergleich daneben.
+Vorbildbilder: `docs/stil/plastic_noon_held.png`, `plastic_golden_held.png`, `plastic_evening_held.png` (Variante A). Die verworfenen Varianten B (Toon) und C (Flach) sind in `docs/stil/uebersicht_stil_stimmung.png` zu sehen.
 
 ## 2. So benutzt man den Look im Code
 
@@ -161,10 +161,11 @@ Wiederholte Deko (Bäume, Laternen, Schwellen, Zuschauer) über `MultiMeshInstan
 
 | Bild | Inhalt |
 |---|---|
-| `docs/screenshots/v0_5/stilproben/uebersicht_stil_stimmung.png` | alle drei Stile in drei Stimmungen (Entscheidungsgrundlage D85) |
-| `docs/screenshots/v0_5/stilproben/plastic_noon_held.png` | gewählter Stil, Nachmittag |
-| `docs/screenshots/v0_5/stilproben/plastic_evening_held.png` | gewählter Stil, Abendrummel |
-| `docs/screenshots/v0_5/vorher/` | Stand v0.4 zum Vergleich |
-| `docs/screenshots/v0_5/nachher/` | Stand nach v0.5 (entsteht in WP 10) |
+| `docs/stil/uebersicht_stil_stimmung.png` | alle drei Stile in drei Stimmungen (Entscheidungsgrundlage D85) |
+| `docs/stil/plastic_noon_held.png` | gewählter Stil, Nachmittag |
+| `docs/stil/plastic_golden_held.png` | gewählter Stil, goldene Stunde |
+| `docs/stil/plastic_evening_held.png` | gewählter Stil, Abendrummel |
+
+Ältere Vorher-Bilder (v0.4, v0.7) und die verworfenen Stilvarianten liegen nur noch in der Git-Historie (vor 2026-11-20 unter `docs/screenshots/`). Neue Prüfbilder gehen nach `docs/screenshots/` (nicht versioniert).
 
 Neue Stilproben: `xvfb-run -a godot --path . --rendering-driver vulkan --resolution 1280x720 -- --smoke-style_probe --shots=<ordner> --moods=noon,golden,evening`.

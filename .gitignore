@@ -32,3 +32,6 @@ Claude outputs/
 # Rohdownloads freier Asset-Pakete (nur genutzte Dateien kommen nach assets/third_party/)
 assets/_incoming/*
 !assets/_incoming/.gdignore
+
+# Bildschirmfotos aus Tests und Prüfungen (nur lokal; verbindliche Stilvorlagen liegen in docs/stil/)
+docs/screenshots/

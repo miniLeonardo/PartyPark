@@ -8,13 +8,15 @@ Partypark ist ein lokales 3D-Partyspiel im Stil der Nintendo-Minispielsammlungen
 
 ## Pflichtlektüre zu Beginn jeder Sitzung
 
-Lies in dieser Reihenfolge, bevor du Code änderst:
+Lies in dieser Reihenfolge, bevor du Code änderst (sparsam: nur das Nötige, nicht ganze Ordner):
 
-1. `AGENTS.md` (diese Datei)
-2. `docs/DEVLOG.md`, mindestens den letzten Eintrag: aktueller Stand und nächster Schritt
-3. `docs/ROADMAP.md`: wo stehen wir, was ist als Nächstes dran
-4. `docs/DECISIONS.md`: was ist bereits entschieden, was ist offen
-5. Bei Bedarf `docs/GAME_DESIGN.md` (Spielinhalt) und `docs/ARCHITECTURE.md` (Technik)
+1. `AGENTS.md` (diese Datei, mit Projektkarte unten)
+2. `docs/DEVLOG.md`: nur den obersten Eintrag (Stand und nächster Schritt)
+3. `docs/ROADMAP.md`: Abschnitt der aktuellen Version
+4. `docs/DECISIONS.md`: „Offene Fragen“ und die letzten Einträge
+5. Bei Bedarf: `docs/GAME_DESIGN.md` (Spielinhalt), `docs/ARCHITECTURE.md` (Technik), `docs/ART_GUIDE.md` (Optik), `docs/MINIGAME_GUIDE.md` (neues Minispiel)
+
+`docs/archiv/` enthält Abgeschlossenes (alte DEVLOG-Einträge, D01 bis D99, erledigte Phasen, alte Prompts und Testanleitungen). Nicht vorab lesen, nur gezielt durchsuchen (z. B. nach „D34“ oder „Autoscooter“), wenn du ein älteres System änderst. D01 bis D99 gelten weiter, sofern nicht ersetzt.
 
 Fasse dem Nutzer danach in zwei bis drei Sätzen zusammen, wo das Projekt steht, und bestätige den nächsten Schritt.
 
@@ -32,7 +34,7 @@ Fasse dem Nutzer danach in zwei bis drei Sätzen zusammen, wo das Projekt steht,
 5. **Kontext sichern.** Eine Sitzung oder ein Meilenstein ist erst abgeschlossen, wenn `docs/DEVLOG.md` (neuer Eintrag oben), `docs/ROADMAP.md` (Status) und `docs/DECISIONS.md` (neue Entscheidungen und offene Fragen) aktualisiert sind. Schreibe so, dass eine andere KI auf einem anderen PC ohne Chatverlauf weitermachen kann.
 6. **Immer lauffähig.** Das Projekt muss nach jedem Schritt fehlerfrei starten. Lieber kleine, getestete Schritte als große Umbauten.
 7. **Keine neuen Abhängigkeiten ohne Rückfrage.** Addons, Plugins und fremde Assets nur nach Zustimmung. Erlaubte Lizenzen: CC0, CC-BY, MIT, vergleichbar freie. Jede fremde Datei wird in `assets/CREDITS.md` mit Quelle und Lizenz eingetragen.
-8. **Doku nicht umschreiben, sondern ergänzen.** Alte Einträge in DEVLOG und DECISIONS bleiben stehen. Überholte Entscheidungen werden als „ersetzt durch Dxx“ markiert.
+8. **Doku nicht umschreiben, sondern ergänzen.** Alte Einträge in DEVLOG und DECISIONS bleiben stehen (Abgeschlossenes darf unverändert nach `docs/archiv/` wandern). Überholte Entscheidungen werden als „ersetzt durch Dxx“ markiert. DEVLOG-Einträge kurz halten (höchstens etwa 15 Zeilen).
 
 ## Technik
 
@@ -53,9 +55,6 @@ Fasse dem Nutzer danach in zwei bis drei Sätzen zusammen, wo das Projekt steht,
 
 # Projekt importieren und auf Ladefehler prüfen (ohne Fenster)
 .\Godot_v4.7.2-stable_win64_console.exe --headless --path . --import
-
-# Einzelnes Skript auf Syntaxfehler prüfen
-.\Godot_v4.7.2-stable_win64_console.exe --headless --path . --check-only --script res://pfad/zum/skript.gd
 
 # Unit-Tests (TeamAssigner, Punkte, Registry, Fx, Sfx, Announcer)
 .\Godot_v4.7.2-stable_win64_console.exe --headless --path . --script res://tests/run_tests.gd
@@ -88,7 +87,7 @@ Fasse dem Nutzer danach in zwei bis drei Sätzen zusammen, wo das Projekt steht,
 .\Godot_v4.7.2-stable_win64_console.exe --path . -- --bench
 ```
 
-`--check-only` kennt keine Autoloads; stattdessen `--smoke-compile` nutzen. `--smoke-m2` spielt ein ganzes Turnier und jedes Minispiel durch; mit `--fixed-fps 60` ohne Echtzeit in Sekunden.
+`--check-only` kennt keine Autoloads, daher `--smoke-compile` für Syntaxprüfungen. `--smoke-m2` spielt ein ganzes Turnier und jedes Minispiel durch; mit `--fixed-fps 60` ohne Echtzeit in Sekunden.
 
 ## Code-Konventionen
 
@@ -102,20 +101,26 @@ Fasse dem Nutzer danach in zwei bis drei Sätzen zusammen, wo das Projekt steht,
 8. Neue Minispiele entstehen mit `tools/new_minigame.gd` und werden über ihre Beschreibungsdatei registriert, nicht per Hand in Menüs eingetragen. Anleitung in `docs/MINIGAME_GUIDE.md`. Effekte (`Fx`), Geräusche (`Sfx`) und Ansager (`Announcer`) gehören von Anfang an dazu.
 9. Menüs und Tastenhinweise nutzen `MenuList` und `InputHints` (Tasten je Gerät, D28), nie Godots Fokus-Navigation.
 
-## Ordnerstruktur
+## Projektkarte
 
-| Ordner | Inhalt |
+Autoloads: `Log`, `Settings`, `Sfx`, `Fx`, `Announcer`, `InputRouter`, `PlayerRoster`, `MinigameRegistry`, `Game` (Szenenwechsel, Pause).
+
+| Ordner | Wichtige Dateien |
 |---|---|
-| `core/` | spielweite Systeme: Eingabe, Spieler- und Teamverwaltung, Minispiel-Framework, Autoloads |
-| `player/` | Spielfigur, Steuerung, Animationen, Fähigkeiten |
-| `minigames/<id>/` | je ein Minispiel: Szene, Skripte, Beschreibungsdatei, eigene Assets |
-| `modes/` | Spielarten, die Minispiele aneinanderreihen (Schnellturnier, später Hub und Brettspiel) |
-| `ui/` | Menüs, HUD, Regelbildschirm, Ergebnisbildschirm |
-| `assets/` | gemeinsam genutzte Modelle, Audio, Schriften, Texturen; `CREDITS.md` für Lizenzen |
-| `tests/` | automatische Tests, die headless laufen |
-| `tools/` | Hilfsskripte (Export, Packen) |
-| `docs/` | Kontext für Menschen und KIs, von Godot ignoriert |
-| `builds/` | Export-Ergebnisse, nicht versioniert |
+| `core/input/` | `input_router` (Gerät → Spielerplatz), `input_source`, `gamepad_input`, `keyboard_input`, `ai_input` (Computer), `input_bindings` |
+| `core/teams/` | `player_roster`, `player_slot`, `team_assigner`, `team_format` |
+| `core/minigame/` | `minigame` (Basisklasse), `match_flow` (Ansage → Regeln → Countdown → Ergebnis), `minigame_info`/`_registry`/`_context`/`_result`, `scoring`, `minigame_sandbox` (Tests) |
+| `core/look/`, `core/level/` | `look` (Stimmung, Materialien), `park_props`, `stage_kit` (Grundformen mit Kollision) |
+| `core/fx/`, `core/audio/`, `core/announcer/` | Effekte, Geräusche, Ansager |
+| `core/camera/` | `arena_camera`, `split_screen` (nur Ego-Spiele) |
+| `player/` | `player` (Bewegung, Schubsen, Stufenhilfe, `push_velocity`), `player_visual`, `abilities/` (Springen, Schubsen) |
+| `minigames/<id>/` | `<id>.gd/.tscn`, `info.tres`; Spiele: bumper_cars, tug_of_war, giant_vs_dwarfs, sheep_herding, hex_fall, hot_potato, blaster_brawl |
+| `modes/` | `tournament/`, `free_play/`, `test_arena/`, `hub/` (Park: `hub`, `hub_camera` mit Leine, `hub_props` baut die Welt, `hub_minigame` startet Spiele, `tower/`, `playground/`, `stations/`, `crowd/`) |
+| `ui/` | Titel, Beitritt, Hauptmenü, Optionen, Pause, `menu_list`, `input_hints` |
+| `tests/` | `run_tests.gd` + `unit/`; `smoke/` (compile, m1, m2, games, hub, playtest, Bildskripte shots/style_probe) |
+| `tools/` | `new_minigame`, `sfx_gen`/`sfx_recipes`, `asset_audit`, `download_assets.ps1` |
+| `assets/` | `audio/` (selbst erzeugt), `third_party/` (nur genutzte Dateien), `CREDITS.md`; `_incoming/` = lokale Rohdownloads, nicht versioniert |
+| `docs/` | aktuelle Doku, `stil/` (Stilvorlagen), `archiv/`; `screenshots/` lokal, nicht versioniert |
 
 ## Testen
 
@@ -126,10 +131,10 @@ Fasse dem Nutzer danach in zwei bis drei Sätzen zusammen, wo das Projekt steht,
 
 ## Arbeitsumgebungen
 
-1. **Hauptumgebung:** Lokale Arbeitsumgebung unter Windows mit echter Grafikkarte (Terminal, Godot, Git). Alle Änderungen werden lokal getestet und committet.
-2. **Austauschweg:** Das GitHub-Repository `https://github.com/miniLeonardo/PartyPark.git` dient als zentraler Austauschweg zwischen Arbeitsrechnern, CI (GitHub Actions) und Bazzite.
-3. **Claude (Cowork):** Holt den aktuellen Stand über Git (Details in `CLAUDE.md`).
-4. Wechselt die Umgebung, wird das im DEVLOG vermerkt, damit klar ist, welche Kopie die aktuelle ist.
+1. **Lokal mit Shell, Godot und Git** (Antigravity oder Claude Code unter Windows mit echter Grafikkarte): Godot liegt als `Godot_v4.7.2-stable_win64(_console).exe` im Projektordner (nicht versioniert). Änderungen lokal testen und committen.
+2. **Austauschweg:** GitHub `https://github.com/miniLeonardo/PartyPark.git` (CI über `.github/workflows/tests.yml`). Vor der Arbeit `git pull`, nach dem Abschluss pushen, wenn Leonardo zustimmt.
+3. Nach dem ersten Klonen oder großen Asset-Änderungen einmal `--import` ausführen; `assets/_incoming/` braucht eine `.gdignore` (liegt bei), sonst bricht der Import an `.blend`-Dateien ab.
+4. Wechselt die Umgebung, wird das im DEVLOG vermerkt.
 
 ## Definition of Done für eine Aufgabe
 

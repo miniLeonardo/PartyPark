@@ -23,7 +23,7 @@ Unter Windows heißt `godot` z. B. `Godot_v4.7.2-stable_win64_console.exe`.
 
 ## 3. Auf Bazzite bringen
 
-Variante A (empfohlen, D74): Auf dem Bazzite-PC das Repository klonen (`docs/GITHUB_ANLEITUNG.md`), Godot 4.7.2 für Linux holen, Vorlagen installieren und dort exportieren.
+Variante A (empfohlen, D74): Auf dem Bazzite-PC das Repository klonen (`docs/archiv/GITHUB_ANLEITUNG.md`), Godot 4.7.2 für Linux holen, Vorlagen installieren und dort exportieren.
 
 Variante B: `builds/linux/Partypark.x86_64` vom Arbeitsrechner per USB-Stick kopieren, z. B. nach `~/Spiele/Partypark/`, dann im Terminal `chmod +x ~/Spiele/Partypark/Partypark.x86_64`.
 
