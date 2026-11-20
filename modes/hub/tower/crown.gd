@@ -29,7 +29,8 @@ func _physics_process(delta: float) -> void:
 	match current_state:
 		State.FLOATING:
 			rotate_y(1.5 * delta)
-			position.y = summit_home_position.y + sin(_bob_timer * 3.0) * 0.15
+			# Weltkoordinaten (vorher lokal gesetzt, dann schwebte die Krone um die Turmhöhe versetzt)
+			global_position.y = summit_home_position.y + sin(_bob_timer * 3.0) * 0.15
 
 		State.WORN:
 			if is_instance_valid(wearer):
@@ -45,14 +46,29 @@ func _physics_process(delta: float) -> void:
 				_pickup_delay -= delta
 
 			# Physik-Bogenflug mit Schwerkraft & Bodenabprall
+			if _velocity == Vector3.ZERO:
+				# Liegt still: aufheben, wer schon daneben steht (body_entered käme nicht noch einmal)
+				if _pickup_delay <= 0.0:
+					for body: Node3D in ($CrownTrigger as Area3D).get_overlapping_bodies():
+						if body is Player:
+							attach_to_player(body as Player)
+							return
+				return
 			_velocity.y -= 25.0 * delta
-			global_position += _velocity * delta
+			var from: Vector3 = global_position
+			var to: Vector3 = from + _velocity * delta
 			rotate_x(6.0 * delta)
 			rotate_y(4.0 * delta)
 
-			# Bodenkontakt prüfen (einfacher Sweep gegen Y = 0.3)
-			if global_position.y <= 0.3:
-				global_position.y = 0.3
+			# Aufprall auf jeder festen Fläche (Netze, Plattformen, Boden), nicht nur auf Y = 0.3
+			var query := PhysicsRayQueryParameters3D.create(from, to + Vector3.DOWN * 0.3)
+			query.collide_with_areas = false
+			query.exclude = _player_rids()
+			var hit: Dictionary = get_world_3d().direct_space_state.intersect_ray(query)
+			if hit.is_empty() or _velocity.y > 0.0:
+				global_position = to
+			else:
+				global_position = (hit["position"] as Vector3) + Vector3.UP * 0.3
 				if absf(_velocity.y) > 2.0:
 					_velocity.y = -_velocity.y * 0.45
 					_velocity.x *= 0.7
@@ -64,6 +80,13 @@ func _physics_process(delta: float) -> void:
 			# Falls sie ins Leere fällt: Zurück zur Turmspitze
 			if global_position.y < -4.0 or global_position.length() > 50.0:
 				reset_to_summit()
+
+
+func _player_rids() -> Array[RID]:
+	var rids: Array[RID] = []
+	for node: Node in get_tree().get_nodes_in_group(Player.GROUP):
+		rids.append((node as CollisionObject3D).get_rid())
+	return rids
 
 
 func _build_visuals() -> void:

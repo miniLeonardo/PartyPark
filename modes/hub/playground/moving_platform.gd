@@ -40,7 +40,7 @@ func _physics_process(delta: float) -> void:
 		# Pause unten
 		t = 0.0
 
-	global_position = _start_pos + travel_offset * t
+	position = _start_pos + travel_offset * t
 
 
 func _build_visuals() -> void:

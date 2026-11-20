@@ -103,3 +103,8 @@ func _color_for_format(fmt: int) -> Color:
 func _on_pad_activated() -> void:
 	if info != null:
 		activated.emit(info)
+
+
+## Wohin die Spieler nach dem Minispiel zurückkehren: vor das Pad, nicht darauf (sonst startet es sofort neu).
+func get_return_position() -> Vector3:
+	return to_global(Vector3(0.0, 0.2, 2.6 + 1.8 + 2.0))

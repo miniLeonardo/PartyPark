@@ -13,6 +13,7 @@ const ARENA_SCENE: String = "res://modes/test_arena/test_arena.tscn"
 const TOURNAMENT_SCENE: String = "res://modes/tournament/tournament.tscn"
 const FREE_PLAY_SCENE: String = "res://modes/free_play/free_play.tscn"
 const HUB_SCENE: String = "res://modes/hub/hub.tscn"
+const HUB_MINIGAME_SCENE: String = "res://modes/hub/hub_minigame.tscn"
 const PAUSE_MENU_SCENE: PackedScene = preload("res://ui/pause_menu/pause_menu.tscn")
 const DISCONNECT_OVERLAY_SCENE: PackedScene = preload("res://ui/disconnect_overlay/disconnect_overlay.tscn")
 
@@ -22,6 +23,11 @@ var match_running: bool = false
 var tournament_rounds: int = 5
 ## Wurde das Turnier aus dem Freizeitpark-Hub heraus gestartet?
 var launched_from_hub: bool = false
+## Minispiel, das der Park als Nächstes in eigener Szene startet (D125).
+var hub_pending_minigame: MinigameInfo = null
+## Wohin die Spieler nach einem Minispiel im Park zurückkehren (neben die Bude).
+var hub_return_position: Vector3 = Vector3.ZERO
+var has_hub_return_position: bool = false
 
 var pause_menu: PauseMenu
 var disconnect_overlay: DisconnectOverlay
@@ -126,10 +132,30 @@ func start_hub() -> void:
 
 func return_after_tournament() -> void:
 	if launched_from_hub:
-		launched_from_hub = false
+		_leave_match()
 		start_hub()
 	else:
 		goto_main_menu()
+
+
+## Startet ein Minispiel aus dem Park in eigener Szene; danach geht es zurück an `return_position` (D125).
+func play_minigame_from_hub(info: MinigameInfo, return_position: Vector3) -> void:
+	hub_pending_minigame = info
+	hub_return_position = return_position
+	has_hub_return_position = true
+	PlayerRoster.fill_with_cpu()
+	match_running = true
+	get_tree().paused = false
+	get_tree().change_scene_to_file(HUB_MINIGAME_SCENE)
+
+
+## Nach einem Minispiel aus dem Park: zurück in den Park, neben die Bude.
+func return_to_hub() -> void:
+	hub_pending_minigame = null
+	var keep_position: bool = has_hub_return_position
+	_leave_match()
+	has_hub_return_position = keep_position
+	start_hub()
 
 
 func _start_hub_quickstart() -> void:
@@ -177,6 +203,8 @@ func _start_mode(scene_path: String) -> void:
 
 func _leave_match() -> void:
 	Announcer.stop()
+	launched_from_hub = false
+	has_hub_return_position = false
 	pause_menu.close()
 	match_running = false
 	Engine.time_scale = 1.0

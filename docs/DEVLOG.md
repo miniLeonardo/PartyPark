@@ -13,6 +13,36 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-11-20: Spielbarkeit v0.7.1 – Prüfung der Antigravity-Änderungen, Turm neu, Kamera-Leine, Hub-Abläufe
+
+Agent und Umgebung: Claude (Claude Code), direkt im Ordner `C:\Users\wad32muj\Agentenraum\partypark` mit Shell, Git und Godot 4.7.2 (Windows, echte Grafikkarte). Remote `origin` = `https://github.com/miniLeonardo/PartyPark.git` eingerichtet, lokaler Stand per Fast-Forward von 033a95d auf 213ad3b (v0.7 aus Antigravity) gebracht.
+Anlass: Leonardo: „Spiel sehr buggy, Lobby nett, aber Aktivitäten wie das Jump'n'Run funktionieren nicht und sind nicht lösbar, Kamera braucht Überarbeitung.“
+Befund (Prüfung aller Hub-Dateien, Teile per Unteragent gegengeprüft):
+- Import brach ab: `.blend`-Dateien in `assets/_incoming/` ohne `.gdignore` → Godot wollte Blender, fehlende Coaster-Kit-Modelle, Hub startete nicht. Behoben (`.gdignore`, in `.gitignore` freigegeben).
+- Turm unlösbar: Plattformen 1 und 2 und das Gipfeldeck lagen als volle Decken über allen Wegen; über Balken 5 nur 1,1 m Luft bei 1,3 m Figurhöhe; „Netze“ hatten keine Kollision. Die alten Tests teleportierten die Figur zur Krone und blieben deshalb grün.
+- Minispiele aus dem Park liefen als Kind des Hubs mitten in der Parkwelt (Brunnen im Autoscooter, Rasen fängt Herunterfallende auf, Ausscheiden unmöglich).
+- A = Springen = Bestätigen: Springen auf einem Pad startete Spiele; nach Rückkehr standen alle wieder auf dem Pad → Neustart.
+- Figur setzt `velocity.x/z` jedes Bild neu: Karussell-Fliehkraft und Rutschenschub wirkten nie. Rutsche verkehrt herum gebaut (Bahn bergauf, Treppe mit Lücke). Trampolin-Matte ohne Kollision, Sprung schon beim seitlichen Hineinlaufen. Pavillon-Platte und Rundenschalter im Podest versteckt; Schalter reagierte auf Computer.
+- Keine Stufen: 0,25-0,4 m hohe Kanten (Zonenböden, Karussell, Podest) wirkten als Wand.
+- Kamera: zoomte bis 46 m (Figuren winzig), ignorierte die Kletterhöhe; Computer folgten dem ersten Menschen.
+- Ansager-Platzhalter `{winner}` am Buzzer nicht ersetzt; `launched_from_hub` blieb nach Abbruch stehen.
+Erledigt:
+- Fragerunde mit Leonardo: D121 Kamera-Leine, D122 Turm als Außenspirale mit Netz-Etagen, D123 Pad-Start nur „alle drauf + Countdown“, D124 keine Computer im Park; technisch D125 Minispiele in eigener Szene.
+- `Player`: Stufenhilfe `step_height` (nur im Park 0,45 m), `push_velocity` für Geräte, `leash_blocks` für die Leine, `landing_speed`, `get_floor_collider()`.
+- `Game.play_minigame_from_hub()` / `return_to_hub()` und neue Szene `modes/hub/hub_minigame.tscn`; Rückkehr neben die Bude (`HubMinigameStation.get_return_position()`); `_leave_match()` setzt Hub-Flags zurück.
+- `Hub` neu: nur Menschen, Leine (`leash_half_extent`), Tastenhinweise über `InputHints`, Bot-Wanderlogik entfernt.
+- `HubTower` neu (Stufentorte: Wege r 10,5/7/4,6 m, Netze r 8,6/5,8 m, Spitze r 3,5 m, je 9 Stufen à 0,67 m, Fahrstuhl-Plattform in Passage 2, Pfähle in Passage 3, Startschild, Höhenschilder, Fahne statt Dach). Alter Turm-Lift, Fahnenmast in Turmmitte und Zuschauer auf dem Turmweg entfernt, Fundament rund (r 12,8).
+- `HubCrown`: schwebt in Weltkoordinaten, landet per Strahl auf jeder Fläche, wird auch liegend aufgehoben.
+- `HubCamera`: Abstand aus Bildbreite, Tiefe und Höhe (13 bis 32 m), Neigung 50° → 38°.
+- Pads: Countdown nur wenn alle Menschen drauf, Abbruch sobald einer geht, kein A-Start. Pavillon: Platte/Schalter auf das Podest, Schalter nur für Menschen, Säulen mit Kollision.
+- Rutsche, Trampolin, Karussell (Fliehkraft, feste Mittelsäule), Wippe (max. 16°, nur Mitfahrer), Schwebeplattform (lokale Position), Fähre höher, Teich ohne Z-Fighting.
+- `tests/smoke/hub_smoke.gd` neu: steuert Figuren über `AIInput` mit echter Physik (jeder Turmsprung, Netzsturz, Rutsche, Trampolin, Stufenhilfe, Leine, Kamera, Pads, Minispiel-Szene hin und zurück).
+Entscheidungen: D121 bis D125; D107, D113, D119 teilweise ersetzt (markiert)
+Getestet: Unit 31/31; compile 151/0; m1 OK; m2 OK; games OK; smoke-hub 33/33 (Turm vollständig mit echten Sprüngen gelöst, 0 Fehlsprünge). Bildschirmfotos mit echter Grafik (1280×720, Fenster) von Plaza, Leine, Turm beim Klettern und Spitze geprüft; 200+ fps auf Hoch. Controller nur bei Leonardo prüfbar.
+Probleme / Bekannte Fehler: Wer von einer Turmstufe bewusst nach außen rennt, verfehlt das Netz und landet unten (Netze können wegen der Wege darunter nicht breiter sein). Kleine Reste in ROADMAP 7.10. `tests/smoke/haltepunkt1_smoke.gd` ist ein Bildskript, kein Test.
+Nächster Schritt: Leonardo testet nach `docs/TESTANLEITUNG_V0_7_1.md`, danach Balance von Turm und Leine; dann ROADMAP 7.10, erst danach v0.8.
+Aktuelle Kopie liegt in: `C:\Users\wad32muj\Agentenraum\partypark` (Commit lokal, noch nicht gepusht)
+
 ## 2026-10-26: Patch v0.7 Polish Run – Pad-Status, Hub-Kamera, Spieler-Isolation & Logging-System
 
 Agent und Umgebung: Gemini (Antigravity), Windows x86_64 lokal

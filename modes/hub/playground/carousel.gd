@@ -6,6 +6,8 @@ extends Node3D
 
 @export var radius: float = 5.5
 @export var rotation_speed: float = 1.25
+## Stärke der Fliehkraft-Drift: bei Radius 5 m und Standardtempo ca. 2,3 m/s nach außen.
+@export var centrifugal_factor: float = 0.3
 
 var _rotating_root: Node3D
 var _platform_body: AnimatableBody3D
@@ -32,15 +34,12 @@ func _physics_process(delta: float) -> void:
 		to_player.y = 0.0
 		var dist: float = to_player.length()
 
-		if dist > 0.4:
+		if dist > 0.4 and player.is_on_floor():
+			# Fliehkraft als Drift nach außen (omega² * r * Faktor, in m/s). Die Mitnahme im Kreis
+			# übernimmt die AnimatableBody-Scheibe selbst. Über push_velocity, weil die Figur ihre
+			# waagerechte Geschwindigkeit jedes Bild neu setzt (velocity += wirkte vorher nicht).
 			var outward := to_player.normalized()
-			# Zentrifugalkraft = omega² * r
-			var cent_force: float = rotation_speed * rotation_speed * dist
-			player.velocity += outward * (cent_force * 0.65 * delta)
-
-			# Tangential-Mitnahme
-			var tangent := Vector3(-outward.z, 0.0, outward.x)
-			player.velocity += tangent * (rotation_speed * dist * 0.25 * delta)
+			player.push_velocity += outward * (rotation_speed * rotation_speed * dist * centrifugal_factor)
 
 
 func _build_carousel() -> void:
@@ -90,6 +89,17 @@ func _build_carousel() -> void:
 	center_post.position = Vector3(0, 2.1, 0)
 	center_post.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_rotating_root.add_child(center_post)
+	# Mittelsäule ist fest (rund, dreht also nicht mit); vorher lief man durch sie hindurch
+	var post_body := StaticBody3D.new()
+	post_body.name = "CenterPostBody"
+	post_body.position = Vector3(0, 2.1, 0)
+	var post_shape := CollisionShape3D.new()
+	var post_cyl := CylinderShape3D.new()
+	post_cyl.radius = 1.0
+	post_cyl.height = 4.2
+	post_shape.shape = post_cyl
+	post_body.add_child(post_shape)
+	add_child(post_body)
 
 	# 3. Baldachin / Karussell-Dach oben
 	var roof := MeshInstance3D.new()

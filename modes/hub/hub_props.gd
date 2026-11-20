@@ -214,7 +214,8 @@ static func _build_path_arch(parent: Node3D, pos: Vector3, rot_y_deg: float, tit
 
 static func _build_zone_grounds(parent: Node3D) -> void:
 	# Nord-Zone: Turm-Fundament (Z = -36, 16 m x 16 m, feste Steinplattform)
-	StageKit.add_box(parent, Vector3(16, 0.3, 16), Vector3(0, 0.15, -36), Color("#d0be9b"), Vector3.ZERO, Look.Kind.STONE)
+	# Rund und so groß, dass die unterste Turmpassage (Radius 10,5 m) darauf steht (D122)
+	StageKit.add_cylinder(parent, 12.8, 0.3, Vector3(0, 0.15, -36), Color("#d0be9b"), Look.Kind.STONE)
 
 	# Ost-Zone: Rummel-Plaza (X = 35, runde Kirmesfläche Radius 11 m)
 	var rummel_ground := StageKit.add_cylinder(parent, 11.0, 0.25, Vector3(35, 0.12, 0), Color("#db7b67"), Look.Kind.STONE)
@@ -246,7 +247,7 @@ static func _build_park_pond(parent: Node3D, pos: Vector3) -> void:
 	cyl.height = 0.1
 	water.mesh = cyl
 	water.material_override = Look.water_material()
-	water.position = Vector3(0, 0.25, 0)
+	water.position = Vector3(0, 0.27, 0)
 	pond.add_child(water)
 
 
@@ -365,7 +366,7 @@ static func _build_park_props(parent: Node3D) -> void:
 	var flag_positions: Array[Vector3] = [
 		Vector3(-12, 0, -12), Vector3(12, 0, -12),
 		Vector3(12, 0, 12), Vector3(-12, 0, 12),
-		Vector3(0, 0, -36), Vector3(0, 0, 36),
+		Vector3(0, 0, 36),
 	]
 	var flag_colors: Array[Color] = [Color("#ff5d73"), Color("#ffcf3f"), Color("#41c7a9"), Color("#5aa8ff")]
 	for i: int in flag_positions.size():
@@ -446,7 +447,7 @@ static func _build_playground(parent: Node3D) -> void:
 	var slide := HubSlide.new()
 	slide.name = "Slide"
 	slide.position = Vector3(-32.0, 0.15, 14.0)
-	slide.rotation_degrees = Vector3(0, 90.0, 0) # Rutscht nach Osten Richtung Weg
+	slide.rotation_degrees = Vector3(0, -90.0, 0) # Lokal -Z zeigt nach Osten Richtung Weg
 	playground.add_child(slide)
 
 	# 4. Physikalische Wippe (D106: Gewichts-Reaktion)
@@ -471,27 +472,17 @@ static func _build_playground(parent: Node3D) -> void:
 	# 6. Schwebeladende Plattform über dem Teich (D106: horizontales Pendel)
 	var pond_ferry := HubMovingPlatform.new()
 	pond_ferry.name = "PondFerry"
-	pond_ferry.position = Vector3(-40.0, 0.4, -14.0)
+	pond_ferry.position = Vector3(-40.0, 0.75, -14.0)
 	pond_ferry.travel_offset = Vector3(10.0, 0.0, 0.0)
 	pond_ferry.travel_duration = 4.0
 	pond_ferry.platform_size = Vector3(3.4, 0.3, 3.4)
 	pond_ferry.platform_color = Color("#bf9d70")
 	playground.add_child(pond_ferry)
 
-	# 7. Vertikaler Schwebelift nahe Nord-Weg (D106: Vertikallift)
-	var tower_lift := HubMovingPlatform.new()
-	tower_lift.name = "TowerLift"
-	tower_lift.position = Vector3(-5.0, 0.2, -26.0)
-	tower_lift.travel_offset = Vector3(0.0, 6.0, 0.0)
-	tower_lift.travel_duration = 3.2
-	tower_lift.platform_size = Vector3(2.8, 0.35, 2.8)
-	tower_lift.platform_color = Color("#ebd8b0")
-	playground.add_child(tower_lift)
-
 	# 8. Kletterturm & Parkour in der Nord-Zone (D100, D107, D108)
 	var tower := HubTower.new()
 	tower.name = "ClimbingTower"
-	tower.position = Vector3(0.0, 0.2, -36.0)
+	tower.position = Vector3(0.0, 0.3, -36.0)
 	playground.add_child(tower)
 
 
@@ -587,8 +578,8 @@ static func _build_crowd(parent: Node3D) -> void:
 		{"pos": Vector3(-30.0, 0.1, -2.5), "yaw": 30.0},
 		{"pos": Vector3(-36.0, 0.1, 3.0), "yaw": -45.0},
 		# Turm-Zuschauer
-		{"pos": Vector3(-4.5, 0.1, -33.0), "yaw": 30.0},
-		{"pos": Vector3(4.5, 0.1, -33.0), "yaw": -30.0},
+		{"pos": Vector3(-14.0, 0.0, -27.0), "yaw": -40.0},
+		{"pos": Vector3(14.0, 0.0, -27.0), "yaw": 40.0},
 	]
 
 	for i: int in visitor_positions.size():

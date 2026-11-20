@@ -47,6 +47,16 @@ func _build_pavilion() -> void:
 		pillar.position = pos
 		pillar.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		add_child(pillar)
+		# Säulen sind fest (vorher liefen Figuren durch sie hindurch)
+		var pillar_body := StaticBody3D.new()
+		pillar_body.position = pos
+		var pillar_shape := CollisionShape3D.new()
+		var pillar_cyl := CylinderShape3D.new()
+		pillar_cyl.radius = 0.3
+		pillar_cyl.height = 4.0
+		pillar_shape.shape = pillar_cyl
+		pillar_body.add_child(pillar_shape)
+		add_child(pillar_body)
 
 	# 3. Kuppel-Dach
 	var dome := MeshInstance3D.new()
@@ -95,12 +105,12 @@ func _build_pavilion() -> void:
 	add_child(_rounds_label)
 
 	# 5. Rundenzahl-Umschaltplatte (links neben dem Eingang)
-	_build_round_switcher(Vector3(-3.4, 0.25, -2.5))
+	_build_round_switcher(Vector3(-3.4, 0.48, -2.5))
 
 	# 6. Zentrales Aktivierungs-Pad
 	activation_pad = HubActivationPad.new()
 	activation_pad.name = "TournamentPad"
-	activation_pad.position = Vector3(0, 0.22, 0)
+	activation_pad.position = Vector3(0, 0.41, 0)
 	activation_pad.pad_radius = 2.6
 	activation_pad.activated.connect(_on_pad_activated)
 	add_child(activation_pad)
@@ -135,7 +145,7 @@ func _build_round_switcher(pos: Vector3) -> void:
 
 func _on_switcher_entered(body: Node3D) -> void:
 	var player := body as Player
-	if player == null or _switcher_cooldown > 0.0:
+	if player == null or player.slot == null or not player.slot.is_human() or _switcher_cooldown > 0.0:
 		return
 
 	_switcher_cooldown = 0.8

@@ -4,10 +4,16 @@ extends ArenaCamera
 ## Bietet sanfte Zoom-Grenzen, dynamische Turm-Höhenneigung und
 ## Offscreen-Indikator-Pfeile am Bildschirmrand für weit entfernte Spieler.
 
-@export var base_pitch_deg: float = 48.0
+## Neigung am Boden und beim Klettern ganz oben (D114).
+@export var base_pitch_deg: float = 50.0
 @export var high_pitch_deg: float = 38.0
+## Ab dieser Höhe des höchsten Spielers gilt die flache Neigung ganz.
 @export var max_height_ref: float = 18.0
-@export var max_cpu_follow_dist: float = 22.0
+## Nähester und weitester Abstand (m). Mit der Leine im Hub (D121) reicht der Höchstwert für die Gruppe.
+@export var hub_min_distance: float = 13.0
+@export var hub_max_distance: float = 32.0
+## Rand um die Figuren im Bild (m).
+@export var hub_padding: float = 3.5
 
 var _indicator_layer: CanvasLayer
 var _indicators: Dictionary = {} # PlayerSlot -> Control
@@ -16,12 +22,12 @@ var _indicators: Dictionary = {} # PlayerSlot -> Control
 func _ready() -> void:
 	pitch_deg = base_pitch_deg
 	yaw_deg = 0.0
-	min_distance = 14.0
-	max_distance = 46.0
-	padding = 5.0
+	min_distance = hub_min_distance
+	max_distance = hub_max_distance
+	padding = hub_padding
 	follow_smoothing = 4.0
 	zoom_smoothing = 2.5
-	target_offset = Vector3(0.0, 1.2, 0.0)
+	target_offset = Vector3(0.0, 1.0, 0.0)
 	ignore_below_height = -5.0
 	super._ready()
 	_build_indicators_layer()
@@ -49,36 +55,14 @@ func set_indicators_visible(val: bool) -> void:
 
 
 func _update_camera(delta: float, snap: bool) -> void:
-	var human_points: Array[Vector3] = []
-	var cpu_points: Array[Vector3] = []
-
-	for node: Node in get_tree().get_nodes_in_group(target_group):
-		var target := node as Player
-		if target != null and target.is_inside_tree() and target.global_position.y > ignore_below_height:
-			if target.slot != null and target.slot.is_human():
-				human_points.append(target.global_position)
-			else:
-				cpu_points.append(target.global_position)
-
+	# Im Park gibt es nur menschliche Figuren (D124)
 	var points: Array[Vector3] = []
 	var highest_y: float = 0.0
-
-	if not human_points.is_empty():
-		points.append_array(human_points)
-		var human_bounds := AABB(human_points[0], Vector3.ZERO)
-		for p: Vector3 in human_points:
-			human_bounds = human_bounds.expand(p)
-			highest_y = maxf(highest_y, p.y)
-		var human_center: Vector3 = human_bounds.get_center()
-
-		# CPUs nur einbeziehen, wenn sie sich in der Nähe menschlicher Spieler befinden
-		for p: Vector3 in cpu_points:
-			if p.distance_to(human_center) <= max_cpu_follow_dist:
-				points.append(p)
-	else:
-		points = cpu_points
-		for p: Vector3 in cpu_points:
-			highest_y = maxf(highest_y, p.y)
+	for node: Node in get_tree().get_nodes_in_group(target_group):
+		var target := node as Node3D
+		if target != null and target.is_inside_tree() and target.global_position.y > ignore_below_height:
+			points.append(target.global_position)
+			highest_y = maxf(highest_y, target.global_position.y)
 
 	if points.is_empty():
 		if snap:
@@ -98,8 +82,7 @@ func _update_camera(delta: float, snap: bool) -> void:
 		bounds = bounds.expand(point)
 
 	var center: Vector3 = bounds.get_center() + target_offset
-	var radius: float = Vector2(bounds.size.x, bounds.size.z).length() * 0.5 + padding
-	var wanted: float = clampf(radius / tan(deg_to_rad(fov) * 0.5), min_distance, max_distance)
+	var wanted: float = clampf(_distance_to_fit(bounds.size), min_distance, max_distance)
 
 	if snap:
 		_center = center
@@ -110,6 +93,20 @@ func _update_camera(delta: float, snap: bool) -> void:
 		_distance = lerpf(_distance, wanted, clampf(zoom_smoothing * delta, 0.0, 1.0))
 
 	_place()
+
+
+## Abstand, bei dem eine Gruppe der Ausdehnung `size` samt Rand ins Bild passt.
+## Breite → waagerechter Bildwinkel, Tiefe und Höhe (Klettern!) → senkrechter Bildwinkel.
+## Vorher zählte nur die Diagonale am Boden: Wer auf dem Turm stand, fiel oben aus dem Bild.
+func _distance_to_fit(size: Vector3) -> float:
+	var pitch: float = deg_to_rad(pitch_deg)
+	var vp: Vector2 = get_viewport().get_visible_rect().size
+	var aspect: float = vp.x / maxf(vp.y, 1.0)
+	var half_v: float = deg_to_rad(fov) * 0.5
+	var half_h: float = atan(tan(half_v) * aspect)
+	var screen_width: float = size.x * 0.5 + padding
+	var screen_height: float = (size.z * sin(pitch) + size.y * cos(pitch)) * 0.5 + padding
+	return maxf(screen_width / tan(half_h), screen_height / tan(half_v))
 
 
 func _build_indicators_layer() -> void:

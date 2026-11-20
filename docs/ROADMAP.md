@@ -139,6 +139,8 @@ Ziel: Ein interaktives 3D-Lobby-Areal im Freizeitpark, das als nahtlose Brücke 
 | 7.6 | Parkbesucher & Rummelplatz-Atmosphäre: Kenney Mini Characters am Wegrand, Lichterketten-Beleuchtung, Park-Geräusche | RollerCoaster Tycoon, Theme Park World | erledigt (2026-10-21, WP 6: Parkbesucher D115 modes/hub/crowd/park_visitor.gd, pulsierende Lichterketten D116 hub_string_lights.gd, zonenabhängiges Ambiente D117 hub_ambiance.gd, neue SFX cheer/bell/breeze) |
 | 7.7 | Übergänge & MatchFlow: Nahtloser Wechsel zwischen Lobby und Minispielen mit Rückkehr in den Park, Menü-Einbindung | Nintendo Land, Fall Guys | erledigt (2026-10-21, WP 7: Hauptmenü-Eintrag Freizeitpark, Pavillon-Rückkehr in den Park nach Turniersiegerehrung) |
 | 7.8 | Polishing, Testanleitung v0.7, Build & Export der `.exe` über partypark-patch-abschluss | | erledigt (2026-10-21, WP 8: Testanleitung docs/TESTANLEITUNG_V0_7.md, Partypark.exe 114 MB gebaut, Version 0.7.0 gesetzt) |
+| 7.9 | **Spielbarkeit v0.7.1** (nach Leonardos Test 2026-11-20: „sehr buggy, Turm nicht lösbar, Kamera“): Turm neu als Außenspirale (D122), Kamera-Leine (D121), Minispiele in eigener Szene (D125), Pads ohne A-Start (D123), keine Computer im Park (D124), Stufenhilfe, Rutsche/Trampolin/Karussell/Wippe/Pavillon repariert, Hub-Test mit echter Eingabe | | erledigt in Claude (2026-11-20); Controllertest bei Leonardo offen (`docs/TESTANLEITUNG_V0_7_1.md`) |
+| 7.10 | Rest-Fehler aus der Prüfung (klein): Trigger-Hysterese am Gamepad, Parkbesucher fragen Spielergruppe jedes Bild ab, `MinigamePlayRunner` überlebt „Zum Hauptmenü“, Log schreibt jede Zeile sofort, Teichwasser begehbar | | offen, vor v0.8 |
 
 ### v0.8 „Party-Joker“
 

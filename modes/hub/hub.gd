@@ -3,6 +3,7 @@ extends Node3D
 ## Interaktive 3D-Lobby: Der Freizeitpark (D98, D99).
 ## Dient als begehbarer Knotenpunkt zwischen den Minispielen mit Bewegungsspaß,
 ## Parkour, Attraktionen und Spielzeugen für bis zu 4 Spieler.
+## Im Park laufen nur menschliche Spieler (D124); Minispiele starten in eigener Szene (D125).
 
 const PLAYER_SCENE: PackedScene = preload("res://player/player.tscn")
 
@@ -31,6 +32,11 @@ const ZONE_NAMES: Dictionary = {
 	Vector3(1.0, 0.4, 4.0),
 	Vector3(3.0, 0.4, 4.0),
 ]
+## Kamera-Leine (D121): So weit (m, waagerecht) dürfen sich Spieler von der Mitte der Gruppe entfernen.
+## x = links/rechts im Bild, y = nach vorne/hinten (Tiefe). Größer = mehr Freiheit, kleinere Figuren.
+@export var leash_half_extent: Vector2 = Vector2(14.0, 9.0)
+## Kanten bis zu dieser Höhe laufen Figuren im Park ohne Sprung hinauf (Wege, Zonenböden, Podeste).
+@export var park_step_height: float = 0.45
 
 var players: Array[Player] = []
 var _zone_label: Label
@@ -39,7 +45,6 @@ var _current_zone: int = ParkZone.PLAZA
 var _zone_display_timer: float = 0.0
 
 @onready var camera: HubCamera = $HubCamera
-var active_flow: MatchFlow = null
 
 
 func _ready() -> void:
@@ -47,34 +52,42 @@ func _ready() -> void:
 	Look.use_mood(Look.menu_mood())
 	StageKit.add_environment(self)
 	HubProps.build_hub_world(self)
-	_build_hud()
 
 	if PlayerRoster.get_human_slots().is_empty() and OS.is_debug_build():
 		_debug_autojoin()
-	elif PlayerRoster.get_active_slots().size() < 4:
-		PlayerRoster.fill_with_cpu()
 
 	Game.match_running = true
 
-	for slot: PlayerSlot in PlayerRoster.get_active_slots():
+	var humans: Array[PlayerSlot] = PlayerRoster.get_human_slots()
+	for i: int in humans.size():
+		var slot: PlayerSlot = humans[i]
 		var player := PLAYER_SCENE.instantiate() as Player
 		player.setup(slot)
 		player.name = "Player%d" % (slot.index + 1)
+		player.step_height = park_step_height
 		add_child(player)
-		var spawn_pos: Vector3 = spawn_points[slot.index % spawn_points.size()]
-		player.respawn(spawn_pos)
+		player.respawn(_spawn_position(i, humans.size()))
 		player.face(Vector3.FORWARD)
 		players.append(player)
+	Game.has_hub_return_position = false
 
-	Log.info("HUB", "Lobby mit %d Spielern gestartet (%d menschlich, %d CPU)" % [
-		players.size(),
-		PlayerRoster.get_human_slots().size(),
-		players.size() - PlayerRoster.get_human_slots().size()
-	])
+	_build_hud()
+	if camera != null:
+		camera.snap_to_targets()
+
+	Log.info("HUB", "Lobby mit %d menschlichen Spielern gestartet" % players.size())
 
 	Announcer.say(&"round_start", {"game": "Freizeitpark"})
 	_connect_stations()
 	_setup_ambiance()
+
+
+## Startplatz: nach einem Minispiel neben der Bude, sonst auf der Plaza.
+func _spawn_position(order: int, count: int) -> Vector3:
+	if Game.has_hub_return_position:
+		var offset: float = (float(order) - float(count - 1) * 0.5) * 1.6
+		return Game.hub_return_position + Vector3(offset, 0.4, 0.0)
+	return spawn_points[order % spawn_points.size()]
 
 
 func _setup_ambiance() -> void:
@@ -85,99 +98,36 @@ func _setup_ambiance() -> void:
 
 func _connect_stations() -> void:
 	for station: HubMinigameStation in find_children("*", "HubMinigameStation", true, false):
-		station.activated.connect(play_minigame)
+		station.activated.connect(_on_station_activated.bind(station))
 	for pavilion: HubTournamentPavilion in find_children("*", "HubTournamentPavilion", true, false):
 		pavilion.tournament_requested.connect(start_tournament_from_hub)
 
 
-## Startet ein Minispiel direkt aus dem Park heraus (D109).
-func play_minigame(info: MinigameInfo) -> void:
-	if active_flow != null or info == null:
+func _on_station_activated(info: MinigameInfo, station: HubMinigameStation) -> void:
+	play_minigame(info, station.get_return_position())
+
+
+## Startet ein Minispiel aus dem Park heraus in eigener Szene (D109, D125).
+func play_minigame(info: MinigameInfo, return_position: Vector3 = Vector3(0.0, 0.2, 6.0)) -> void:
+	if info == null:
 		return
-
-	Log.info("HUB", "Minispiel '%s' betreten -> sperre Pads und isoliere Hub-Spieler" % info.display_name)
-
-	# Alle Aktivierungs-Pads im Park sperren
+	Log.info("HUB", "Minispiel '%s' gestartet" % info.display_name)
 	for pad: HubActivationPad in find_children("*", "HubActivationPad", true, false):
 		pad.lock()
-
-	var format: int = info.formats[0]
-	var player_indices: Array[int] = []
-	for slot: PlayerSlot in PlayerRoster.get_active_slots():
-		player_indices.append(slot.index)
-	var assignment: TeamAssigner.Assignment = TeamAssigner.assign(RandomNumberGenerator.new(), format, player_indices, {})
-	var context: MinigameContext = MinigameContext.from_assignment(assignment, PlayerRoster.get_active_slots(), Settings.cpu_difficulty)
-
-	# Hub-Spielerfiguren für die Dauer des Spiels vollständig isolieren (aus Gruppe "players" und Physik nehmen)
-	for p: Player in players:
-		p.set_active(false)
-		p.controls_enabled = false
-
-	var hud: Node = get_node_or_null("Hud")
-	if hud != null:
-		(hud as CanvasLayer).visible = false
-	if camera != null:
-		camera.current = false
-		camera.set_indicators_visible(false)
-
-	var amb: Node = get_node_or_null("Ambiance")
-	if amb != null:
-		amb.process_mode = Node.PROCESS_MODE_DISABLED
-
-	active_flow = MatchFlow.new()
-	add_child(active_flow)
-	active_flow.completed.connect(_on_flow_completed)
-	active_flow.start(info, context, info.display_name, false)
-
-
-func _on_flow_completed(_result: MinigameResult, _points: Dictionary) -> void:
-	Log.info("HUB", "Minispiel beendet -> Reaktiviere Park-Lobby")
-
-	if active_flow != null:
-		active_flow.queue_free()
-		active_flow = null
-
-	# Hub-Spieler reaktivieren
-	for p: Player in players:
-		p.set_active(true)
-		p.controls_enabled = true
-
-	var hud: Node = get_node_or_null("Hud")
-	if hud != null:
-		(hud as CanvasLayer).visible = true
-	if camera != null:
-		camera.current = true
-		camera.set_indicators_visible(true)
-		camera.snap_to_targets()
-
-	var amb: Node = get_node_or_null("Ambiance")
-	if amb != null:
-		amb.process_mode = Node.PROCESS_MODE_INHERIT
-
-	# Pads mit Cooldown von 3 Sekunden entsperren
-	for pad: HubActivationPad in find_children("*", "HubActivationPad", true, false):
-		pad.unlock(3.0)
-
-	Look.use_mood(Look.menu_mood())
-	StageKit.add_environment(self)
-	Game.match_running = true
+	Game.play_minigame_from_hub(info, return_position)
 
 
 ## Startet das Schnellturnier am Pavillon (D110).
 func start_tournament_from_hub(rounds: int) -> void:
 	Log.info("HUB", "Schnellturnier gestartet (%d Runden)" % rounds)
-	Game.launched_from_hub = true
 	Game.start_tournament(rounds)
+	Game.launched_from_hub = true
 
 
 func _physics_process(delta: float) -> void:
-	if active_flow != null:
-		return
-
 	for player: Player in players:
 		if not player.is_inside_tree() or not player.visible:
 			continue
-
 		# Absturz-Sicherung: Zurück zur Plaza teleportieren
 		if player.global_position.y < kill_height or player.global_position.length() > 55.0:
 			var safe_pos: Vector3 = spawn_points[player.slot.index % spawn_points.size()] + Vector3.UP * 1.5
@@ -185,25 +135,44 @@ func _physics_process(delta: float) -> void:
 			var source: InputSource = player.get_input()
 			if source != null:
 				source.rumble(0.4, 0.4, 0.2)
-
-		# KI-Verhalten für Computergegner in der Lobby
-		if player.slot.is_cpu:
-			_update_cpu_wander(player, delta)
-
+	_apply_leash()
 	_update_zone_detection(delta)
+
+
+## Kamera-Leine (D121): Wer zu weit von der Gruppenmitte entfernt ist, kann nicht weiter nach außen laufen.
+## Der Hub läuft vor seinen Figuren (Eltern zuerst), deshalb wirkt das noch im selben Bild.
+func _apply_leash() -> void:
+	if players.size() < 2:
+		return
+	var min_x: float = INF
+	var max_x: float = -INF
+	var min_z: float = INF
+	var max_z: float = -INF
+	for player: Player in players:
+		var p: Vector3 = player.global_position
+		min_x = minf(min_x, p.x)
+		max_x = maxf(max_x, p.x)
+		min_z = minf(min_z, p.z)
+		max_z = maxf(max_z, p.z)
+	var center := Vector2((min_x + max_x) * 0.5, (min_z + max_z) * 0.5)
+	for player: Player in players:
+		var dx: float = player.global_position.x - center.x
+		var dz: float = player.global_position.z - center.y
+		if dx > leash_half_extent.x:
+			player.leash_blocks.append(Vector3.RIGHT)
+		elif dx < -leash_half_extent.x:
+			player.leash_blocks.append(Vector3.LEFT)
+		if dz > leash_half_extent.y:
+			player.leash_blocks.append(Vector3.BACK)
+		elif dz < -leash_half_extent.y:
+			player.leash_blocks.append(Vector3.FORWARD)
 
 
 func _update_zone_detection(delta: float) -> void:
 	if players.is_empty():
 		return
 
-	var ref_player: Player = players[0]
-	for p: Player in players:
-		if not p.slot.is_cpu:
-			ref_player = p
-			break
-
-	var pos: Vector3 = ref_player.global_position
+	var pos: Vector3 = players[0].global_position
 	var new_zone: int = ParkZone.PLAZA
 
 	if pos.z < -13.0 and absf(pos.x) < 14.0:
@@ -214,8 +183,6 @@ func _update_zone_detection(delta: float) -> void:
 		new_zone = ParkZone.ATTRAKTIONEN
 	elif pos.x < -13.0 and absf(pos.z) < 14.0:
 		new_zone = ParkZone.SPIELZEUG_WIESE
-	else:
-		new_zone = ParkZone.PLAZA
 
 	if new_zone != _current_zone:
 		_current_zone = new_zone
@@ -226,46 +193,12 @@ func _update_zone_detection(delta: float) -> void:
 
 	if _zone_display_timer > 0.0:
 		_zone_display_timer -= delta
-		if _zone_display_timer <= 0.0 and _zone_label != null:
-			_zone_label.text = ZONE_NAMES[_current_zone]
-
-
-func _update_cpu_wander(player: Player, _delta: float) -> void:
-	var ai: AIInput = player.slot.source as AIInput
-	if ai == null:
-		return
-
-	# Computer laufen in der Nähe der menschlichen Spieler oder im Kreis auf der Plaza
-	var target_pos: Vector3 = Vector3.ZERO
-	var human_found: bool = false
-	for p: Player in players:
-		if not p.slot.is_cpu:
-			target_pos = p.global_position
-			human_found = true
-			break
-
-	if not human_found:
-		var time_val: float = Time.get_ticks_msec() * 0.001 + float(player.slot.index) * 1.5
-		target_pos = Vector3(sin(time_val) * 6.0, 0, cos(time_val) * 6.0)
-
-	var to_target: Vector3 = target_pos - player.global_position
-	var dist: float = to_target.length()
-
-	if dist > 4.5:
-		# Bot bewegt sich mit world_to_input zielgenau in Richtung Mensch/Ziel
-		ai.move = player.world_to_input(to_target.normalized()) * 0.65
-	elif dist < 2.0:
-		# Bot hält etwas Abstand
-		ai.move = player.world_to_input(-to_target.normalized()) * 0.45
-	else:
-		ai.move = Vector2.ZERO
 
 
 func _debug_autojoin() -> void:
 	for source: InputSource in InputRouter.get_sources():
 		if source.is_joinable() and source.is_available():
 			PlayerRoster.join(source)
-	PlayerRoster.fill_with_cpu()
 
 
 func _build_hud() -> void:
@@ -279,6 +212,7 @@ func _build_hud() -> void:
 	margin.add_theme_constant_override("margin_top", 24)
 	margin.add_theme_constant_override("margin_right", 32)
 	margin.add_theme_constant_override("margin_bottom", 24)
+	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(margin)
 
 	var top_box := VBoxContainer.new()
@@ -299,5 +233,13 @@ func _build_hud() -> void:
 	bottom_box.size_flags_vertical = Control.SIZE_SHRINK_END
 	margin.add_child(bottom_box)
 
-	_hint_label = UiStyle.make_label("A: Springen  •  X: Schubsen  •  Start: Pause", 20, Color(1, 1, 1, 0.8))
+	# Tastenhinweise je Gerät (D28) statt fester Xbox-Beschriftung
+	var hint: String = "Springen: %s     Schubsen: %s     Pause: %s     Minispiel: alle auf die blaue Platte einer Bude" % [
+		InputHints.for_humans(InputBindings.JUMP),
+		InputHints.for_humans(InputBindings.PUSH),
+		InputHints.for_humans(InputBindings.PAUSE),
+	]
+	_hint_label = UiStyle.make_label(hint, 18, Color(1, 1, 1, 0.8))
+	_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_hint_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	bottom_box.add_child(_hint_label)

@@ -98,7 +98,7 @@ func _trigger_buzzer(player: Player) -> void:
 	Fx.shake(0.3)
 	Sfx.play(&"win", global_position, 0.0, 1.1)
 
-	Announcer.say(&"win", {"player": "Spieler %d" % (player.slot.index + 1)}, 0.9)
+	Announcer.say(&"win", {"winner": player.slot.display_name, "player": player.slot.display_name}, 0.9)
 
 	var source: InputSource = player.get_input()
 	if source != null:

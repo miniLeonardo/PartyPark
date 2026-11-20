@@ -1,199 +1,188 @@
 class_name HubTower
 extends Node3D
-## Der fordernde Kletterturm & Parkour im Park (D100, D107, D108).
-## 20 Meter hoher, vertikaler Platforming-Turm mit 3 fordernden Passagen,
-## Auffangnetzen alle 6 Meter, schwebender Siegerkrone und Konfetti-Buzzer.
+## Kletterturm als Außenspirale (D122, ersetzt die Bauform aus D107).
+##
+## Aufbau wie eine umgedrehte Stufentorte: Um einen schlanken Mast liegen Netz-Etagen bei 6, 12 und 18 m,
+## jede kleiner als die darunter. Der Weg einer Passage läuft außen um die Etage darunter, auf der
+## Kameraseite (Süden, +Z) als Halbkreis. Wer fällt, landet so auf dem Netz der zuletzt erreichten Etage
+## (bzw. am Boden), ohne Teleport. Keine Etage liegt als Decke über einem Weg.
+##
+## Sprungphysik der Figur (Stand v0.7): Sprunghöhe ca. 1,67 m, Lauftempo 7 m/s. Stufen steigen um
+## 0,67 m (höher als die Stufenhilfe im Park, also echte Sprünge), Lücken 0,7 bis 1,9 m.
+## Prüfung: tests/smoke/hub_smoke.gd springt jede Stufe mit echter Eingabe und Physik nach.
+
+## Höhe einer Etage über der vorigen (m).
+const LEVEL_HEIGHT: float = 6.0
+## Stufen je Passage (inklusive der letzten auf Etagenhöhe).
+const STEPS_PER_PASSAGE: int = 9
+## Radius des Wegs je Passage (m, um die Turmmitte).
+const PATH_RADII: Array[float] = [10.5, 7.0, 4.6]
+## Radius der Netz-Etagen bei 6, 12 und 18 m (die letzte ist die Spitze).
+const LEVEL_RADII: Array[float] = [8.6, 5.8, 3.5]
+
+const WOOD := Color("#c29057")
+const STEEL := Color("#8fa3b5")
+const POLE := Color("#f1c40f")
+const NET := Color("#2c3e50")
+const RIM := Color("#ffd75e")
 
 var crown: HubCrown
 var buzzer: HubConfettiBuzzer
-var _spinners: Array[Node3D] = []
+## Alle Trittflächen in Kletterreihenfolge (für Tests und KI): Mittelpunkt der Oberseite, lokal.
+var route: Array[Vector3] = []
 
 
 func _ready() -> void:
-	_build_main_structure()
-	_build_passage_1()
-	_build_passage_2()
-	_build_passage_3()
+	_build_mast()
+	_build_passage(0, Vector2(2.2, 2.2), false)
+	_build_level(0)
+	_build_passage(1, Vector2(1.6, 1.6), true)
+	_build_level(1)
+	_build_passage(2, Vector2.ZERO, false)
 	_build_summit()
+	_build_start_sign()
 
 
-func _physics_process(delta: float) -> void:
-	# Rotierende Balken in Passage 2 antreiben
-	for spinner: Node3D in _spinners:
-		spinner.rotate_y(1.2 * delta)
+## Winkel der i-ten Stufe einer Passage. Passage 0 und 2 laufen von West über Süd nach Ost, Passage 1 zurück.
+static func step_angle(passage: int, index: int) -> float:
+	var t: float = float(index) / float(STEPS_PER_PASSAGE - 1)
+	return lerpf(PI, 0.0, t) if passage % 2 == 0 else lerpf(0.0, PI, t)
 
 
-func _build_main_structure() -> void:
-	var steel_mat: Material = Look.surface(Color("#5d6d7e"), Look.Kind.METAL)
-	var half_w: float = 4.5
-	var height: float = 20.5
-
-	# 4 massive Eckpfeiler des Gitterturms
-	for x: float in [-half_w, half_w]:
-		for z: float in [-half_w, half_w]:
-			var pillar := StageKit.add_cylinder(self, 0.28, height, Vector3(x, height * 0.5, z), Color("#4a5568"), Look.Kind.METAL)
-			pillar.name = "TowerPillar"
+## Oberkante der i-ten Stufe (lokal, m).
+static func step_top(passage: int, index: int) -> float:
+	return float(passage) * LEVEL_HEIGHT + float(index + 1) * LEVEL_HEIGHT / float(STEPS_PER_PASSAGE)
 
 
-# --- Passage 1: 0 bis 6 Meter (Balken & Trampolin-Sprung) ---
-
-func _build_passage_1() -> void:
-	var wood_col := Color("#c29057")
-
-	# Start-Stufe
-	StageKit.add_box(self, Vector3(3.0, 0.4, 1.8), Vector3(0, 0.2, 5.0), wood_col, Vector3.ZERO, Look.Kind.WOOD)
-
-	# Spiraliger Anstieg aus 5 Balken
-	var beam_coords: Array[Vector3] = [
-		Vector3(-2.0, 1.0, 4.0),
-		Vector3(-3.5, 2.0, 2.0),
-		Vector3(-3.5, 3.0, -1.0),
-		Vector3(-2.0, 4.0, -3.5),
-		Vector3(1.0, 4.8, -3.5),
-	]
-	for i: int in beam_coords.size():
-		var b := StageKit.add_box(self, Vector3(1.5, 0.25, 1.5), beam_coords[i], wood_col, Vector3.ZERO, Look.Kind.WOOD)
-		b.name = "P1_Beam_%d" % i
-
-	# Passage-1-Trampolin zum Erreichen von Plattform 1
-	var tramp := HubTrampoline.new()
-	tramp.name = "P1_Trampoline"
-	tramp.position = Vector3(3.0, 4.8, -1.5)
-	tramp.radius = 1.6
-	tramp.base_bounce_speed = 12.0
-	add_child(tramp)
-
-	# Plattform 1 (Y = 6.2 m)
-	StageKit.add_box(self, Vector3(9.5, 0.35, 9.5), Vector3(0, 6.2, 0), Color("#d4b886"), Vector3.ZERO, Look.Kind.WOOD)
-	_build_safety_net(Vector3(0, 6.0, 0), 12.5)
+## Mittelpunkt der Oberseite einer Stufe (lokal).
+static func step_position(passage: int, index: int) -> Vector3:
+	var angle: float = step_angle(passage, index)
+	var r: float = PATH_RADII[passage]
+	return Vector3(cos(angle) * r, step_top(passage, index), sin(angle) * r)
 
 
-# --- Passage 2: 6 bis 12 Meter (Rotierende Drehkreuze & Schwebeladung) ---
-
-func _build_passage_2() -> void:
-	var steel_col := Color("#7f8c8d")
-	var red_mat: Material = Look.surface(Color("#e74c3c"), Look.Kind.PLASTIC)
-
-	# 2 rotierende Drehkreuze (Spinners)
-	for i: int in 2:
-		var spin_y: float = 7.5 + float(i) * 2.2
-		var spin_root := Node3D.new()
-		spin_root.name = "Spinner_%d" % i
-		spin_root.position = Vector3(0, spin_y, 0)
-		add_child(spin_root)
-		_spinners.append(spin_root)
-
-		# Zwei kreuzförmige Holzbalken
-		for rot: float in [0.0, 90.0]:
-			var arm := StageKit.add_box(spin_root, Vector3(7.2, 0.24, 0.9), Vector3(0, 0, 0), Color("#ff7675"), Vector3(0, rot, 0), Look.Kind.PLASTIC)
-			arm.name = "SpinnerArm"
-
-	# Schwebende Trittstufen
-	StageKit.add_box(self, Vector3(1.6, 0.25, 1.6), Vector3(-3.2, 9.5, 3.2), steel_col, Vector3.ZERO, Look.Kind.METAL)
-	StageKit.add_box(self, Vector3(1.6, 0.25, 1.6), Vector3(3.2, 11.0, 3.2), steel_col, Vector3.ZERO, Look.Kind.METAL)
-
-	# Plattform 2 (Y = 12.4 m)
-	StageKit.add_box(self, Vector3(8.5, 0.35, 8.5), Vector3(0, 12.4, 0), Color("#bdc3c7"), Vector3.ZERO, Look.Kind.STONE)
-	_build_safety_net(Vector3(0, 12.2, 0), 11.5)
+func _build_mast() -> void:
+	var mast := StageKit.add_cylinder(self, 0.8, LEVEL_HEIGHT * 3.0, Vector3(0, LEVEL_HEIGHT * 1.5, 0), Color("#4a5568"), Look.Kind.METAL)
+	mast.name = "TowerMast"
 
 
-# --- Passage 3: 12 bis 18 Meter (Schmale Rohr-Balancierstege & Präzisionssprünge) ---
+func _build_passage(passage: int, step_size: Vector2, with_lift: bool) -> void:
+	var base_y: float = float(passage) * LEVEL_HEIGHT
+	for i: int in STEPS_PER_PASSAGE:
+		var top: Vector3 = step_position(passage, i)
+		var yaw_deg: float = -rad_to_deg(step_angle(passage, i))
+		route.append(top)
+		if passage == 2:
+			# Passage 3: runde Balancierpfähle (Präzision)
+			var pole := StageKit.add_cylinder(self, 0.55, 0.3, top - Vector3(0, 0.15, 0), POLE, Look.Kind.METAL)
+			pole.name = "P3_Pole_%d" % i
+		elif with_lift and i == STEPS_PER_PASSAGE / 2:
+			# Passage 2, Mitte: Plattform fährt auf und ab (Timing)
+			var lift := HubMovingPlatform.new()
+			lift.name = "P2_Lift"
+			lift.platform_size = Vector3(step_size.x, 0.35, step_size.y)
+			lift.platform_color = Color("#7ed6df")
+			lift.travel_offset = Vector3(0.0, 1.4, 0.0)
+			lift.travel_duration = 1.6
+			lift.pause_time = 0.6
+			lift.position = top - Vector3(0, 0.175 + 0.7, 0)
+			add_child(lift)
+		else:
+			var color: Color = WOOD if passage == 0 else STEEL
+			var kind: int = Look.Kind.WOOD if passage == 0 else Look.Kind.METAL
+			var step := StageKit.add_box(self, Vector3(step_size.x, 0.4, step_size.y), top - Vector3(0, 0.2, 0), color, Vector3(0, yaw_deg, 0), kind)
+			step.name = "P%d_Step_%d" % [passage + 1, i]
+		# Stütze bis zur Ebene darunter (nur Optik, damit nichts schwebt)
+		var support_height: float = top.y - 0.4 - base_y
+		if support_height > 0.3 and not (with_lift and i == STEPS_PER_PASSAGE / 2):
+			_add_visual_cylinder(0.1, support_height, Vector3(top.x, base_y + support_height * 0.5, top.z), Color("#6b5b4b"))
 
-func _build_passage_3() -> void:
-	var yellow_col := Color("#f1c40f")
 
-	# Runde Balancier-Pfähle im Zickzack
-	var poles: Array[Vector3] = [
-		Vector3(-2.5, 13.5, -2.5),
-		Vector3(-1.0, 14.5, -3.2),
-		Vector3(1.5, 15.5, -2.8),
-		Vector3(2.8, 16.5, -0.5),
-		Vector3(1.8, 17.5, 2.2),
-		Vector3(-1.2, 18.2, 2.2),
-	]
-	for i: int in poles.size():
-		var p := StageKit.add_cylinder(self, 0.5, 0.3, poles[i], yellow_col, Look.Kind.METAL)
-		p.name = "P3_Pole_%d" % i
+## Netz-Etage: runde, begehbare Scheibe. Fängt Stürze aus der Passage darüber auf.
+func _build_level(level: int) -> void:
+	var y: float = float(level + 1) * LEVEL_HEIGHT
+	var radius: float = LEVEL_RADII[level]
+	var net := StageKit.add_cylinder(self, radius, 0.2, Vector3(0, y - 0.1, 0), NET, Look.Kind.RUBBER)
+	net.name = "Level_%d" % (level + 1)
+	var rim := MeshInstance3D.new()
+	var torus := TorusMesh.new()
+	torus.inner_radius = radius - 0.12
+	torus.outer_radius = radius + 0.08
+	torus.rings = 48
+	torus.ring_segments = 6
+	rim.mesh = torus
+	rim.material_override = Look.surface(RIM, Look.Kind.METAL)
+	rim.position = Vector3(0, y, 0)
+	rim.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(rim)
+	var label := Label3D.new()
+	label.text = "%d m" % int(y)
+	label.font_size = 64
+	label.outline_size = 10
+	label.modulate = RIM
+	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	label.position = Vector3(0, y + 1.6, 0)
+	add_child(label)
 
-	# Schlusssprung-Pad
-	var launch_pad := HubTrampoline.new()
-	launch_pad.name = "P3_LaunchPad"
-	launch_pad.position = Vector3(-2.8, 18.2, 0.5)
-	launch_pad.radius = 1.3
-	launch_pad.base_bounce_speed = 10.0
-	add_child(launch_pad)
-
-
-# --- Passage 4: Die Turmspitze (19 bis 22 Meter) ---
 
 func _build_summit() -> void:
-	var gold_col := Color("#ffd75e")
-	var marble_col := Color("#f0ede6")
+	var y: float = LEVEL_HEIGHT * 3.0
+	var radius: float = LEVEL_RADII[2]
+	var deck := StageKit.add_cylinder(self, radius, 0.3, Vector3(0, y - 0.15, 0), Color("#f0ede6"), Look.Kind.STONE)
+	deck.name = "SummitDeck"
 
-	# Haupt-Aussichtsplattform (Y = 19.5 m)
-	var summit_deck := StageKit.add_cylinder(self, 5.2, 0.4, Vector3(0, 19.5, 0), marble_col, Look.Kind.STONE)
-	summit_deck.name = "SummitDeck"
-
-	# Schutzgeländer um die Plattform
 	var railing := MeshInstance3D.new()
 	var torus := TorusMesh.new()
-	torus.inner_radius = 5.0
-	torus.outer_radius = 5.3
+	torus.inner_radius = radius - 0.1
+	torus.outer_radius = radius + 0.1
 	torus.rings = 36
 	torus.ring_segments = 6
 	railing.mesh = torus
-	railing.material_override = Look.surface(gold_col, Look.Kind.METAL)
-	railing.position = Vector3(0, 20.4, 0)
+	railing.material_override = Look.surface(RIM, Look.Kind.METAL)
+	railing.position = Vector3(0, y + 0.05, 0)
 	railing.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(railing)
 
-	# Baldachin-Dach über der Spitze
-	var roof := MeshInstance3D.new()
-	var cone := CylinderMesh.new()
-	cone.top_radius = 0.1
-	cone.bottom_radius = 5.6
-	cone.height = 2.4
-	roof.mesh = cone
-	roof.material_override = Look.surface(Color("#8e44ad"), Look.Kind.FABRIC)
-	roof.position = Vector3(0, 23.5, 0)
-	add_child(roof)
+	# Kein Dach über der Spitze: Aus der Kamera-Neigung verdeckte es die Figuren oben.
+	# Stattdessen ein Fahnenmast als Wegmarke, von überall im Park zu sehen.
+	var flag := ParkProps.flag_pole(5.0, Color("#ff5d73"))
+	flag.position = Vector3(radius - 0.6, y, -radius * 0.5)
+	add_child(flag)
 
-	# Goldene Spitze
-	var finial := MeshInstance3D.new()
-	var f_cone := CylinderMesh.new()
-	f_cone.top_radius = 0.05
-	f_cone.bottom_radius = 0.4
-	f_cone.height = 1.6
-	finial.mesh = f_cone
-	finial.material_override = Look.surface(gold_col, Look.Kind.METAL)
-	finial.position = Vector3(0, 25.2, 0)
-	add_child(finial)
-
-	# 1. Goldener Altar & Siegerkrone (D100, D108)
-	var altar := StageKit.add_cylinder(self, 0.9, 0.8, Vector3(0, 20.0, 0), Color("#d4ac0d"), Look.Kind.METAL)
-	altar.name = "CrownAltar"
-
+	# Siegerkrone schwebt über der Spitze (D100, D108)
 	crown = HubCrown.new()
 	crown.name = "SummitCrown"
-	crown.summit_home_position = global_position + Vector3(0, 21.0, 0)
+	crown.summit_home_position = to_global(Vector3(0, y + 1.3, -1.2))
 	add_child(crown)
 
-	# 2. Konfetti-Buzzer am vorderen Aussichtspunkt (Süd-Balkon)
+	# Konfetti-Buzzer am vorderen Rand (zur Kamera)
 	buzzer = HubConfettiBuzzer.new()
 	buzzer.name = "SummitBuzzer"
-	buzzer.position = Vector3(0, 19.7, 3.2)
+	buzzer.position = Vector3(0, y, 1.8)
 	add_child(buzzer)
 
 
-## Auffang- und Sicherheitsnetz (D107: Rückfall-Sicherung)
-func _build_safety_net(pos: Vector3, size: float) -> void:
-	var net_mat: Material = Look.surface(Color("#2c3e50"), Look.Kind.RUBBER)
+func _build_start_sign() -> void:
+	var start: Vector3 = step_position(0, 0)
+	var label := Label3D.new()
+	label.text = "START\nKletterturm"
+	label.font_size = 56
+	label.outline_size = 10
+	label.modulate = Color("#ff5d73")
+	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	label.position = Vector3(start.x - 1.5, 3.0, start.z + 1.5)
+	add_child(label)
 
-	var net_mesh := MeshInstance3D.new()
-	var box := BoxMesh.new()
-	box.size = Vector3(size, 0.1, size)
-	net_mesh.mesh = box
-	net_mesh.material_override = net_mat
-	net_mesh.position = pos + Vector3(0, -0.2, 0)
-	net_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	add_child(net_mesh)
+
+func _add_visual_cylinder(radius: float, height: float, pos: Vector3, color: Color) -> void:
+	var mesh := MeshInstance3D.new()
+	var cyl := CylinderMesh.new()
+	cyl.top_radius = radius
+	cyl.bottom_radius = radius
+	cyl.height = height
+	cyl.radial_segments = 8
+	mesh.mesh = cyl
+	mesh.material_override = Look.surface(color, Look.Kind.WOOD)
+	mesh.position = pos
+	mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(mesh)

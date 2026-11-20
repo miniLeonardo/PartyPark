@@ -41,6 +41,10 @@ const GROUP: StringName = &"players"
 ## Partikel beim Erscheinen und bei Treffern.
 @export var spawn_particles: bool = true
 
+@export_group("Gelände")
+## Kanten bis zu dieser Höhe (m) läuft die Figur ohne Sprung hinauf. 0 = aus (Minispiele), der Park setzt 0.45.
+@export var step_height: float = 0.0
+
 ## Waagerechte Bewegung (Minispiele können sie abschalten, Springen bleibt eigene Fähigkeit).
 var movement_enabled: bool = true
 ## Liest die Figur überhaupt Eingaben? Aus während Regelbildschirm und Countdown.
@@ -53,6 +57,14 @@ var body_scale: float = 1.0
 ## Blickrichtung in der Ebene, Länge 1.
 var facing: Vector3 = Vector3.FORWARD
 var slot: PlayerSlot = null
+## Zusätzliche waagerechte Geschwindigkeit von außen (Karussell, Rutsche); gilt nur für das aktuelle Bild
+## und wird nach jeder Bewegung gelöscht. Geräte setzen sie in ihrem _physics_process.
+var push_velocity: Vector3 = Vector3.ZERO
+## Richtungen (waagerecht, Länge 1), in die die Figur gerade nicht weiterlaufen darf (Kamera-Leine im Park, D121).
+## Der Besitzer setzt sie vor der Bewegung der Figur; sie werden nach jeder Bewegung gelöscht.
+var leash_blocks: Array[Vector3] = []
+## Fallgeschwindigkeit (m/s) bei der letzten Landung, z. B. für Trampoline.
+var landing_speed: float = 0.0
 
 var _walk: Vector3 = Vector3.ZERO
 var _knockback: Vector3 = Vector3.ZERO
@@ -135,8 +147,17 @@ func _physics_process(delta: float) -> void:
 			ability.physics_update(delta)
 
 	var horizontal: Vector3 = drive_velocity if drive_override else _walk
-	velocity.x = horizontal.x + _knockback.x
-	velocity.z = horizontal.z + _knockback.z
+	horizontal += _knockback + push_velocity
+	for block: Vector3 in leash_blocks:
+		var outward: float = horizontal.dot(block)
+		if outward > 0.0:
+			horizontal -= block * outward
+			_walk -= block * maxf(_walk.dot(block), 0.0)
+			_knockback -= block * maxf(_knockback.dot(block), 0.0)
+	velocity.x = horizontal.x
+	velocity.z = horizontal.z
+	if step_height > 0.0 and on_floor:
+		_try_step_up(Vector3(velocity.x, 0.0, velocity.z))
 
 	if not drive_override and direction.length() > 0.1 and _stun_time <= 0.0:
 		var target_yaw: float = atan2(-direction.x, -direction.z)
@@ -148,8 +169,11 @@ func _physics_process(delta: float) -> void:
 	for ability: PlayerAbility in _abilities:
 		if ability.enabled:
 			ability.post_move_update(delta)
+	push_velocity = Vector3.ZERO
+	leash_blocks.clear()
 	on_floor = is_on_floor()
 	if on_floor and not _was_on_floor:
+		landing_speed = fall_speed
 		visual.play_land(fall_speed)
 		if fall_speed > hard_landing_speed:
 			Fx.burst(&"dust", global_position + Vector3.UP * 0.1, Color(0, 0, 0, 0), body_scale * 0.8)
@@ -314,6 +338,44 @@ func respawn(at: Vector3) -> void:
 	if spawn_particles and slot != null and is_inside_tree():
 		Fx.burst(&"stars", at + Vector3.UP * 0.6 * body_scale, slot.color.lightened(0.3))
 		Sfx.play(&"spawn", at, -6.0)
+
+
+## Der Körper, auf dem die Figur nach der letzten Bewegung steht (oder null).
+func get_floor_collider() -> Object:
+	if not is_on_floor():
+		return null
+	for i: int in get_slide_collision_count():
+		var collision: KinematicCollision3D = get_slide_collision(i)
+		if collision.get_normal().dot(up_direction) > 0.6:
+			return collision.get_collider()
+	return null
+
+
+## Stufenhilfe: Steht vor der Figur eine niedrige Kante (bis step_height), wird sie auf die Kante gehoben.
+## CharacterBody3D kann von sich aus keine Stufen steigen; ohne das wirken 25 cm hohe Wegkanten wie Wände.
+func _try_step_up(horizontal_velocity: Vector3) -> void:
+	if horizontal_velocity.length_squared() < 0.25:
+		return
+	var probe: Vector3 = horizontal_velocity.normalized() * 0.25
+	var collision := KinematicCollision3D.new()
+	if not test_move(global_transform, probe, collision):
+		return
+	if collision.get_normal().dot(up_direction) > 0.6:
+		return # Schräge, keine Kante
+	var lift: Vector3 = up_direction * step_height
+	if test_move(global_transform, lift):
+		return # kein Platz nach oben
+	var raised: Transform3D = global_transform.translated(lift)
+	if test_move(raised, probe):
+		return # auch oben versperrt, also eine echte Wand
+	var landing := KinematicCollision3D.new()
+	if not test_move(raised.translated(probe), -lift, landing):
+		return
+	if landing.get_normal().dot(up_direction) < 0.7:
+		return
+	var rise: float = step_height - landing.get_travel().length()
+	if rise > 0.02:
+		global_position += up_direction * (rise + 0.01)
 
 
 ## Wandelt die Stick-Eingabe relativ zur aktiven Kamera in eine Richtung auf der Ebene um.

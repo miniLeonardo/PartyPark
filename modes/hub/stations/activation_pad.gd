@@ -3,7 +3,7 @@ extends Node3D
 ## Aktivierungs-Plattform für Attraktionen und Minispiele (D101, D111).
 ## Stehen alle anwesenden menschlichen Spieler auf der Plattform,
 ## läuft ein 3-Sekunden-Countdown mit Tonsignalen; beim Verlassen bricht er ab.
-## Alternativ kann ein Spieler auf der Plattform per [A] den Sofort-Start auslösen.
+## Kein Knopf-Start: A ist zugleich Springen (D123).
 
 signal activated
 signal countdown_started
@@ -66,27 +66,18 @@ func _physics_process(delta: float) -> void:
 			if human_count > 0:
 				if human_count >= total_humans:
 					_start_countdown()
-				else:
-					# Nicht alle da: Zeige Hinweis und erlaube Sofort-Start per A
-					if _label_3d != null:
-						_label_3d.visible = true
-						_label_3d.text = "%d/%d\n[A] Start" % [human_count, total_humans]
-						_label_3d.modulate = Color("#ffd75e")
-					# Sofort-Start per A prüfen
-					for p: Player in _players_inside:
-						if p.slot != null and p.slot.is_human():
-							var src: InputSource = p.get_input()
-							if src != null and src.just_pressed(InputBindings.CONFIRM):
-								Log.info("HUB", "Pad '%s': Sofort-Start durch Spieler %d" % [name, p.slot.index + 1])
-								_start_countdown()
-								break
+				elif _label_3d != null:
+					# Nicht alle da: Hinweis zeigen. Kein Knopf-Start, weil A zugleich Springen ist (D123).
+					_label_3d.visible = true
+					_label_3d.text = "%d/%d\nAlle auf die Platte!" % [human_count, total_humans]
+					_label_3d.modulate = Color("#ffd75e")
 			else:
 				if _label_3d != null and _label_3d.visible:
 					_label_3d.visible = false
 
 		State.COUNTING:
-			var human_count: int = _count_humans_present()
-			if human_count == 0:
+			# Verlässt irgendein Mensch die Platte, bricht der Countdown ab (D111, D123)
+			if _count_humans_present() < _total_active_humans():
 				_cancel_countdown()
 				return
 

@@ -6,7 +6,8 @@ extends Node3D
 
 @export var plank_length: float = 8.0
 @export var plank_width: float = 2.0
-@export var max_tilt_deg: float = 22.0
+## Höchstens so weit, dass die Enden nicht in den Boden tauchen (asin(1.14 / 4) ≈ 16°).
+@export var max_tilt_deg: float = 16.0
 
 var _plank_body: AnimatableBody3D
 var _current_tilt: float = 0.0
@@ -23,7 +24,8 @@ func _physics_process(delta: float) -> void:
 	# Gewichts-Drehmoment der anwesenden Spieler berechnen
 	var torque: float = 0.0
 	for player: Player in _standing_players:
-		if not is_instance_valid(player):
+		# Nur wer wirklich auf dem Balken steht, nicht wer darunter läuft
+		if not is_instance_valid(player) or player.get_floor_collider() != _plank_body:
 			continue
 		var local_p := to_local(player.global_position)
 		# Z-Position auf dem Balken bestimmt Hebelarm

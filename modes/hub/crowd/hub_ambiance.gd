@@ -15,7 +15,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if _hub == null or not Game.match_running or _hub.active_flow != null:
+	if _hub == null or not Game.match_running:
 		return
 
 	var current_zone: int = _hub._current_zone
