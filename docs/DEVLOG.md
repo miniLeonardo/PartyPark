@@ -13,6 +13,26 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-11-20: Minispiel-Durchsicht – alle 7 Spiele getestet, Fehler und Fairness behoben
+
+Agent und Umgebung: Claude (Claude Code), direkt im Ordner mit Godot 4.7.2 (Windows, echte Grafikkarte); Codeprüfung zweier Spielgruppen durch Unteragenten
+Erledigt:
+- Neues Werkzeug `tests/smoke/playtest_smoke.gd` (`--smoke-playtest`, D131): jedes Spiel mehrfach mit Computern in allen Stärken plus Läufe mit untätigem Platz 1; misst Dauer, Zeitablauf, Siegverteilung nach Platz, Solo-/Koop-Quote. `MinigameSandbox` gibt den Seed jetzt auch an `Minigame.rng` weiter (wiederholbare Läufe).
+- Spielfigur: Am Boden leichter Andruck nach unten. Ohne ihn blieb `is_on_floor()` bei Stillstand wahr, auch wenn der Boden verschwand (Figuren schwebten über gefallenen Waben).
+- Autoscooter: Zusammenstöße beidseitig (vorher gewann immer die niedrigere Platznummer: Siege 14 von 16 für Spieler 1+2), gleichzeitig Ausgeschiedene teilen den Platz, Wiedereinstieg mit Abstand zu anderen Wagen, Tastentext korrigiert (A Gas, X Turbo), Turbo-Ring (D128).
+- Tauziehen: Seil rastet am Rundenende ein, Zurufe verschwinden, Taktring mittig verankert, D126 (Synchron-Zug ×2, Kraftakt 6 Takte).
+- Riese gegen Zwerge: Seilfortschritt nur durch eigenes Umrunden der Zwerge (vorher wickelte der Riese Zwerge durch Vorbeilaufen ein), Seilringe kippen mit, leeres Seil nicht jedes Bild neu gebaut, Warnkreis beim Stampfen (D127).
+- Schafe hüten: Wolf versank beim Verjagen im Boden, Schafe liefen nach Rundenende weiter, Zähler flackerte an der Gehege-Öffnung, Kamera schnitt Ecken ab (fov 53), Schubsen (Wolf verjagen) in der Tastenerklärung.
+- Wackelwaben: Auch die tragende Nachbarwabe löst aus (vorher überlebte Stillstehen auf einer Fuge ewig: Untätige gewannen 3 von 3), Startpunkte auf Wabenmitten (vorher unterschiedlich: Spieler 1 gewann 0 von 12), Gleichstand bei gleichzeitigem Sturz, Wertung bei Zeitablauf nach zuletzt betretener Ebene, Wasserfläche auf Ausscheidehöhe, Zielregel im Text.
+- Heiße Kartoffel: unsichtbare Zaunverlängerung (Zaun war überspringbar, draußen unerreichbar), Rückholung aus der Arena, Opfer sofort aus dem Spiel, Zeitlimit 60 s passend zu info.tres, Bombenträger-Markierung (D128).
+- Zerfetzung: Überhitzung griff nie (kühlte zwischen Schüssen), Schüsse gingen an Deckung durch die Kiste (Start jetzt im Auge), Computer-Zielen repariert (keine Zielhilfe für Computer, fester Zielfehler je Ziel, Freigabe 10°), Computer suchen Gegner, Gleichstand nach verteilten Treffern (D130), freie Bildschirmviertel zeigen Trefferübersicht statt Live-Karte und rendern kein 3D, Schatten auf 30 m, Lebenskreise nach `hits_to_out`, Blaster in der Ego-Ansicht mit Mündungsblitz (D129).
+- Hub: Ost-Trampolin auf Bodenhöhe (Matte war 0,55 m über dem Rasen, nur springend erreichbar).
+Entscheidungen: D126 bis D131 (D130 von Leonardo noch zu bestätigen)
+Getestet: Unit 31/31; compile 152/0; m1, m2, games, hub OK. Spieltest 12+6 Läufe je Spiel: Untätige gewinnen nirgends mehr (Wackelwaben, Kartoffel immer Letzter; Zerfetzung Platz 2-3), Siegverteilung Autoscooter [2,5,3,2], Wackelwaben [4,3,4,1], Kartoffel [3,3,3,3]; Riese gewinnt 7/12, Schafe-Team 9/12, Tauziehen ohne Unentschieden. Bildschirmfotos aller Spiele mit echter Grafik geprüft.
+Probleme / Bekannte Fehler: Tauziehen zwischen gleich starken Computerteams endet weiter meist per Zeit (mit Menschen zu prüfen). Kleine Reste in ROADMAP 7.10.
+Nächster Schritt: Leonardo testet `docs/TESTANLEITUNG_V0_7_1.md` 1-28 mit Controllern, bestätigt D130; danach ROADMAP 7.10 und die Ideenliste aus dem Chat (Auswahl in DECISIONS festhalten).
+Aktuelle Kopie liegt in: `C:\Users\wad32muj\Agentenraum\partypark` (Commit lokal)
+
 ## 2026-11-20: Spielbarkeit v0.7.1 – Prüfung der Antigravity-Änderungen, Turm neu, Kamera-Leine, Hub-Abläufe
 
 Agent und Umgebung: Claude (Claude Code), direkt im Ordner `C:\Users\wad32muj\Agentenraum\partypark` mit Shell, Git und Godot 4.7.2 (Windows, echte Grafikkarte). Remote `origin` = `https://github.com/miniLeonardo/PartyPark.git` eingerichtet, lokaler Stand per Fast-Forward von 033a95d auf 213ad3b (v0.7 aus Antigravity) gebracht.

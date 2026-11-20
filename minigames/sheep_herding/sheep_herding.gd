@@ -26,6 +26,8 @@ extends Minigame
 const FIELD_HALF := Vector2(15.0, 10.0)
 const PEN_MIN := Vector2(-4.0, -10.0)
 const PEN_MAX := Vector2(4.0, -4.0)
+## So weit hinter der Öffnung muss ein Schaf stehen, damit es zählt (m).
+const PEN_COUNT_MARGIN: float = 0.8
 const PEN_ENTRANCE := Vector3(0.0, 0.0, -3.0)
 const SHEEP_SCRIPT: GDScript = preload("res://minigames/sheep_herding/sheep.gd")
 const WOLF_SCRIPT: GDScript = preload("res://minigames/sheep_herding/wolf.gd")
@@ -63,7 +65,7 @@ func _build_arena() -> void:
 	StageKit.add_box(self, Vector3(2, 1.0, 0.25), Vector3(-3, 0.5, -4), pen)
 	StageKit.add_box(self, Vector3(2, 1.0, 0.25), Vector3(3, 0.5, -4), pen)
 	var camera := Camera3D.new()
-	camera.fov = 50.0
+	camera.fov = 53.0 # 50 schnitt Schafe in den vorderen Ecken an
 	add_child(camera)
 	camera.position = Vector3(0, 19.5, 14.5)
 	camera.look_at(Vector3(0, 0, -0.8), Vector3.UP)
@@ -107,7 +109,8 @@ func _round_process(delta: float) -> void:
 	_update_bark_rings(delta)
 	var count: int = 0
 	for animal: Sheep in sheep:
-		if _in_pen(animal.global_position):
+		# Erst gezählt, wenn das Schaf ganz drin ist (an der Öffnung flackerte der Zähler)
+		if _in_pen(animal.global_position) and animal.global_position.z < PEN_MAX.y - PEN_COUNT_MARGIN:
 			count += 1
 	if count != in_pen:
 		if count > in_pen:
@@ -116,6 +119,7 @@ func _round_process(delta: float) -> void:
 		in_pen = count
 		_update_hud()
 	if in_pen >= sheep_needed:
+		_calm_sheep()
 		finish(MinigameResult.coop(context.indices(), true))
 
 
@@ -127,7 +131,14 @@ func was_close() -> bool:
 
 
 func _on_time_up() -> void:
+	_calm_sheep()
 	finish(MinigameResult.coop(context.indices(), in_pen >= sheep_needed))
+
+
+## Nach Rundenende bleiben die Schafe stehen (vorher liefen sie mit dem letzten Ziel weiter, auch aus dem Gehege).
+func _calm_sheep() -> void:
+	for animal: Sheep in sheep:
+		animal.desired = Vector3.ZERO
 
 
 func _in_pen(spot: Vector3) -> bool:

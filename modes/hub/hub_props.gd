@@ -439,7 +439,7 @@ static func _build_playground(parent: Node3D) -> void:
 	# 2. Großes Trampolin im Rummel-Bereich (D103: dynamisches Federn)
 	var tramp_east := HubTrampoline.new()
 	tramp_east.name = "TrampolineEast"
-	tramp_east.position = Vector3(35.0, 0.15, -13.0)
+	tramp_east.position = Vector3(35.0, 0.0, -13.0) # steht auf dem Rasen (y = 0), Matte 0,4 m: begehbar
 	tramp_east.radius = 2.6
 	playground.add_child(tramp_east)
 

@@ -36,12 +36,16 @@ var _bomb_body: MeshInstance3D
 var _fuse_mesh: MeshInstance3D
 var _spark: MeshInstance3D
 var _bomb_material: StandardMaterial3D
+## Markierung des Bombenträgers (D128): roter Bodenring und Pfeil, blinken schneller zum Ende hin.
+var _marker_ring: MeshInstance3D
+var _marker_arrow: MeshInstance3D
+var _marker_material: StandardMaterial3D
 var _ai_state: Dictionary = {}
 var _last_elimination_time: float = -100.0
 
 
 func _init() -> void:
-	time_limit = 120.0
+	time_limit = 60.0 # Drei Zündschnüre dauern höchstens ca. 49 s; passt zu duration_sec in info.tres
 
 
 func _build_arena() -> void:
@@ -55,6 +59,16 @@ func _build_arena() -> void:
 		var length: float = TAU * radius / float(segments) + 0.05
 		var fence: StaticBody3D = StageKit.add_box(self, Vector3(length, 1.2, 0.35), Vector3(sin(angle) * radius, 0.6, cos(angle) * radius), Color("#8a5a33") if i % 2 == 0 else Color("#a86f3f"))
 		fence.rotation.y = angle
+		# Unsichtbare Verlängerung nach oben: Der 1,2-m-Zaun ließ sich überspringen, draußen war man unerreichbar
+		var barrier := StaticBody3D.new()
+		barrier.position = Vector3(sin(angle) * radius, 2.5, cos(angle) * radius)
+		barrier.rotation.y = angle
+		var barrier_shape := CollisionShape3D.new()
+		var barrier_box := BoxShape3D.new()
+		barrier_box.size = Vector3(length, 3.0, 0.35)
+		barrier_shape.shape = barrier_box
+		barrier.add_child(barrier_shape)
+		add_child(barrier)
 	_build_bomb()
 	var camera := Camera3D.new()
 	camera.fov = 50.0
@@ -100,6 +114,7 @@ func _build_bomb() -> void:
 	_spark.material_override = spark_material
 	_bomb.add_child(_spark)
 	_bomb.visible = false
+	_build_holder_marker()
 
 
 func _spawn_position(i: int, _slot: PlayerSlot) -> Vector3:
@@ -136,6 +151,12 @@ func _round_process(delta: float) -> void:
 		_update_bomb_visual(delta)
 		if _fuse_left <= 0.0:
 			_explode()
+	# Sicherheitsnetz: Wer doch aus der Arena gerät, kommt in die Mitte zurück
+	for player: Player in players:
+		if player.visible and not eliminated.has(player.slot.index):
+			var flat := Vector2(player.global_position.x, player.global_position.z)
+			if player.global_position.y < -3.0 or flat.length() > arena_radius + 0.5:
+				player.respawn(Vector3(0, 1.0, 0))
 	var alive_now: Array[int] = _alive()
 	if alive_now.size() <= 1 and context.slots.size() > 1:
 		finish(_ranking())
@@ -157,6 +178,13 @@ func _update_bomb_visual(delta: float) -> void:
 		_bomb_body.scale = Vector3.ONE * (1.0 + 0.25 * progress)
 	_bomb_body.scale = _bomb_body.scale.lerp(Vector3.ONE, clampf(delta * 10.0, 0.0, 1.0))
 	_bomb_material.emission_energy_multiplier = progress * progress * 2.5
+	# Markierung: blinkt von 2 Hz auf 8 Hz, Pfeil wippt über der Bombe
+	var blink: float = 0.55 + 0.45 * sin(elapsed * TAU * lerpf(2.0, 8.0, progress))
+	_marker_material.albedo_color = Color(1.0, 0.15, 0.1, blink)
+	_marker_ring.visible = true
+	_marker_arrow.visible = true
+	_marker_ring.global_position = Vector3(holder.global_position.x, holder.global_position.y + 0.05, holder.global_position.z)
+	_marker_arrow.global_position = _bomb.global_position + Vector3.UP * (0.9 + 0.12 * sin(elapsed * 6.0))
 
 
 func _give_bomb(player: Player, from: Player) -> void:
@@ -185,11 +213,42 @@ func _on_pushed(target: Node3D, pusher: Player) -> void:
 	_give_bomb(other, pusher)
 
 
+func _build_holder_marker() -> void:
+	_marker_material = StandardMaterial3D.new()
+	_marker_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_marker_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_marker_material.albedo_color = Color(1.0, 0.15, 0.1, 0.9)
+	_marker_ring = MeshInstance3D.new()
+	var torus := TorusMesh.new()
+	torus.inner_radius = 0.7
+	torus.outer_radius = 0.95
+	torus.rings = 32
+	torus.ring_segments = 6
+	_marker_ring.mesh = torus
+	_marker_ring.material_override = _marker_material
+	_marker_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_marker_ring.visible = false
+	add_child(_marker_ring)
+	_marker_arrow = MeshInstance3D.new()
+	var cone := CylinderMesh.new()
+	cone.top_radius = 0.32
+	cone.bottom_radius = 0.0
+	cone.height = 0.5
+	cone.radial_segments = 4
+	_marker_arrow.mesh = cone
+	_marker_arrow.material_override = _marker_material
+	_marker_arrow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_marker_arrow.visible = false
+	add_child(_marker_arrow)
+
+
 func _explode() -> void:
 	var victim: Player = holder
 	var center: Vector3 = _bomb.global_position
 	holder = null
 	_bomb.visible = false
+	_marker_ring.visible = false
+	_marker_arrow.visible = false
 	explosions += 1
 	victim.move_speed = _base_speed
 	Fx.burst(&"dust_ring", Vector3(center.x, 0.2, center.z), Color(0, 0, 0, 0), 1.3)
@@ -208,6 +267,9 @@ func _explode() -> void:
 	# Halter wird hochgeschleudert und verschwindet
 	var index: int = victim.slot.index
 	eliminated.append(index)
+	# Sofort aus dem Spiel nehmen, nicht erst nach der Flugrolle (vorher trafen ihn noch Schubser und Explosionen)
+	victim.remove_from_group(Player.GROUP)
+	(victim.get_node("CollisionShape3D") as CollisionShape3D).set_deferred("disabled", true)
 	_last_elimination_time = elapsed
 	victim.slot.source.rumble(1.0, 1.0, 0.4)
 	victim.controls_enabled = false

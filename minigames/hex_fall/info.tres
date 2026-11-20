@@ -10,7 +10,7 @@ formats = Array[int]([1])
 min_players = 2
 max_players = 4
 duration_sec = 90.0
-goal_text = "Jede Wabe, die du betrittst, wackelt kurz und fällt. Bleib in Bewegung, fall durch die Ebenen, aber nicht ins Wasser! Wer zuletzt noch steht, gewinnt."
+goal_text = "Jede Wabe, die du betrittst, wackelt kurz und fällt. Bleib in Bewegung, fall durch die Ebenen, aber nicht ins Wasser! Wer zuletzt noch steht, gewinnt. Läuft die Zeit ab, gewinnt, wer am höchsten steht."
 controls = {
 "move": "Laufen",
 "jump": "Springen",

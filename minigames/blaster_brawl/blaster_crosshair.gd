@@ -7,6 +7,8 @@ var color: Color = Color.WHITE
 var heat: float = 0.0
 var locked: bool = false
 var lives: int = 3
+## Anzahl der Lebenskreise (= hits_to_out des Spiels).
+var max_lives: int = 3
 
 var _hit_flash: float = 0.0
 
@@ -44,6 +46,6 @@ func _draw() -> void:
 	draw_rect(Rect2(bar.position, Vector2(bar.size.x * clampf(heat, 0.0, 1.0), bar.size.y)), fill_color)
 	draw_rect(bar, Color(1, 1, 1, 0.7), false, 2.0)
 	# Leben als Kreise oben rechts
-	for i: int in 3:
+	for i: int in max_lives:
 		var spot := Vector2(size.x - 30.0 - 30.0 * i, 26.0)
 		draw_circle(spot, 10.0, color if i < lives else Color(0.2, 0.2, 0.2, 0.6))

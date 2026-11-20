@@ -141,6 +141,10 @@ func _physics_process(delta: float) -> void:
 	if not on_floor:
 		var g: float = gravity * (fall_gravity_multiplier if velocity.y < 0.0 else 1.0)
 		velocity.y = maxf(velocity.y - g * delta, -max_fall_speed)
+	elif velocity.y <= 0.0:
+		# Leichter Andruck am Boden: Ohne ihn hatte move_and_slide() bei Stillstand nichts zu prüfen, und
+		# is_on_floor() blieb wahr, obwohl der Boden weg war (Figur schwebte über gefallenen Waben).
+		velocity.y = -1.0
 
 	for ability: PlayerAbility in _abilities:
 		if ability.enabled:

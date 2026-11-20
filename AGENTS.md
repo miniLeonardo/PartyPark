@@ -67,6 +67,10 @@ Fasse dem Nutzer danach in zwei bis drei Sätzen zusammen, wo das Projekt steht,
 .\Godot_v4.7.2-stable_win64_console.exe --headless --path . -- --smoke-m1
 .\Godot_v4.7.2-stable_win64_console.exe --headless --path . --fixed-fps 60 -- --smoke-m2
 .\Godot_v4.7.2-stable_win64_console.exe --headless --path . --fixed-fps 60 -- --smoke-games
+.\Godot_v4.7.2-stable_win64_console.exe --headless --path . --fixed-fps 60 -- --smoke-hub
+
+# Spieltest-Statistik aller Minispiele (Dauer, Siegverteilung, untätiger Spieler; D131)
+.\Godot_v4.7.2-stable_win64_console.exe --headless --path . --fixed-fps 60 -- --smoke-playtest --runs=12
 
 # Asset-Audit je Arena (Dreiecke, Meshes, Draw Calls, Lichter)
 .\Godot_v4.7.2-stable_win64_console.exe --headless --path . -- --tool-asset_audit

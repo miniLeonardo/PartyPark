@@ -90,5 +90,9 @@ func _physics_process(delta: float) -> void:
 	elif not is_on_floor():
 		velocity.y -= gravity * delta
 	move_and_slide()
+	if fleeing and global_position.y < 0.0:
+		# Ohne Kollision (Flucht über den Zaun) fiel der Wolf während der Betäubung durch den Boden
+		global_position.y = 0.0
+		velocity.y = maxf(velocity.y, 0.0)
 	if wanted.length() > 0.1:
 		rotation.y = lerp_angle(rotation.y, atan2(-wanted.x, -wanted.z), clampf(8.0 * delta, 0.0, 1.0))

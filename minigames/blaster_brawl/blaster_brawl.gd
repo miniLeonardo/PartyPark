@@ -6,6 +6,15 @@ extends Minigame
 @export_group("Regeln")
 ## Treffer, bis eine Figur zerplatzt (D72).
 @export var hits_to_out: int = 3
+## Lage und Größe des Blasters in der Ego-Ansicht (relativ zur Kamera, D129).
+@export var blaster_view_offset: Vector3 = Vector3(0.3, -0.28, -0.6)
+@export var blaster_view_scale: float = 1.0
+
+const BLASTER_SCENES: Array[PackedScene] = [
+	preload("res://core/weapons/blaster_a.tscn"),
+	preload("res://core/weapons/blaster_e.tscn"),
+	preload("res://core/weapons/blaster_k.tscn"),
+]
 ## Kurze Unverwundbarkeit nach einem Treffer (Sekunden).
 @export var hit_grace: float = 0.4
 
@@ -31,6 +40,10 @@ extends Minigame
 @export var wall_height: float = 3.5
 
 var hits: Dictionary = {}
+## Platzindex → verteilte Treffer (Gleichstand-Entscheidung bei Zeitablauf).
+var dealt: Dictionary = {}
+## Trefferübersichten in ungenutzten Bildschirmvierteln.
+var _boards: Array[Label] = []
 ## Platzindizes in der Reihenfolge des Ausscheidens.
 var eliminated: Array[int] = []
 var split: SplitScreen
@@ -39,6 +52,8 @@ var shots_hit: int = 0
 
 var _abilities: Dictionary = {}
 var _views: Dictionary = {}
+## Platzindex → Blaster in der eigenen Ego-Ansicht (D129).
+var _blasters: Dictionary = {}
 var _heat: Dictionary = {}
 var _locked: Dictionary = {}
 var _fire_ready: Dictionary = {}
@@ -118,6 +133,7 @@ func _configure_player(player: Player, slot: PlayerSlot) -> void:
 	_views[slot.index] = view
 	var layer_bit: int = SplitScreen.player_layer_bit(view)
 	SplitScreen.set_render_layer(player, layer_bit)
+	_attach_blaster(slot.index, view)
 	split.hide_layer_in_view(view, layer_bit)
 	var material := StandardMaterial3D.new()
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
@@ -130,6 +146,7 @@ func _build_overlay(view: int, slot: PlayerSlot) -> void:
 	var overlay: Control = split.overlays[view]
 	var crosshair := BlasterCrosshair.new()
 	crosshair.color = slot.color.lightened(0.4)
+	crosshair.max_lives = hits_to_out
 	crosshair.set_anchors_preset(Control.PRESET_FULL_RECT)
 	crosshair.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	overlay.add_child(crosshair)
@@ -140,12 +157,40 @@ func _build_overlay(view: int, slot: PlayerSlot) -> void:
 	overlay.add_child(name_label)
 
 
+## D129: Spielzeug-Blaster unten rechts an der Ego-Kamera. Andere sehen ihn auf Kopfhöhe der Figur.
+func _attach_blaster(index: int, view: int) -> void:
+	var scene: PackedScene = BLASTER_SCENES[view % BLASTER_SCENES.size()]
+	var blaster := scene.instantiate() as Blaster
+	split.cameras[view].add_child(blaster)
+	blaster.position = blaster_view_offset
+	blaster.scale = Vector3.ONE * blaster_view_scale
+	_disable_shadows(blaster)
+	_blasters[index] = blaster
+
+
+func _disable_shadows(node: Node) -> void:
+	var geometry := node as GeometryInstance3D
+	if geometry != null:
+		geometry.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	for child: Node in node.get_children():
+		_disable_shadows(child)
+
+
 func _after_setup() -> void:
-	# Ungenutzte Ansichten (weniger als 4 Spieler) zeigen die Arena von oben
+	# Ungenutzte Ansichten (weniger als 4 Spieler): kein 3D-Bild (vorher eine Live-Karte von oben, die
+	# Verstecke verriet und vier Schattendurchgänge kostete), stattdessen eine Trefferübersicht
 	for view: int in range(players.size(), split.cameras.size()):
-		var camera: Camera3D = split.cameras[view]
-		camera.global_position = Vector3(0, 26, 18)
-		camera.look_at(Vector3.ZERO, Vector3.UP)
+		split.viewports[view].render_target_update_mode = SubViewport.UPDATE_DISABLED
+		split.viewports[view].get_parent().visible = false
+		var board := UiStyle.make_label("", 30, Color.WHITE)
+		board.set_anchors_preset(Control.PRESET_FULL_RECT)
+		board.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		board.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		split.overlays[view].add_child(board)
+		_boards.append(board)
+	# Schatten nur so weit wie die Arena (Sonne rechnet sonst 60 m, je Ansicht)
+	for light: DirectionalLight3D in find_children("*", "DirectionalLight3D", true, false):
+		light.directional_shadow_max_distance = 30.0
 	_update_cameras(0.0)
 	_update_hud()
 
@@ -189,7 +234,8 @@ func _round_process(delta: float) -> void:
 		var firing: bool = source != null and (source.is_down(InputBindings.TRIGGER) or source.is_down(InputBindings.PUSH))
 		if firing and float(_fire_ready[index]) <= 0.0:
 			_fire(player)
-		else:
+		elif not firing:
+			# Nur abkühlen, wenn nicht geschossen wird (vorher kühlte es zwischen zwei Schüssen und überhitzte praktisch nie, D72)
 			_heat[index] = maxf(0.0, float(_heat[index]) - cool_rate * delta)
 	_update_projectiles(delta)
 	if _alive().size() <= 1 and context.slots.size() > 1:
@@ -208,13 +254,21 @@ func _fire(player: Player) -> void:
 	var direction: Vector3 = ability.get_look_direction()
 	var spread: float = deg_to_rad(spread_deg)
 	direction = direction.rotated(Vector3.UP, rng.randf_range(-spread, spread)).rotated(Vector3.RIGHT, rng.randf_range(-spread, spread)).normalized()
-	var start: Vector3 = ability.get_eye_position() + direction * 0.5 + Vector3.DOWN * 0.15
+	# Strahl startet im Auge (der Schütze selbst ist ausgenommen). Vorher 0,5 m davor: Direkt an Deckung
+	# lag der Start schon in der Kiste, und der Schuss ging hindurch.
+	var start: Vector3 = ability.get_eye_position() + Vector3.DOWN * 0.15
 	var mesh := MeshInstance3D.new()
 	mesh.mesh = _projectile_mesh
 	mesh.material_override = _projectile_materials[index]
 	mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(mesh)
-	mesh.global_position = start
+	# Optisch aus der Mündung (Logik bleibt beim Auge, damit nichts durch Deckung geht)
+	var blaster: Blaster = _blasters.get(index)
+	if blaster != null:
+		mesh.global_position = blaster.get_muzzle_position()
+		blaster.fire_effect()
+	else:
+		mesh.global_position = start + direction * 0.5
 	_projectiles.append({"position": start, "direction": direction, "owner": player, "life": projectile_life, "mesh": mesh})
 	shots_fired += 1
 	Sfx.play(&"blaster", player.global_position, -3.0)
@@ -258,6 +312,8 @@ func _on_hit(victim: Player, shooter: Player, direction: Vector3) -> void:
 	_grace[index] = hit_grace
 	hits[index] = int(hits[index]) + 1
 	shots_hit += 1
+	if shooter != null:
+		dealt[shooter.slot.index] = int(dealt.get(shooter.slot.index, 0)) + 1
 	var flat: Vector3 = Vector3(direction.x, 0.0, direction.z).normalized()
 	victim.receive_push(flat * hit_knockback, 2.5, 0.2, shooter)
 	Fx.hitstop([victim])
@@ -292,6 +348,9 @@ func _shred(victim: Player) -> void:
 
 ## Zielhilfe: liegt ein sichtbarer Gegner nahe am Fadenkreuz?
 func _assist_check(player: Player) -> bool:
+	# Computer zielen selbst; mit Zielhilfe drehten sie in Zielnähe so langsam, dass sie kaum schossen
+	if player.slot.is_cpu:
+		return false
 	var ability: ShooterAbility = _abilities.get(player.slot.index)
 	if ability == null:
 		return false
@@ -321,7 +380,8 @@ func _ranking() -> MinigameResult:
 	var groups: Array = []
 	var by_hits: Dictionary = {}
 	for index: int in _alive():
-		var key: int = int(hits[index])
+		# Wenigste erlittene Treffer zuerst, bei Gleichstand die meisten verteilten Treffer
+		var key: int = int(hits[index]) * 1000 - int(dealt.get(index, 0))
 		if not by_hits.has(key):
 			by_hits[key] = []
 		(by_hits[key] as Array).append(index)
@@ -345,9 +405,14 @@ func was_close() -> bool:
 
 
 func _update_hud() -> void:
+	var lines: PackedStringArray = ["ZERFETZUNG", ""]
 	for slot: PlayerSlot in context.slots:
 		var left: int = hits_to_out - int(hits.get(slot.index, 0))
 		hud.set_status(slot, "%s  %s" % [slot.get_tag(), ("♥".repeat(left)) if left > 0 else "zerfetzt"])
+		lines.append("%s   %s   Treffer: %d" % [slot.display_name, ("♥".repeat(left)) if left > 0 else "zerfetzt", int(dealt.get(slot.index, 0))])
+	for board: Label in _boards:
+		board.text = "
+".join(lines)
 
 
 ## Für den Smoke-Test `--smoke-games`.
@@ -368,11 +433,19 @@ func _update_ai(player: Player, ai: AIInput, delta: float) -> void:
 	var eye: Vector3 = ability.get_eye_position()
 	if float(state["think"]) <= 0.0:
 		state["think"] = AIProfile.reaction_time(context.difficulty)
+		var previous: Variant = state["target"]
 		state["target"] = _visible_enemy(player, eye)
-		var error: float = AIProfile.aim_error(context.difficulty) * ai_aim_error_factor
-		state["error"] = Vector2(rng.randf_range(-error, error), rng.randf_range(-error, error))
+		# Zielfehler nur bei neuem Ziel würfeln (vorher alle 0,3 s neu: das Visier sprang, und die Schussfreigabe kam nie zustande)
+		if state["target"] != previous:
+			var error: float = AIProfile.aim_error(context.difficulty) * ai_aim_error_factor
+			state["error"] = Vector2(rng.randf_range(-error, error), rng.randf_range(-error, error)) * 0.5
 		if state["target"] == null and (player.global_position.distance_to(state["wander"]) < 2.0 or rng.randf() < 0.2):
-			state["wander"] = Vector3(rng.randf_range(-11, 11), 0, rng.randf_range(-11, 11))
+			# Ohne Sicht: grob dorthin, wo ein Gegner ist (vorher Zufallspunkte, Verstecken in Ecken gewann)
+			var hunted: Player = _random_enemy(player)
+			if hunted != null:
+				state["wander"] = hunted.global_position + Vector3(rng.randf_range(-3, 3), 0, rng.randf_range(-3, 3))
+			else:
+				state["wander"] = Vector3(rng.randf_range(-11, 11), 0, rng.randf_range(-11, 11))
 	if float(state["strafe_time"]) <= 0.0:
 		state["strafe_time"] = rng.randf_range(0.8, 2.0)
 		state["strafe"] = -float(state["strafe"])
@@ -400,10 +473,12 @@ func _update_ai(player: Player, ai: AIInput, delta: float) -> void:
 	var wanted_pitch: float = atan2(to_point.y, Vector2(to_point.x, to_point.z).length()) + (state["error"] as Vector2).y
 	var yaw_error: float = wrapf(wanted_yaw - ability.yaw, -PI, PI)
 	var pitch_error: float = wanted_pitch - ability.pitch
-	ai.aim = Vector2(clampf(-yaw_error * 2.2, -1.0, 1.0), clampf(-pitch_error * 2.2, -1.0, 1.0))
+	ai.aim = Vector2(clampf(-yaw_error * 4.0, -1.0, 1.0), clampf(-pitch_error * 4.0, -1.0, 1.0))
 	ai.aim = Vector2(signf(ai.aim.x) * sqrt(absf(ai.aim.x)), signf(ai.aim.y) * sqrt(absf(ai.aim.y))) * AIProfile.speed(context.difficulty)
 	ai.move = move_local * AIProfile.speed(context.difficulty)
-	var aligned: bool = absf(yaw_error) < deg_to_rad(6.0) and absf(pitch_error) < deg_to_rad(8.0)
+	# Freigabe am wahren Zielpunkt messen, mit etwas Toleranz (Streuung und Bewegung machen den Rest)
+	var true_yaw_error: float = wrapf(atan2(-to_point.x, -to_point.z) - ability.yaw, -PI, PI)
+	var aligned: bool = absf(true_yaw_error) < deg_to_rad(10.0) and absf(pitch_error) < deg_to_rad(10.0)
 	state["aligned_time"] = float(state.get("aligned_time", 0.0)) + delta if aligned and target != null else 0.0
 	var ready: bool = float(state["aligned_time"]) > ai_fire_delay * (1.6 - AIProfile.skill(context.difficulty))
 	ai.hold(InputBindings.TRIGGER, ready and float(_heat[index]) < 0.75)
@@ -411,6 +486,14 @@ func _update_ai(player: Player, ai: AIInput, delta: float) -> void:
 	if player.is_on_floor() and rng.randf() < 0.004:
 		ai.tap(InputBindings.JUMP)
 	_ai_state[index] = state
+
+
+func _random_enemy(player: Player) -> Player:
+	var options: Array[Player] = []
+	for other: Player in players:
+		if other != player and other.visible and not eliminated.has(other.slot.index):
+			options.append(other)
+	return null if options.is_empty() else options[rng.randi_range(0, options.size() - 1)]
 
 
 func _visible_enemy(player: Player, eye: Vector3) -> Player:

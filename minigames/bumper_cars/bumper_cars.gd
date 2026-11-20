@@ -15,6 +15,8 @@ extends Minigame
 var lives: Dictionary = {}
 ## Platzindizes in der Reihenfolge des Ausscheidens.
 var eliminated: Array[int] = []
+## Platzindex → Physik-Bild des Ausscheidens (gleiches Bild = geteilter Platz).
+var _eliminated_frame: Dictionary = {}
 
 var _respawn_timers: Dictionary = {}
 var _ai_state: Dictionary = {}
@@ -164,6 +166,7 @@ func _on_fell(player: Player) -> void:
 	source.rumble(0.8, 0.8, 0.35)
 	if lives[index] <= 0:
 		eliminated.append(index)
+		_eliminated_frame[index] = Engine.get_physics_frames()
 		hud.show_message("%s ist raus!" % player.slot.display_name, 1.5)
 		Sfx.play(&"eliminated")
 		Announcer.say(&"bad_luck", {"player": player.slot.display_name}, 0.6)
@@ -173,7 +176,19 @@ func _on_fell(player: Player) -> void:
 
 
 func _respawn(player: Player) -> void:
-	var spot: Vector3 = Vector3(rng.randf_range(-2.5, 2.5), 2.0, rng.randf_range(-2.5, 2.5))
+	# Unter einigen Zufallspunkten den mit dem größten Abstand zu anderen Wagen nehmen (vorher landete man
+	# manchmal direkt auf einem Wagen und flog sofort wieder raus)
+	var spot: Vector3 = Vector3.ZERO
+	var best: float = -1.0
+	for attempt: int in 8:
+		var candidate := Vector3(rng.randf_range(-2.5, 2.5), 2.0, rng.randf_range(-2.5, 2.5))
+		var nearest: float = INF
+		for other: Player in players:
+			if other != player and other.visible:
+				nearest = minf(nearest, Vector2(other.global_position.x - candidate.x, other.global_position.z - candidate.z).length())
+		if nearest > best:
+			best = nearest
+			spot = candidate
 	player.set_active(true)
 	player.respawn(spot)
 	var scooter := player.get_node("ScooterAbility") as ScooterAbility
@@ -204,8 +219,15 @@ func _ranking() -> MinigameResult:
 	keys.reverse()
 	for key: int in keys:
 		groups.append(by_lives[key])
-	for i: int in range(eliminated.size() - 1, -1, -1):
-		groups.append([eliminated[i]])
+	# Wer im selben Bild rausfällt, teilt sich den Platz (vorher entschied die Platznummer)
+	var i: int = eliminated.size() - 1
+	while i >= 0:
+		var group: Array = [eliminated[i]]
+		while i > 0 and _eliminated_frame.get(eliminated[i - 1], -1) == _eliminated_frame.get(eliminated[i], -2):
+			i -= 1
+			group.append(eliminated[i])
+		groups.append(group)
+		i -= 1
 	return MinigameResult.from_ranking(groups)
 
 

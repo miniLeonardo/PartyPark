@@ -10,7 +10,8 @@ extends Minigame
 @export var hit_window: float = 0.13
 ## Seilweg pro Treffer und Zusatz bei Synchronität (Meter).
 @export var pull_per_hit: float = 0.16
-@export var sync_bonus: float = 0.08
+## D126: Ein synchrones Paar zieht doppelt so weit wie zwei einzelne Treffer (0,16 + 0,16 + 0,32 = 0,64 m).
+@export var sync_bonus: float = 0.32
 ## Sieg, sobald die Markierung so weit von der Mitte entfernt ist (Meter).
 @export var win_distance: float = 3.0
 ## Sperre nach einem Fehldruck (Sekunden).
@@ -18,7 +19,7 @@ extends Minigame
 
 @export_group("Kraftakt (D53)")
 ## Synchrontakte, bis der Kraftbalken voll ist (Platzhalter).
-@export var power_charge_needed: int = 4
+@export var power_charge_needed: int = 6 # D126
 ## Seilweg des Kraftakts (Meter).
 @export var power_pull: float = 0.6
 
@@ -108,7 +109,13 @@ func _configure_player(player: Player, _slot: PlayerSlot) -> void:
 func _after_setup() -> void:
 	_beat_ring = BeatRing.new()
 	hud.add_child(_beat_ring)
-	_beat_ring.position = Vector2(960.0 - _beat_ring.custom_minimum_size.x * 0.5, 150.0)
+	# Mittig oben verankert (vorher fest bei x = 960, auf breiteren Bildschirmen schief)
+	_beat_ring.anchor_left = 0.5
+	_beat_ring.anchor_right = 0.5
+	_beat_ring.offset_left = -_beat_ring.custom_minimum_size.x * 0.5
+	_beat_ring.offset_right = _beat_ring.custom_minimum_size.x * 0.5
+	_beat_ring.offset_top = 150.0
+	_beat_ring.offset_bottom = 150.0 + _beat_ring.custom_minimum_size.y
 	_update_hud()
 
 
@@ -258,6 +265,7 @@ func _tick_feedback(delta: float) -> void:
 
 func _finish_team(winner_team: int) -> void:
 	var loser_team: int = 1 - winner_team
+	_settle_after_round()
 	for index: int in context.team_members(loser_team):
 		var player: Player = get_player(index)
 		var toward_center: float = 1.0 if loser_team == 0 else -1.0
@@ -273,7 +281,18 @@ func _on_time_up() -> void:
 	elif _rope_target > 0.3:
 		_finish_team(1)
 	else:
+		_settle_after_round()
 		finish(MinigameResult.draw(context.indices()))
+
+
+## Seil auf den entscheidenden Stand setzen (es federt sonst nach Rundenende nicht mehr nach und
+## bleibt sichtbar vor der Linie stehen) und Zurufe wie „Zug!“ von den Köpfen nehmen.
+func _settle_after_round() -> void:
+	rope_x = _rope_target
+	_rope_velocity = 0.0
+	_rope.position.x = rope_x
+	for player: Player in players:
+		player.set_tag_text(player.slot.get_tag())
 
 
 func _update_hud() -> void:

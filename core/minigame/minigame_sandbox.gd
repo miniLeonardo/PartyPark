@@ -42,6 +42,9 @@ func start(info: MinigameInfo, format: int, difficulty: int = 1, time_limit_over
 	minigame = (load(info.scene_path) as PackedScene).instantiate() as Minigame
 	add_child(minigame)
 	minigame.setup(context, info)
+	if seed_value != 0:
+		# Wiederholbare Läufe: auch der Zufall des Minispiels folgt dem Seed (setup() würfelt sonst neu)
+		minigame.rng.seed = seed_value
 	if time_limit_override > 0.0:
 		minigame.time_limit = time_limit_override
 	minigame.finished.connect(_on_finished)

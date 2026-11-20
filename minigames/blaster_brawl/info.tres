@@ -15,6 +15,7 @@ controls = {
 "move": "Laufen",
 "aim": "Umsehen und Zielen",
 "trigger": "Feuern (halten = Dauerfeuer)",
+"push": "Feuern (alternativ)",
 "jump": "Springen"
 }
 solo_goal_text = ""

@@ -77,8 +77,13 @@ func _run() -> void:
 		peak_vy = maxf(peak_vy, p1.velocity.y)
 	_check(peak_vy > 12.0, "Trampolin wirft beim Landen hoch (%.1f m/s)" % peak_vy)
 	_park(p1, tramp.global_position + Vector3(4.5, 0.5, 0))
-	await _walk_to(p1, _ai1, tramp.global_position + Vector3(0, 0, 0), 60)
-	_check(p1.global_position.y > tramp.global_position.y + 1.0, "Trampolin: Wer hinaufläuft, wird ebenfalls hochgeworfen")
+	var peak_y: float = -INF
+	for i: int in 90:
+		_steer(p1, _ai1, tramp.global_position)
+		await _frames(1)
+		peak_y = maxf(peak_y, p1.global_position.y)
+	_ai1.release_all()
+	_check(peak_y > tramp.global_position.y + 1.0, "Trampolin: Wer hinaufläuft, wird ebenfalls hochgeworfen")
 
 	# --- Rutsche: oben starten, hinunterrutschen, Schanze ---
 	var slide: HubSlide = pg.get_node("Slide") as HubSlide

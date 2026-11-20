@@ -35,3 +35,16 @@ Ergebnis bitte je Nummer mit ok / nicht ok / Bemerkung zurückmelden.
 18. Nach dem Ergebnis landet ihr vor der Bude (nicht auf der Platte), und das Spiel startet nicht von selbst neu.
 19. Turnier-Pavillon: Die Platte und der lila Rundenschalter sind sichtbar. Nur Menschen schalten 5/10 Runden um.
 20. Turnier aus dem Pavillon starten, über Pause „Zum Hauptmenü“ abbrechen, dann ein Turnier aus dem Hauptmenü spielen: Danach geht es ins Hauptmenü, nicht in den Park.
+
+## Minispiele (Durchsicht 2026-11-20)
+
+Am einfachsten über Hauptmenü → Freies Spiel, oder direkt `.\Godot_v4.7.2-stable_win64.exe --path . -- --play=<id>` (IDs: bumper_cars, tug_of_war, giant_vs_dwarfs, sheep_herding, hex_fall, hot_potato, blaster_brawl).
+
+21. Autoscooter: Ein Ring unter dem Wagen wächst beim Aufladen und leuchtet gelb, wenn der Turbo (X) bereit ist (D128). Frontal-Zusammenstöße fühlen sich fair an (beide fliegen zurück). Nach dem Rausfallen setzt man nicht direkt auf einem anderen Wagen ein.
+22. Tauziehen: Gemeinsam im Takt drücken zieht deutlich stärker, der Kraftakt (Y) braucht 6 Synchrontakte (D126). Am Ende steht die Seilmarke am Ziel, und „Zug!“ verschwindet von den Köpfen.
+23. Riese gegen Zwerge: Holt der Riese zum Stampfen aus, füllt sich ein roter Kreis am Boden (D127). Zwerge kommen nur durch eigenes Umrunden voran, nicht wenn der Riese an ihnen vorbeiläuft. Fällt der Riese, kippen die Seilringe mit.
+24. Schafe hüten: Ein Schaf zählt erst, wenn es ganz im Gehege ist (Zähler flackert nicht mehr). Den Wolf verjagt man mit Schubsen (steht jetzt in der Tastenerklärung). Er rennt weg statt im Boden zu versinken. Nach Spielende bleiben die Schafe stehen.
+25. Wackelwaben: Auf einer Fuge zwischen zwei Waben stehen bleiben rettet nicht mehr; beide Waben fallen. Wer stillsteht, fällt durch.
+26. Heiße Kartoffel: Der Bombenträger hat einen blinkenden roten Ring und Pfeil, schneller kurz vor der Explosion (D128). Über den Zaun springen geht nicht mehr.
+27. Zerfetzung: Unten rechts ist der eigene Spielzeug-Blaster mit Mündungsblitz zu sehen (D129). Dauerfeuer überhitzt nach einigen Sekunden. Schüsse gehen nicht mehr durch Kisten, wenn man direkt davor steht. Mit 2 oder 3 Spielern zeigen die freien Viertel eine Trefferübersicht statt einer Karte von oben. Bei Zeitablauf: weniger erlittene Treffer gewinnen, bei Gleichstand mehr verteilte (D130, bitte bestätigen).
+28. Allgemein: Läuft alles flüssig? Besonders Zerfetzung mit 4 Spielern bitte mit F3 (Leistungsanzeige) prüfen.

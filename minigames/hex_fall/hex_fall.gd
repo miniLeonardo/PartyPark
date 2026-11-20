@@ -45,6 +45,10 @@ var _lookup: Dictionary = {}
 var _last_elimination_time: float = -100.0
 var _debug_times: Array[float] = []
 var _debug_level_drops: int = 0
+## Platzindex → Physik-Bild des Ausscheidens (gleiches Bild = geteilter Platz).
+var _eliminated_frame: Dictionary = {}
+## Platzindex → Ebene, auf der die Figur zuletzt stand (für die Wertung bei Zeitablauf).
+var _last_level: Dictionary = {}
 
 
 func _init() -> void:
@@ -84,7 +88,7 @@ func _build_arena() -> void:
 	var plane := PlaneMesh.new()
 	plane.size = Vector2(120, 120)
 	water.mesh = plane
-	water.position.y = water_height - 2.0
+	water.position.y = water_height # vorher 2 m tiefer: Figuren verschwanden über dem Wasser
 	var water_material := StageKit.make_material(Color("#3f8fd6"))
 	water_material.roughness = 0.3
 	water.material_override = water_material
@@ -122,7 +126,21 @@ func _spawn_position(i: int, _slot: PlayerSlot) -> Vector3:
 	var count: int = maxi(2, context.slots.size())
 	var angle: float = TAU * float(i) / float(count) + PI * 0.25
 	var top: float = float(levels - 1) * level_spacing
-	return Vector3(sin(angle) * hex_size * 3.0, top + 0.3, cos(angle) * hex_size * 3.0)
+	var raw := Vector3(sin(angle) * hex_size * 3.0, 0.0, cos(angle) * hex_size * 3.0)
+	# Auf die Mitte der nächsten Wabe setzen: Die diagonalen Punkte lagen je nach Platz auf einer Fuge
+	# (zwei Waben lösen aus) oder mitten auf einer Wabe – ungleiche Startbedingungen.
+	var qf: float = (sqrt(3.0) / 3.0 * raw.x - raw.z / 3.0) / hex_size
+	var rf: float = (2.0 / 3.0 * raw.z) / hex_size
+	var sf: float = -qf - rf
+	var q: int = roundi(qf)
+	var r: int = roundi(rf)
+	var s_round: int = roundi(sf)
+	if absf(float(q) - qf) > absf(float(r) - rf) and absf(float(q) - qf) > absf(float(s_round) - sf):
+		q = -r - s_round
+	elif absf(float(r) - rf) > absf(float(s_round) - sf):
+		r = -q - s_round
+	var center: Vector3 = _axial_to_world(q, r)
+	return Vector3(center.x, top + 0.3, center.z)
 
 
 func _spawn_facing(i: int, slot: PlayerSlot) -> Vector3:
@@ -141,6 +159,13 @@ func _round_process(delta: float) -> void:
 		var under: int = _tile_under(player)
 		if under >= 0:
 			_trigger(under)
+		# Zusätzlich die Wabe, auf der die Figur wirklich steht: Auf einer Fuge trägt oft die Nachbarwabe,
+		# und wer dort stillstand, überlebte ewig (Spieltest 2026-11-20: Untätige gewannen 3 von 3).
+		var floor_body := player.get_floor_collider() as Node
+		if floor_body != null and floor_body.has_meta(&"tile_index"):
+			_trigger(int(floor_body.get_meta(&"tile_index")))
+		if player.is_on_floor():
+			_last_level[index] = roundi(player.global_position.y / level_spacing)
 	_update_tiles(delta)
 	var alive: Array[int] = _alive()
 	if alive.size() <= 1 and context.slots.size() > 1:
@@ -185,11 +210,12 @@ func _update_tiles(delta: float) -> void:
 func _on_fell(player: Player) -> void:
 	var index: int = player.slot.index
 	eliminated.append(index)
+	_eliminated_frame[index] = Engine.get_physics_frames()
 	_last_elimination_time = elapsed
 	_debug_times.append(snappedf(elapsed, 0.1))
 	player.set_active(false)
 	player.slot.source.rumble(0.8, 0.8, 0.35)
-	Fx.burst(&"splash", Vector3(player.global_position.x, water_height - 2.0, player.global_position.z))
+	Fx.burst(&"splash", Vector3(player.global_position.x, water_height, player.global_position.z))
 	Fx.shake(Fx.SHAKE_STRONG)
 	Sfx.play(&"splash", player.global_position)
 	Sfx.play(&"eliminated")
@@ -211,7 +237,7 @@ func _ranking() -> MinigameResult:
 	var groups: Array = []
 	var by_level: Dictionary = {}
 	for index: int in _alive():
-		var level: int = roundi(get_player(index).global_position.y / level_spacing)
+		var level: int = int(_last_level.get(index, roundi(get_player(index).global_position.y / level_spacing)))
 		if not by_level.has(level):
 			by_level[level] = []
 		(by_level[level] as Array).append(index)
@@ -220,8 +246,15 @@ func _ranking() -> MinigameResult:
 	keys.reverse()
 	for key: int in keys:
 		groups.append(by_level[key])
-	for i: int in range(eliminated.size() - 1, -1, -1):
-		groups.append([eliminated[i]])
+	# Wer im selben Bild ins Wasser fällt, teilt sich den Platz
+	var i: int = eliminated.size() - 1
+	while i >= 0:
+		var group: Array = [eliminated[i]]
+		while i > 0 and _eliminated_frame.get(eliminated[i - 1], -1) == _eliminated_frame.get(eliminated[i], -2):
+			i -= 1
+			group.append(eliminated[i])
+		groups.append(group)
+		i -= 1
 	return MinigameResult.from_ranking(groups)
 
 

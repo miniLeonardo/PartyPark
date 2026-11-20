@@ -60,6 +60,9 @@ var _rope_rings: Array[MeshInstance3D] = []
 var _wrap_ropes: Dictionary = {}
 var _debug_ropes_drawn: int = 0
 var _shockwave: MeshInstance3D
+## Warnkreis beim Ausholen (D127): Rand in Stampfreichweite und Füllung, die bis zum Aufprall wächst.
+var _warn_ring: MeshInstance3D
+var _warn_fill: MeshInstance3D
 var _shock_time: float = -1.0
 var _ai_state: Dictionary = {}
 
@@ -94,6 +97,7 @@ func _build_arena() -> void:
 	_shockwave.material_override = material
 	_shockwave.visible = false
 	add_child(_shockwave)
+	_build_stomp_warning()
 	var camera := ArenaCamera.new()
 	# Steiler Blick von oben, damit die Zwerge hinter dem Riesen nicht verschwinden
 	camera.min_distance = 21.0
@@ -177,7 +181,10 @@ func _handle_giant_input(delta: float) -> void:
 	var source: InputSource = giant.get_input()
 	if _windup >= 0.0:
 		_windup -= delta
+		_update_stomp_warning()
 		if _windup < 0.0:
+			_warn_ring.visible = false
+			_warn_fill.visible = false
 			_do_stomp()
 	elif source != null and source.just_pressed(InputBindings.JUMP) and _stomp_ready_in <= 0.0:
 		_windup = stomp_windup
@@ -192,6 +199,48 @@ func _handle_giant_input(delta: float) -> void:
 		source.rumble(0.4, 0.4, 0.3)
 		hud.show_message("Seil abgeschüttelt!", 1.0)
 		_update_hud()
+
+
+## D127: roter Kreis in Stampfreichweite, die Füllung wächst während des Ausholens bis zum Rand.
+func _build_stomp_warning() -> void:
+	var material := StandardMaterial3D.new()
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.albedo_color = Color(1.0, 0.15, 0.1, 0.9)
+	_warn_ring = MeshInstance3D.new()
+	var torus := TorusMesh.new()
+	torus.inner_radius = stomp_radius - 0.15
+	torus.outer_radius = stomp_radius
+	torus.rings = 64
+	_warn_ring.mesh = torus
+	_warn_ring.material_override = material
+	_warn_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_warn_ring.visible = false
+	add_child(_warn_ring)
+	var fill_material: StandardMaterial3D = material.duplicate()
+	fill_material.albedo_color = Color(1.0, 0.2, 0.1, 0.35)
+	_warn_fill = MeshInstance3D.new()
+	var disc := CylinderMesh.new()
+	disc.top_radius = 1.0
+	disc.bottom_radius = 1.0
+	disc.height = 0.02
+	disc.radial_segments = 48
+	_warn_fill.mesh = disc
+	_warn_fill.material_override = fill_material
+	_warn_fill.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_warn_fill.visible = false
+	add_child(_warn_fill)
+
+
+func _update_stomp_warning() -> void:
+	var spot := Vector3(giant.global_position.x, 0.08, giant.global_position.z)
+	var t: float = clampf(1.0 - _windup / maxf(stomp_windup, 0.01), 0.0, 1.0)
+	_warn_ring.visible = true
+	_warn_fill.visible = true
+	_warn_ring.global_position = spot
+	_warn_fill.global_position = spot
+	var r: float = maxf(0.05, stomp_radius * t)
+	_warn_fill.scale = Vector3(r, 1.0, r)
 
 
 func _do_stomp() -> void:
@@ -255,8 +304,10 @@ func _update_wraps(delta: float) -> void:
 		var angle: float = atan2(offset.x, offset.z)
 		var progress: float = float(_wrap_progress.get(index, 0.0))
 		if offset.length() <= wrap_radius and not dwarf.is_stunned():
-			if _last_angle.has(index):
-				progress += wrapf(angle - float(_last_angle[index]), -PI, PI)
+			# Nur die eigene Laufbewegung des Zwergs um den Riesen zählt. Vorher zählte der Winkel relativ
+			# zum Riesen, sodass der Riese durch Vorbeilaufen stehende Zwerge „einwickelte“.
+			var tangent := Vector3(cos(angle), 0.0, -sin(angle))
+			progress += dwarf.velocity.dot(tangent) / maxf(offset.length(), 0.5) * delta
 			_last_angle[index] = angle
 			# Leises Surren bei jeder Vierteldrehung, Tonhöhe steigt mit dem Fortschritt
 			if floori(absf(progress) / (PI * 0.5)) > floori(absf(float(_wrap_progress.get(index, 0.0))) / (PI * 0.5)):
@@ -282,8 +333,12 @@ func _draw_wrap_rope(index: int, angle: float, progress: float, dwarf: Player) -
 	if tube == null:
 		return
 	if absf(progress) < 0.05:
-		tube.set_points(PackedVector3Array())
+		# Leeres Seil nur einmal leeren, nicht jedes Bild neu aufbauen
+		if not tube.has_meta(&"empty"):
+			tube.set_points(PackedVector3Array())
+			tube.set_meta(&"empty", true)
 		return
+	tube.remove_meta(&"empty")
 	var center: Vector3 = giant.global_position
 	var height: float = _rope_height(mini(ropes, ropes_to_win - 1))
 	var radius: float = rope_ring_radius
@@ -350,6 +405,9 @@ func debug_summary() -> String:
 
 
 func _giant_falls() -> void:
+	# Seilringe kippen mit dem Körper um (vorher blieben sie aufrecht in der Luft stehen)
+	for ring: MeshInstance3D in _rope_rings:
+		ring.reparent(giant.visual, true)
 	var tween: Tween = create_tween()
 	tween.tween_property(giant.visual, "rotation:x", -1.4, 0.8).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
 	giant.slot.source.rumble(1.0, 1.0, 0.5)
