@@ -12,6 +12,13 @@ var is_cpu: bool = false
 var disconnected: bool = false
 ## Gesamtpunkte im laufenden Turnier (ab M2).
 var total_score: int = 0
+## Handicap-Stufe (P3, D135), Handicap.Level. Computer bleiben auf Normal.
+var handicap: int = Handicap.Level.NORMAL
+
+
+## Handicap, das tatsächlich gilt (Computer immer Normal; deren Stärke regelt die KI-Schwierigkeit).
+func effective_handicap() -> int:
+	return Handicap.Level.NORMAL if is_cpu else handicap
 
 
 func _init(p_index: int, p_color: Color, p_name: String) -> void:

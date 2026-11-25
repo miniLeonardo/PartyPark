@@ -172,6 +172,7 @@ Eine Szene in `core/minigame/match_flow.tscn`, die genau einen Durchlauf steuert
 | `tug_of_war` | 2v2 | Takt mit `BeatRing`, Treffer ±0,13 s, Synchronbonus, Fehldruck sperrt kurz, Figuren werden entlang des Seils positioniert |
 | `giant_vs_dwarfs` | 1v3 | Riese per `Player.set_body_scale(3)`, Stampfen mit Ausholzeit und Schockwelle, Seilzählung über aufsummierten Winkel um den Riesen |
 | `sheep_herding` | Koop | `Sheep` (Flucht, Herde, Trödeln), `Wolf` (Gruppe `pushable`, flieht nach Schubser), Bellen über die Schubs-Taste |
+| `doppelganger` | 1v3 | Doppelgänger-Gewusel (P1, D132/D133/D136/D137): 32 Besucher sind echte `Player`-Figuren mit eigener `AIInput` (gleiches Laufbild), außerhalb von `players` und der Gruppe `players`; Doppelgänger in Neutralfarbe ohne Tag/Ring/Schatten, Tempo gegen Handicap ausgeglichen; Wächter auf Hochsitz schiebt ein Fadenkreuz, Treffer = nächste Figur im Radius; Computer-Wächter über Verdachtswerte (aktive Bude, Aufblinken, erledigte Aufgaben) |
 
 ## 5. Teams und Spielarten
 

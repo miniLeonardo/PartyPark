@@ -96,6 +96,11 @@ func setup(p_slot: PlayerSlot) -> void:
 		_apply_slot()
 
 
+## Handicap-Stufe des Platzes (P3, D135); ohne Platz Normal.
+func handicap_level() -> int:
+	return slot.effective_handicap() if slot != null else Handicap.Level.NORMAL
+
+
 func get_input() -> InputSource:
 	if slot == null or not controls_enabled:
 		return null
@@ -133,7 +138,7 @@ func _physics_process(delta: float) -> void:
 	var acceleration: float = air_acceleration
 	if on_floor:
 		acceleration = ground_acceleration if direction != Vector3.ZERO else ground_deceleration
-	_walk = _walk.move_toward(direction * move_speed, acceleration * control * delta)
+	_walk = _walk.move_toward(direction * move_speed * Handicap.speed(handicap_level()), acceleration * control * delta)
 
 	var friction: float = knockback_friction_ground if on_floor else knockback_friction_air
 	_knockback = _knockback.move_toward(Vector3.ZERO, friction * delta)
@@ -306,6 +311,7 @@ func launch(vertical: float, horizontal: Vector3 = Vector3.ZERO) -> void:
 
 ## Wird von PushAbility eines anderen Spielers aufgerufen.
 func receive_push(impulse: Vector3, lift: float, stun_time: float, by: Player) -> void:
+	impulse *= Handicap.push_taken(handicap_level())
 	_knockback = Vector3(impulse.x, 0.0, impulse.z)
 	_walk = Vector3.ZERO
 	velocity.y = maxf(velocity.y, lift)

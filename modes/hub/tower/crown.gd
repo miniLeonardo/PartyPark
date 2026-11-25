@@ -4,6 +4,9 @@ extends Node3D
 ## Schwebt auf der Turmspitze. Wird sie getragen und der Träger geschubst,
 ## fliegt sie in weitem Bogen davon und kann von jedem im Gerangel neu aufgesammelt werden.
 
+## Krone aufgesetzt; from_summit = sie kam direkt von der Turmspitze (Start der Kronenjagd, P2).
+signal taken(player: Player, from_summit: bool)
+
 enum State { FLOATING, WORN, DROPPED }
 
 @export var summit_home_position: Vector3 = Vector3(0.0, 20.8, -36.0)
@@ -160,6 +163,7 @@ func attach_to_player(player: Player) -> void:
 	if wearer != null and wearer.was_pushed.is_connected(_on_wearer_pushed):
 		wearer.was_pushed.disconnect(_on_wearer_pushed)
 
+	var from_summit: bool = current_state == State.FLOATING
 	wearer = player
 	current_state = State.WORN
 	_velocity = Vector3.ZERO
@@ -174,6 +178,7 @@ func attach_to_player(player: Player) -> void:
 	var source: InputSource = player.get_input()
 	if source != null:
 		source.rumble(0.2, 0.5, 0.25)
+	taken.emit(player, from_summit)
 
 
 func _on_wearer_pushed(by: Player) -> void:

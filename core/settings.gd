@@ -11,6 +11,9 @@ const QUALITY_NAMES: Array[String] = ["Niedrig", "Mittel", "Hoch"]
 ## 3D-Auflösung je Stufe (Anteil, darunter skaliert FSR hoch).
 const QUALITY_3D_SCALE: Array[float] = [0.7, 0.85, 1.0]
 const QUALITY_SHADOW_ATLAS: Array[int] = [1024, 2048, 4096]
+## Glow (Leuchten der Glühbirnen) und SSAO (Kontaktschatten) je Stufe, siehe Look.glow_enabled/ssao_enabled.
+const QUALITY_GLOW: Array[bool] = [false, true, true]
+const QUALITY_SSAO: Array[bool] = [false, false, true]
 ## Lichter mit Schatten hängen in dieser Gruppe, damit ein Wechsel der Stufe sofort wirkt.
 const STAGE_LIGHTS_GROUP: StringName = &"stage_lights"
 
@@ -97,7 +100,7 @@ func shadows_enabled() -> bool:
 	return graphics_quality >= 1
 
 
-## Grafikstufe anwenden (D69): Schatten, MSAA, 3D-Auflösung mit FSR-Hochskalierung.
+## Grafikstufe anwenden (D69): Schatten, MSAA, 3D-Auflösung mit FSR-Hochskalierung, Glow und SSAO.
 func apply_graphics() -> void:
 	if not is_inside_tree():
 		return
@@ -108,6 +111,7 @@ func apply_graphics() -> void:
 		var light := node as Light3D
 		if light != null:
 			light.shadow_enabled = shadows_enabled()
+	Look.apply_quality(get_tree())
 
 
 ## Auch für die Teilbildschirme des Splitscreens (SubViewport).

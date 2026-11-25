@@ -67,6 +67,14 @@ func _physics_process(_delta: float) -> void:
 			Sfx.play_ui(&"leave")
 			PlayerRoster.leave(slot)
 			continue
+		# Handicap-Stufe blättern (P3, D135): links = Richtung Profi, rechts = Richtung Entspannt
+		var step: int = int(source.just_pressed(InputBindings.NAV_RIGHT)) - int(source.just_pressed(InputBindings.NAV_LEFT))
+		if step != 0:
+			var level: int = Handicap.step(slot.handicap, step)
+			if level != slot.handicap:
+				slot.handicap = level
+				Sfx.play_ui(&"ui_move")
+				_refresh()
 		if source.just_pressed(InputBindings.SPECIAL):
 			PlayerRoster.cpu_fill_enabled = not PlayerRoster.cpu_fill_enabled
 			_refresh()
@@ -121,7 +129,10 @@ func _update_card(slot: PlayerSlot, show_cpu: bool) -> void:
 	if slot.is_human():
 		var source: InputSource = slot.source
 		var cpu_text: String = "an" if PlayerRoster.cpu_fill_enabled else "aus"
-		hint.text = "%s: Hüpfen    %s: Austreten\n%s: Computer %s    %s: Los" % [
+		var left: String = "◀ " if slot.handicap > Handicap.Level.PRO else "   "
+		var right: String = " ▶" if slot.handicap < Handicap.Level.RELAXED else "   "
+		hint.text = "Stufe: %s%s%s\n%s: Hüpfen    %s: Austreten\n%s: Computer %s    %s: Los" % [
+			left, Handicap.name_of(slot.handicap), right,
 			source.get_action_label(InputBindings.JUMP),
 			source.get_action_label(InputBindings.BACK),
 			source.get_action_label(InputBindings.SPECIAL), cpu_text,

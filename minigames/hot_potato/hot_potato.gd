@@ -2,6 +2,9 @@ extends Minigame
 ## Heiße Kartoffel (D71), Jeder gegen jeden: Die Bombe springt per Schubser weiter. Die Lunte brennt
 ## zufällig 8 bis 15 Sekunden; wer beim Knall die Bombe hält, ist raus. Danach neue Bombe, bis einer übrig ist.
 
+## Glühfarbe der Bombe, die mit ablaufender Lunte stärker leuchtet.
+const BOMB_GLOW_COLOR: Color = Color(1, 0.2, 0.1)
+
 @export_group("Bombe")
 @export var fuse_min: float = 8.0
 @export var fuse_max: float = 15.0
@@ -88,9 +91,7 @@ func _build_bomb() -> void:
 	sphere.height = 0.76
 	_bomb_body.mesh = sphere
 	_bomb_material = StageKit.make_material(Color(0.12, 0.12, 0.14))
-	_bomb_material.emission_enabled = true
-	_bomb_material.emission = Color(1, 0.2, 0.1)
-	_bomb_material.emission_energy_multiplier = 0.0
+	Look.set_glow(_bomb_material, BOMB_GLOW_COLOR, 0.0)
 	_bomb_body.material_override = _bomb_material
 	_bomb.add_child(_bomb_body)
 	_fuse_mesh = MeshInstance3D.new()
@@ -177,7 +178,7 @@ func _update_bomb_visual(delta: float) -> void:
 		Sfx.play(&"tick", _bomb.global_position, -4.0, lerpf(0.9, 1.5, progress))
 		_bomb_body.scale = Vector3.ONE * (1.0 + 0.25 * progress)
 	_bomb_body.scale = _bomb_body.scale.lerp(Vector3.ONE, clampf(delta * 10.0, 0.0, 1.0))
-	_bomb_material.emission_energy_multiplier = progress * progress * 2.5
+	Look.set_glow(_bomb_material, BOMB_GLOW_COLOR, progress * progress * 2.5)
 	# Markierung: blinkt von 2 Hz auf 8 Hz, Pfeil wippt über der Bombe
 	var blink: float = 0.55 + 0.45 * sin(elapsed * TAU * lerpf(2.0, 8.0, progress))
 	_marker_material.albedo_color = Color(1.0, 0.15, 0.1, blink)

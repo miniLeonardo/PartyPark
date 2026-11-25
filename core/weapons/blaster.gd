@@ -25,7 +25,7 @@ func _process(delta: float) -> void:
 func fire_effect() -> void:
 	_recoil = recoil_distance
 	if muzzle:
-		Fx.burst(&"sparks", muzzle.global_position, Color(1, 0.8, 0.2), 0.5)
+		Fx.burst(&"stars", muzzle.global_position, Color(1, 0.8, 0.2), 0.5)
 
 
 func get_muzzle_position() -> Vector3:

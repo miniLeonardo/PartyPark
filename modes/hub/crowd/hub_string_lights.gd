@@ -36,11 +36,10 @@ func _setup_materials() -> void:
 
 func _process(_delta: float) -> void:
 	var t: float = Time.get_ticks_msec() * 0.001
-	var is_evening: bool = (Look.mood == Look.Mood.EVENING)
-	var mood_multiplier: float = 2.8 if is_evening else 1.2
+	var mood_multiplier: float = Look.bulb_pulse_energy()
 
 	for i: int in _bulb_materials.size():
 		var mat: StandardMaterial3D = _bulb_materials[i]
 		var phase: float = _phase_offsets[i]
 		var pulse: float = sin(t * pulse_speed + phase) * 0.4 + 0.9
-		mat.emission_energy_multiplier = base_energy * pulse * mood_multiplier
+		Look.set_glow(mat, mat.emission, base_energy * pulse * mood_multiplier)

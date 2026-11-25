@@ -15,8 +15,32 @@ const MOOD_NAMES: Array[String] = ["Nachmittag", "Goldene Stunde", "Abendrummel"
 
 const WATER_SHADER: Shader = preload("res://core/look/shaders/water.gdshader")
 
+## Gruppe der WorldEnvironment-Knoten, damit ein Wechsel der Grafikstufe Glow und SSAO sofort umschaltet.
+const ENVIRONMENT_GROUP: StringName = &"look_environment"
+
+const RIM_SHADER: Shader = preload("res://core/look/shaders/rim.gdshader")
+
+## Randlicht-Stufen für Spielzeug-Plastik, Glanz-Plastik und Figuren (D85). Je Stufe und Spalte
+## [Plastik, Glossy, Figur]: `rim` = Godots eingebautes Randlicht (wegen des Glanzes nur ein sehr schmaler,
+## kaum sichtbarer Saum), `tint` = dessen Tönung, `fresnel` = Stärke des Zusatzdurchgangs `rim.gdshader`
+## (blickabhängiger Rand in der Horizontfarbe; kostet je Fläche einen Draw Call mehr, 0 = aus).
+## Stufe CLASSIC ist der Stand seit v0.5. Welche Stufe gilt, entscheidet Leonardo (Roadmap 5.4,
+## Bildvarianten in docs/screenshots/look_5_4/).
+enum RimLevel { OFF, CLASSIC, SOFT, STRONG }
+const RIM_LEVELS: Array[Dictionary] = [
+	{"rim": [0.0, 0.0, 0.0], "tint": [0.0, 0.0, 0.0], "fresnel": [0.0, 0.0, 0.0]},
+	{"rim": [0.2, 0.3, 0.4], "tint": [0.4, 0.4, 0.3], "fresnel": [0.0, 0.0, 0.0]},
+	{"rim": [0.2, 0.3, 0.4], "tint": [0.4, 0.4, 0.3], "fresnel": [0.12, 0.15, 0.25]},
+	{"rim": [0.2, 0.3, 0.4], "tint": [0.4, 0.4, 0.3], "fresnel": [0.3, 0.35, 0.55]},
+]
+const RIM_DEFAULT: int = RimLevel.SOFT  # D138
+## Breite des Fresnel-Rands (höher = schmaler).
+const RIM_POWER: float = 3.0
+
 ## Aktuelle Stimmung. Wird vor dem Aufbau einer Szene gesetzt (`use_mood`, `mood_for_progress`).
 static var mood: int = Mood.NOON
+## Aktuelle Randlicht-Stufe (siehe RIM_LEVELS); ändern nur über `use_rim_level`.
+static var rim_level: int = RIM_DEFAULT
 
 static var _material_cache: Dictionary = {}
 
@@ -27,19 +51,19 @@ const MOODS: Dictionary = {
 		"sky_top": Color("#3f8fe6"), "sky_horizon": Color("#cde8ff"), "ground_horizon": Color("#cde8ff"), "ground_bottom": Color("#8fb5d6"),
 		"sun_color": Color("#fff2dc"), "sun_energy": 1.3, "sun_rotation": Vector3(-55.0, -35.0, 0.0),
 		"ambient_energy": 0.8, "fog_color": Color("#d4ebff"), "fog_begin": 45.0, "fog_end": 160.0, "fog_density": 0.45,
-		"exposure": 1.05, "glow": 0.25, "fill_color": Color("#9cc7ff"), "fill_energy": 0.0, "bulbs": 0.0, "lamp_lights": false,
+		"exposure": 1.05, "glow": 0.25, "fill_color": Color("#9cc7ff"), "fill_energy": 0.0, "bulbs": 0.0, "bulb_pulse": 1.2, "lamp_lights": false,
 	},
 	Mood.GOLDEN: {
 		"sky_top": Color("#5b7fd1"), "sky_horizon": Color("#ffd09a"), "ground_horizon": Color("#ffd09a"), "ground_bottom": Color("#b9a08f"),
 		"sun_color": Color("#ffc07a"), "sun_energy": 1.45, "sun_rotation": Vector3(-24.0, -62.0, 0.0),
 		"ambient_energy": 0.75, "fog_color": Color("#f6c99c"), "fog_begin": 35.0, "fog_end": 140.0, "fog_density": 0.5,
-		"exposure": 1.0, "glow": 0.5, "fill_color": Color("#8fa6ff"), "fill_energy": 0.15, "bulbs": 2.0, "lamp_lights": false,
+		"exposure": 1.0, "glow": 0.5, "fill_color": Color("#8fa6ff"), "fill_energy": 0.15, "bulbs": 2.0, "bulb_pulse": 1.2, "lamp_lights": false,
 	},
 	Mood.EVENING: {
 		"sky_top": Color("#1c2257"), "sky_horizon": Color("#e0767a"), "ground_horizon": Color("#a0577a"), "ground_bottom": Color("#2a2350"),
 		"sun_color": Color("#ffa36e"), "sun_energy": 0.65, "sun_rotation": Vector3(-28.0, -70.0, 0.0),
 		"ambient_energy": 1.1, "fog_color": Color("#7c5a8c"), "fog_begin": 30.0, "fog_end": 120.0, "fog_density": 0.55,
-		"exposure": 1.15, "glow": 1.0, "fill_color": Color("#8d9bff"), "fill_energy": 0.4, "bulbs": 6.0, "lamp_lights": true,
+		"exposure": 1.15, "glow": 1.0, "fill_color": Color("#8d9bff"), "fill_energy": 0.4, "bulbs": 6.0, "bulb_pulse": 2.8, "lamp_lights": true,
 	},
 }
 
@@ -54,6 +78,14 @@ static func mood_value(key: String) -> Variant:
 static func use_mood(value: int) -> void:
 	if value != mood:
 		mood = value
+		clear_cache()
+
+
+## Setzt die Randlicht-Stufe (RimLevel). Wirkt auf alle danach gebauten Materialien.
+static func use_rim_level(value: int) -> void:
+	value = clampi(value, 0, RIM_LEVELS.size() - 1)
+	if value != rim_level:
+		rim_level = value
 		clear_cache()
 
 
@@ -84,6 +116,7 @@ static func add_environment(parent: Node) -> WorldEnvironment:
 	var world := WorldEnvironment.new()
 	world.name = "WorldEnvironment"
 	world.environment = make_environment()
+	world.add_to_group(ENVIRONMENT_GROUP)
 	parent.add_child(world)
 	add_sun(parent)
 	return world
@@ -152,12 +185,23 @@ static func add_sun(parent: Node) -> DirectionalLight3D:
 	return sun
 
 
+## Glow je Grafikstufe (Settings.QUALITY_GLOW, D69).
 static func glow_enabled() -> bool:
-	return Settings.graphics_quality >= 1
+	return Settings.QUALITY_GLOW[Settings.graphics_quality]
 
 
+## SSAO je Grafikstufe (Settings.QUALITY_SSAO, D69).
 static func ssao_enabled() -> bool:
-	return Settings.graphics_quality >= 2
+	return Settings.QUALITY_SSAO[Settings.graphics_quality]
+
+
+## Schaltet Glow und SSAO aller Look-Umgebungen im Baum nach der aktuellen Grafikstufe um.
+static func apply_quality(tree: SceneTree) -> void:
+	for node: Node in tree.get_nodes_in_group(ENVIRONMENT_GROUP):
+		var world := node as WorldEnvironment
+		if world != null and world.environment != null:
+			world.environment.glow_enabled = glow_enabled()
+			world.environment.ssao_enabled = ssao_enabled()
 
 
 ## Kulissen-Details (Zuschauer, kleine Deko, Lampenlichter) nur ab Mittel.
@@ -168,6 +212,11 @@ static func details_enabled() -> bool:
 ## Stärke der Glühbirnen (Emission) in der aktuellen Stimmung.
 static func bulb_energy() -> float:
 	return mood_value("bulbs")
+
+
+## Grundstärke pulsierender Lichterketten (HubStringLights) in der aktuellen Stimmung.
+static func bulb_pulse_energy() -> float:
+	return mood_value("bulb_pulse")
 
 
 ## Echte Lampenlichter (OmniLight ohne Schatten) nur im Abendrummel und ab Mittel.
@@ -193,17 +242,13 @@ static func surface(color: Color, kind: int = Kind.PLASTIC, texture: Texture2D =
 			m.clearcoat_enabled = true
 			m.clearcoat = 0.5
 			m.clearcoat_roughness = 0.25
-			m.rim_enabled = true
-			m.rim = 0.2
-			m.rim_tint = 0.4
+			_apply_rim(m, 0)
 		Kind.GLOSSY:
 			m.roughness = 0.2
 			m.clearcoat_enabled = true
 			m.clearcoat = 0.8
 			m.clearcoat_roughness = 0.15
-			m.rim_enabled = true
-			m.rim = 0.3
-			m.rim_tint = 0.4
+			_apply_rim(m, 1)
 		Kind.METAL:
 			m.roughness = 0.3
 			m.metallic = 0.6
@@ -228,25 +273,63 @@ static func character_material(color: Color) -> StandardMaterial3D:
 	m.clearcoat_enabled = true
 	m.clearcoat = 0.8
 	m.clearcoat_roughness = 0.15
-	m.rim_enabled = true
-	m.rim = 0.4
-	m.rim_tint = 0.3
+	_apply_rim(m, 2)
 	return m
 
 
-## Leuchtendes Material für Glühbirnen und Lichterketten (Stärke je Stimmung).
-static func bulb_material(color: Color) -> StandardMaterial3D:
-	var key := "bulb|%d|%s" % [mood, color.to_html()]
+## Randlicht nach der aktuellen Stufe; `column` 0 Plastik, 1 Glossy, 2 Figur (siehe RIM_LEVELS).
+static func _apply_rim(m: BaseMaterial3D, column: int) -> void:
+	var level: Dictionary = RIM_LEVELS[rim_level]
+	var strength: float = (level["rim"] as Array)[column]
+	m.rim_enabled = strength > 0.0
+	m.rim = strength
+	m.rim_tint = (level["tint"] as Array)[column]
+	m.next_pass = _fresnel_pass((level["fresnel"] as Array)[column])
+
+
+## Gemeinsamer Fresnel-Zusatzdurchgang je Stärke und Stimmung (null bei Stärke 0).
+static func _fresnel_pass(strength: float) -> ShaderMaterial:
+	if strength <= 0.0:
+		return null
+	var key := "fresnel|%d|%.3f" % [mood, strength]
+	if _material_cache.has(key):
+		return _material_cache[key]
+	var m := ShaderMaterial.new()
+	m.shader = RIM_SHADER
+	m.set_shader_parameter("rim_color", mood_value("sky_horizon"))
+	m.set_shader_parameter("strength", strength)
+	m.set_shader_parameter("power", RIM_POWER)
+	_material_cache[key] = m
+	return m
+
+
+# --- Emission (Leuchtendes, ART_GUIDE Abschnitt 3 Regel 4) ---
+
+## Schaltet Emission auf einem vorhandenen Material ein (zentral, damit alle Leuchtstellen gleich
+## arbeiten). Auch für spätere Änderungen von Farbe oder Stärke, z. B. beim Pulsieren.
+static func set_glow(m: BaseMaterial3D, color: Color, energy: float) -> void:
+	m.emission_enabled = true
+	m.emission = color
+	m.emission_energy_multiplier = energy
+
+
+## Selbstleuchtendes, unbeleuchtetes Material (Glühbirnen, Lampenkugeln, Leuchtschilder) in einer Farbe.
+## Gleiche Anfragen teilen sich ein Material; wer es verändert, nimmt `.duplicate()`.
+static func glow_surface(color: Color, energy: float) -> StandardMaterial3D:
+	var key := "glow|%s|%.3f" % [color.to_html(), energy]
 	if _material_cache.has(key):
 		return _material_cache[key]
 	var m := StandardMaterial3D.new()
 	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	m.albedo_color = color
-	m.emission_enabled = true
-	m.emission = color
-	m.emission_energy_multiplier = 0.4 + bulb_energy()
+	set_glow(m, color, energy)
 	_material_cache[key] = m
 	return m
+
+
+## Leuchtendes Material für Glühbirnen und Lichterketten (Stärke je Stimmung).
+static func bulb_material(color: Color) -> StandardMaterial3D:
+	return glow_surface(color, 0.4 + bulb_energy())
 
 
 static func water_material() -> ShaderMaterial:

@@ -4,7 +4,8 @@ extends Node
 ## Bilder in docs/screenshots/v0_5/stilproben/; seitdem gibt es nur noch den Plastik-Stil.
 ## Start (mit Renderer):
 ##   xvfb-run … godot --path . --rendering-driver vulkan --resolution 1280x720 -- --smoke-style_probe --shots=<ordner>
-##   [--moods=noon,golden,evening] [--cams=spiel,held]
+##   [--moods=noon,golden,evening] [--cams=spiel,held] [--rims=0,1,2]
+## Mit --rims entstehen Randlicht-Varianten (Look.RIM_LEVELS) als rim<stufe>_<stimmung>_<kamera>.png.
 
 const MOOD_NAMES: Dictionary = {"noon": Look.Mood.NOON, "golden": Look.Mood.GOLDEN, "evening": Look.Mood.EVENING}
 const KENNEY: String = "res://assets/third_party/kenney_coaster-kit/"
@@ -12,6 +13,8 @@ const KENNEY: String = "res://assets/third_party/kenney_coaster-kit/"
 var _shot_dir: String = ""
 var _moods: Array[String] = ["noon"]
 var _cams: Array[String] = ["spiel", "held"]
+## Randlicht-Stufen; leer = nur die aktuelle Stufe mit alten Dateinamen.
+var _rims: Array[int] = []
 var _root: Node3D
 var _camera: Camera3D
 
@@ -25,6 +28,9 @@ func _ready() -> void:
 			_moods.assign(arg.trim_prefix("--moods=").split(","))
 		elif arg.begins_with("--cams="):
 			_cams.assign(arg.trim_prefix("--cams=").split(","))
+		elif arg.begins_with("--rims="):
+			for part: String in arg.trim_prefix("--rims=").split(",", false):
+				_rims.append(int(part))
 	_run.call_deferred()
 
 
@@ -36,17 +42,26 @@ func _run() -> void:
 		child.queue_free()
 	Settings.graphics_quality = 2
 	Settings.apply_graphics()
-	for mood_name: String in _moods:
-		Look.use_mood(MOOD_NAMES[mood_name])
-		_root = Node3D.new()
-		host.add_child(_root)
-		_build_scene()
-		for cam: String in _cams:
-			_set_camera(cam)
-			await _frames(12)
-			await _shot("plastic_%s_%s" % [mood_name, cam])
-		_root.queue_free()
-		await _frames(3)
+	var rims: Array[int] = [-1]
+	if not _rims.is_empty():
+		rims = _rims
+	for rim: int in rims:
+		if rim >= 0:
+			Look.use_rim_level(rim)
+		for mood_name: String in _moods:
+			Look.use_mood(MOOD_NAMES[mood_name])
+			Look.clear_cache()
+			_root = Node3D.new()
+			host.add_child(_root)
+			_build_scene()
+			for cam: String in _cams:
+				_set_camera(cam)
+				await _frames(12)
+				var file_name: String = "plastic_%s_%s" % [mood_name, cam] if rim < 0 else "rim%d_%s_%s" % [rim, mood_name, cam]
+				await _shot(file_name)
+			_root.queue_free()
+			await _frames(3)
+	Look.use_rim_level(Look.RIM_DEFAULT)
 	print("STYLE PROBE fertig")
 	get_tree().quit()
 

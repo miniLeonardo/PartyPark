@@ -80,6 +80,7 @@ func _ready() -> void:
 	Announcer.say(&"round_start", {"game": "Freizeitpark"})
 	_connect_stations()
 	_setup_ambiance()
+	_setup_crown_hunt()
 
 
 ## Startplatz: nach einem Minispiel neben der Bude, sonst auf der Plaza.
@@ -94,6 +95,20 @@ func _setup_ambiance() -> void:
 	var amb := HubAmbiance.new()
 	amb.name = "Ambiance"
 	add_child(amb)
+
+
+## Kronenjagd (P2, D134): startet, wenn jemand die Krone von der Turmspitze holt.
+var crown_hunt: HubCrownHunt
+
+
+func _setup_crown_hunt() -> void:
+	var crowns: Array[Node] = find_children("*", "HubCrown", true, false)
+	if crowns.is_empty():
+		return
+	crown_hunt = HubCrownHunt.new()
+	crown_hunt.name = "CrownHunt"
+	add_child(crown_hunt)
+	crown_hunt.setup(crowns[0] as HubCrown, players)
 
 
 func _connect_stations() -> void:

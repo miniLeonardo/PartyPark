@@ -74,9 +74,7 @@ func _build_arena() -> void:
 	for color: Color in level_colors:
 		_level_materials.append(StageKit.make_material(color))
 	_warning_material = StageKit.make_material(Color("#e8e8e8"))
-	_warning_material.emission_enabled = true
-	_warning_material.emission = Color("#ff5a3c")
-	_warning_material.emission_energy_multiplier = 0.6
+	Look.set_glow(_warning_material, Color("#ff5a3c"), 0.6)
 	for level: int in levels:
 		var y: float = float(level) * level_spacing
 		for q: int in range(-rings, rings + 1):

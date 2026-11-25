@@ -93,7 +93,7 @@ func _physics_process(delta: float) -> void:
 			# Pulsierendes Glühen während des Countdowns
 			if _pad_mat != null:
 				var pulse: float = 1.0 + sin(Time.get_ticks_msec() * 0.015) * 0.5
-				_pad_mat.emission_energy_multiplier = pulse * 2.5
+				Look.set_glow(_pad_mat, _pad_mat.emission, pulse * 2.5)
 
 			if _time_left <= 0.0:
 				_complete_activation()
@@ -129,7 +129,7 @@ func _start_countdown() -> void:
 
 	if _pad_mat != null:
 		_pad_mat.albedo_color = Color("#2ecc71")
-		_pad_mat.emission = Color("#2ecc71")
+		Look.set_glow(_pad_mat, Color("#2ecc71"), _pad_mat.emission_energy_multiplier)
 
 
 func _cancel_countdown() -> void:
@@ -165,8 +165,7 @@ func lock() -> void:
 		_label_3d.visible = false
 	if _pad_mat != null:
 		_pad_mat.albedo_color = Color("#4a5568")
-		_pad_mat.emission = Color("#2d3748")
-		_pad_mat.emission_energy_multiplier = 0.3
+		Look.set_glow(_pad_mat, Color("#2d3748"), 0.3)
 
 
 func unlock(cooldown_time: float = 2.5) -> void:
@@ -188,17 +187,14 @@ func _reset_visuals() -> void:
 
 	if _pad_mat != null:
 		_pad_mat.albedo_color = Color("#00a8ff")
-		_pad_mat.emission = Color("#00a8ff")
-		_pad_mat.emission_energy_multiplier = 0.6
+		Look.set_glow(_pad_mat, Color("#00a8ff"), 0.6)
 
 
 func _build_pad() -> void:
 	_pad_mat = StandardMaterial3D.new()
 	_pad_mat.albedo_color = Color("#00a8ff")
 	_pad_mat.roughness = 0.3
-	_pad_mat.emission_enabled = true
-	_pad_mat.emission = Color("#00a8ff")
-	_pad_mat.emission_energy_multiplier = 0.6
+	Look.set_glow(_pad_mat, Color("#00a8ff"), 0.6)
 
 	# Runde Bodenplatte
 	_pad_mesh = MeshInstance3D.new()

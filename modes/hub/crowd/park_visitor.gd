@@ -60,6 +60,13 @@ func _load_character() -> void:
 			vi.set("cast_shadow", GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
 
 
+## Jubelt sofort (z. B. am Ende der Kronenjagd, P2), mit kleiner Zufallsverzögerung durch das Hüpfen.
+func cheer() -> void:
+	_hop_time = 0.6
+	_cheer_cooldown = 2.0
+	Fx.burst(&"stars", global_position + Vector3(0, 1.2, 0), Color("#ffd75e"))
+
+
 func _process(delta: float) -> void:
 	var t: float = Time.get_ticks_msec() * 0.001 + _anim_phase
 

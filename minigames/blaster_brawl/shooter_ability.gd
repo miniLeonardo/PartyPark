@@ -57,7 +57,7 @@ func physics_update(delta: float) -> void:
 	pitch = clampf(pitch - deg_to_rad(pitch_speed_deg) * curved.y * factor * delta, -deg_to_rad(max_pitch_deg), deg_to_rad(max_pitch_deg))
 	var forward := Vector3.FORWARD.rotated(Vector3.UP, yaw)
 	var right := Vector3.RIGHT.rotated(Vector3.UP, yaw)
-	var wanted: Vector3 = (right * move.x - forward * move.y) * move_speed
+	var wanted: Vector3 = (right * move.x - forward * move.y) * move_speed * Handicap.speed(player.handicap_level())
 	if player.is_stunned():
 		wanted *= 0.2
 	_velocity = _velocity.move_toward(wanted, acceleration * delta)

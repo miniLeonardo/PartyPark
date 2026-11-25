@@ -69,6 +69,7 @@ func leave(slot: PlayerSlot) -> void:
 	slot.source = null
 	slot.is_cpu = false
 	slot.disconnected = false
+	slot.handicap = Handicap.Level.NORMAL
 	player_left.emit(slot)
 	roster_changed.emit()
 

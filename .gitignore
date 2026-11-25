@@ -35,3 +35,6 @@ assets/_incoming/*
 
 # Bildschirmfotos aus Tests und Prüfungen (nur lokal; verbindliche Stilvorlagen liegen in docs/stil/)
 docs/screenshots/
+
+# Lokale Claude-Code-Daten (Arbeitskopien von Unteragenten)
+.claude/worktrees/

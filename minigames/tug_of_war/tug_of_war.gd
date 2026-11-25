@@ -179,7 +179,7 @@ func _on_press(player: Player) -> void:
 	var beat: int = _beat_id if to_last <= to_next else _beat_id + 1
 	var offset: float = minf(to_last, to_next)
 	var hits: Array = _hits.get(beat, [])
-	if offset > hit_window or hits.has(index):
+	if offset > hit_window * Handicap.timing_window(player.handicap_level()) or hits.has(index):
 		_slipped_until[index] = elapsed + slip_time
 		player.visual.play_hit(Vector3(0, 0, 4))
 		Fx.burst(&"dust", player.global_position + Vector3.UP * 0.2, Color(0, 0, 0, 0), 0.7)

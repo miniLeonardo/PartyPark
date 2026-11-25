@@ -18,6 +18,8 @@ Vorbildbilder: `docs/stil/plastic_noon_held.png`, `plastic_golden_held.png`, `pl
 | Eigenes, veränderbares Material (z. B. für Emission) | `StageKit.make_material(color, kind)` |
 | Spielfigur | `Look.character_material(color)` (macht `PlayerVisual` selbst) |
 | Glühbirne, Lichterkette | `Look.bulb_material(color)` |
+| Anderes Leuchtendes (unbeleuchtet) | `Look.glow_surface(color, energy)` |
+| Emission auf eigenem Material setzen oder ändern (Pulsieren, Warnfarbe) | `Look.set_glow(material, color, energy)` |
 | Wasser | `Look.water_material()` |
 | Fremdes Modell (Kenney, KayKit, Quaternius) einfärben | `Look.restyle(model, Look.Kind.PLASTIC, tint)` |
 | Park-Bauteile | `ParkProps.ferris_wheel()`, `tent()`, `coaster(points)`, `string_lights(a, b)`, `flag_pole()`, `lamp_post()` |
@@ -48,6 +50,8 @@ Regeln:
 ## 4. Materialien
 
 Alle Materialien sind `StandardMaterial3D` aus `Look.surface()`; gleiche Farbe und Stoffart teilen sich ein Material.
+
+Randlicht-Stufen (`Look.RIM_LEVELS`, `Look.use_rim_level()`): Standard `CLASSIC` (Werte der Tabelle). `SOFT` und `STRONG` legen zusätzlich einen Fresnel-Rand in der Horizontfarbe darüber (`core/look/shaders/rim.gdshader`, ein Draw Call mehr je Fläche); Auswahl offen (Roadmap 5.4, Bilder in `docs/screenshots/look_5_4/`).
 
 | Stoffart (`Look.Kind`) | Rauheit | Klarlack | Sonstiges | Wofür |
 |---|---|---|---|---|
@@ -136,7 +140,7 @@ Einheit Meter. Die Spielfigur ist der Maßstab.
 | Wert | Grenze |
 |---|---|
 | Richtungslichter mit Schatten | 1 |
-| Dreiecke im Bild | unter 300.000 |
+| Dreiecke im Bild | unter 300.000 (je Arena präzisiert in Abschnitt 13) |
 | Draw Calls | unter 400 (Splitscreen: je Ansicht unter 250) |
 | Texturen | höchstens 1024 px |
 | Partikel gleichzeitig | 700 (D63) |
@@ -169,3 +173,60 @@ Wiederholte Deko (Bäume, Laternen, Schwellen, Zuschauer) über `MultiMeshInstan
 Ältere Vorher-Bilder (v0.4, v0.7) und die verworfenen Stilvarianten liegen nur noch in der Git-Historie (vor 2026-11-20 unter `docs/screenshots/`). Neue Prüfbilder gehen nach `docs/screenshots/` (nicht versioniert).
 
 Neue Stilproben: `xvfb-run -a godot --path . --rendering-driver vulkan --resolution 1280x720 -- --smoke-style_probe --shots=<ordner> --moods=noon,golden,evening`.
+
+## 13. Asset-Budget und Importvorgaben
+
+Ergänzt Abschnitt 6 (Fremde Modelle), 8 (Texturen) und 10 (Leistung); Stand 2026-11-25 (Roadmap 5.3). Die Grenzen stehen als Konstanten oben in `tools/asset_audit.gd`; Überschreitungen markiert das Audit mit ⚠.
+
+### Audit starten
+
+```powershell
+.\Godot_v4.7.2-stable_win64_console.exe --headless --path . -- --tool-asset_audit
+```
+
+Das Audit baut jedes Minispiel über die Sandbox und danach den Park (Hub) auf und gibt je Szene aus: Dreiecke, Meshes, MultiMesh-Instanzen, Materialien, geschätzte Draw Calls (Farbe plus Schatten je Oberfläche), Lichter, und je genutzter Textur Pfad, Größe in Pixeln, Format (z. B. DXT1), Mipmaps und VRAM in MB. Danach folgt ein Überblick über `assets/third_party/`: Dateien und MB je Paket, Lizenzdatei vorhanden, Texturen mit abweichenden Importvorgaben, die größten Dateien. Gezählt wird die ganze Szene (nicht nur das Bild), auf Grafikstufe Mittel.
+
+### Messwerte (2026-11-25)
+
+| Szene | Dreiecke | Draw Calls (geschätzt) | Lichter (Schatten) | Texturen (VRAM) |
+|---|---|---|---|---|
+| Minispiele, Spanne | 15.300 bis 151.800 (Schafe hüten) | 76 bis 220, Ausreißer Wackelwaben 604 | 2 (1) | 0 bis 1 (0,17 MB) |
+| Freizeitpark (Hub) | 347.343 | ~1.357 | 18 (1) | 2 (0,33 MB) |
+| `assets/third_party/` gesamt | | | | 3 Pakete, 26 Dateien, 3,2 MB |
+
+### Budget je Szene
+
+Messwert plus etwa 30 % Puffer; die Draw-Call-Grenze für Arenen bleibt bei 400 (Abschnitt 10). Wackelwaben liegt mit 302 einzelnen Waben darüber und ist ein bekannter Ausreißer (Abhilfe: Waben als MultiMesh oder Schatten der Waben aus).
+
+| Wert | Minispiel-Arena | Park (Hub, ganze Szene) |
+|---|---|---|
+| Dreiecke | 200.000 (präzisiert die 300.000 aus Abschnitt 10) | 450.000 |
+| Draw Calls (geschätzt) | 400 (Splitscreen je Ansicht 250) | 1.600 (Frustum-Culling zeigt nur einen Teil) |
+| Lichter gesamt | 10 (Sonne, Fülllicht, höchstens 8 Lampen) | 24 |
+| Richtungslichter mit Schatten | 1 | 1 |
+| Textur-VRAM | 8 MB | 16 MB |
+| Einzeltextur | höchstens 1024 px Kantenlänge | höchstens 1024 px |
+
+Zum Vergleich: eine 1024-px-Textur mit Mipmaps belegt als DXT1 etwa 0,7 MB, als DXT5/BPTC etwa 1,3 MB, unkomprimiert (RGBA8) etwa 5,3 MB.
+
+### Ordnerregel
+
+1. Jedes fremde Paket liegt in `assets/third_party/<urheber>_<paket>/` (z. B. `kenney_coaster-kit/`), Kleinbuchstaben, Bindestriche wie im Original.
+2. Im Paketordner liegt die Lizenzdatei des Urhebers (`License.txt`); das Audit warnt, wenn sie fehlt.
+3. Nur tatsächlich genutzte Dateien übernehmen (Modelle plus deren Textur, meist `Textures/colormap.png`). Rohdownloads bleiben in `assets/_incoming/` (nicht versioniert, mit `.gdignore`).
+4. Jedes Paket hat eine Zeile in `assets/CREDITS.md` (Quelle, Lizenz, Datum, welche Dateien).
+5. Einzeldateien über 10 MB vermeiden (Audit warnt); siehe Git LFS unten.
+
+### Importvorgaben
+
+| Dateiart | Vorgabe in der `.import`-Datei | Warum |
+|---|---|---|
+| Textur für 3D (PNG, JPG) | `compress/mode=2` (VRAM komprimiert), `compress/high_quality=false`, `mipmaps/generate=true`, `detect_3d/compress_to=0` | spart etwa 80 % Grafikspeicher (512-px-Farbatlas: 0,17 MB statt 1 MB); Mipmaps verhindern Flimmern in der Ferne und passen zum Filter `LINEAR_WITH_MIPMAPS_ANISOTROPIC` aus `Look.surface()` |
+| Textur für UI (Symbole, Schriften) | Godot-Standard (verlustfrei, `compress/mode=0`), ohne Mipmaps | scharfe Kanten, Größe unkritisch |
+| Modell (`.glb`, `.gltf`) | Godot-Standard: `meshes/generate_lods=true`, `meshes/create_shadow_meshes=true`, `meshes/force_disable_compression=false`, `gltf/embedded_image_handling=1` (eingebettete Bilder extrahieren) | LODs und Schattenmeshes kosten nichts und helfen in der Kulisse; Material kommt ohnehin aus `Look.restyle()` |
+
+Neue Texturen nach dem Kopieren einmal importieren und die `.import`-Datei auf diese Werte setzen (im Editor: Import-Dock, „Komprimieren: VRAM komprimiert“, „Mipmaps erzeugen“ an, „Neu importieren“), danach mit `--import` und dem Audit prüfen. Stand 2026-11-25: alle drei Kenney-Farbatlanten (`colormap.png`, 512 × 512) wurden von „verlustfrei ohne Mipmaps“ auf diese Vorgabe umgestellt (jetzt DXT1 mit Mipmaps, 0,17 MB je Atlas); die 18 `.glb`-Dateien hatten bereits einheitlich die Standardwerte.
+
+### Git LFS (Q27)
+
+Kein Git LFS. Gemessen 2026-11-25: aktueller Stand 479 Dateien, 8,3 MB; gesamte Historie 1.935 Blobs, 34,9 MB unkomprimiert, Pack 11,4 MB. Größte versionierte Datei `docs/stil/uebersicht_stil_stimmung.png` mit 1,5 MB, größtes Asset 0,26 MB (Kenney-Figur). LFS brächte zusätzliche Einrichtung auf jedem Rechner und in der CI sowie das GitHub-Kontingent für LFS-Speicher und -Download, aber keinen Nutzen. Neu prüfen, sobald eine einzelne Datei 10 MB überschreitet (Musik, große Texturen) oder das Pack 500 MB erreicht. Bildschirmfotos bleiben unversioniert (`docs/screenshots/`).

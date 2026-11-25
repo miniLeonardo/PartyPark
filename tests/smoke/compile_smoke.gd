@@ -2,7 +2,7 @@ extends Node
 ## Lädt alle Skripte und Szenen des Projekts einmal (mit Autoloads), damit Parse- und Ladefehler sichtbar werden.
 ## Start: godot --headless --path . -- --smoke-compile
 
-const SKIP_DIRS: Array[String] = [".godot", "builds", "docs", ".git", "_incoming"]
+const SKIP_DIRS: Array[String] = [".godot", "builds", "docs", ".git", "_incoming", ".claude"]
 
 var _failures: int = 0
 var _count: int = 0

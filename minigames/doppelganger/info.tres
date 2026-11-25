@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="MinigameInfo" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/minigame/minigame_info.gd" id="1_info"]
+
+[resource]
+script = ExtResource("1_info")
+id = &"doppelganger"
+display_name = "Doppelgänger-Gewusel"
+formats = Array[int]([3])
+min_players = 4
+max_players = 4
+duration_sec = 90.0
+goal_text = "Taucht in der Menge unter! Haltet an der leuchtenden Bude die Aktionstaste, bis die Aufgabe erledigt ist. 4 Aufgaben gewinnen. Lauft unauffällig, der Wächter beobachtet euch."
+controls = {
+"move": "Unauffällig laufen",
+"action": "An der leuchtenden Bude halten",
+"special": "Eigene Figur kurz aufblinken (der Wächter sieht es auch!)"
+}
+solo_goal_text = "Drei Doppelgänger verstecken sich unter den Besuchern. Du hast 3 Schüsse. Triff alle drei oder halte sie 90 Sekunden von den Aufgaben ab. Ein Treffer auf einen Besucher ist ein verschwendeter Schuss."
+solo_controls = {
+"move": "Fadenkreuz bewegen",
+"jump": "Schießen"
+}
+solo_role_name = "Wächter"
+team_role_name = "Doppelgänger"
+scene_path = "res://minigames/doppelganger/doppelganger.tscn"

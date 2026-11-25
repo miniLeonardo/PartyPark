@@ -120,12 +120,17 @@ func _run() -> void:
 	if not _shot_dir.is_empty():
 		await _frames(20)
 		await _shot("02_turm_spitze")
+	_check(hub.crown_hunt != null and hub.crown_hunt.running, "Kronenjagd startet beim Aufsetzen (P2, D134)")
+	await _frames(30)
 	tower.crown.drop_from_push(p2)
 	for i: int in 240:
 		await _frames(1)
 	var crown_rests: bool = tower.crown.current_state == HubCrown.State.WORN or (tower.crown.current_state == HubCrown.State.DROPPED and tower.crown._velocity == Vector3.ZERO)
 	_check(crown_rests, "Krone fliegt nach Schubser weg und bleibt liegen oder wird aufgefangen")
 	_check(tower.crown.global_position.y > 0.0, "Krone fällt nicht durch den Boden (y=%.1f)" % tower.crown.global_position.y)
+	_check(float(hub.crown_hunt.carry_times.get(p1.slot.index, 0.0)) > 0.3, "Kronenjagd zählt Tragezeit (%s)" % str(hub.crown_hunt.carry_times))
+	hub.crown_hunt.finish()
+	_check(not hub.crown_hunt.running and HubCrownHunt.leader_of(hub.crown_hunt.carry_times) >= 0, "Kronenjagd endet mit König")
 	tower.crown.reset_to_summit()
 
 	# Netz: Sturz aus Passage 2 landet auf der 6-m-Etage

@@ -13,6 +13,16 @@ Nächster Schritt: eine konkrete Aufgabe aus ROADMAP.md
 Aktuelle Kopie liegt in: Claude-Projekt / Git-Repo / PC von Leonardo
 ```
 
+## 2026-11-25: Deck-Aufträge P1, P2, P3, 5.3, 5.4
+
+Agent und Umgebung: Claude (Claude Code), lokal mit Git; 5.3 und 5.4 von zwei Unteragenten in eigenen Arbeitskopien
+Erledigt: P1 Doppelgänger-Gewusel als 8. Minispiel (`minigames/doppelganger/`, 1 gegen 3, 32 Besucher als echte Player-Figuren mit eigener KI-Quelle). P2 Kronenjagd im Park (`modes/hub/tower/crown_hunt.gd`, Krone hat Signal `taken`, Besucher `cheer()`). P3 Handicap (`core/teams/handicap.gd`, `PlayerSlot.handicap`, Beitritt links/rechts; wirkt auf Tempo, Schubs-Wucht, Tauziehen-Fenster). 5.3: Asset-Audit mit Texturen und Paketübersicht, Atlanten komprimiert, Budget in ART_GUIDE Abschnitt 13. 5.4: Emission zentral, Glow/SSAO je Grafikstufe, Randlicht-Stufen (`--rims=` in der Stilprobe). Nebenbei: `Blaster.fire_effect` nutzte die nicht vorhandene Partikelvorlage „sparks“; `--smoke-compile` überspringt `.claude/`.
+Entscheidungen: D132 bis D138 (L), D139, D140 (KI); Q27 geschlossen. P1-Plan: Artefakt „Doppelgänger-Gewusel Bauplan“.
+Getestet: Unit 38/38, compile, m1, m2, games, hub (40 Prüfungen), Spieltest P1 12 Läufe (Wächter 5/12, 35 bis 90 s); Bildschirmfoto P1 mit Fenster geprüft.
+Probleme / Bekannte Fehler: Wackelwaben über dem Draw-Call-Budget (604 von 400, Waben einzeln); Randlicht kostet ca. 30 Draw Calls, auf Handhelds messen (5.9). Handicap- und P1-Werte sind Platzhalter bis zum Controllertest.
+Nächster Schritt: Controllertest nach `docs/TESTANLEITUNG_V0_7_2.md` (und offen `TESTANLEITUNG_V0_7_1.md`), danach 7.10.
+Aktuelle Kopie liegt in: lokal (Commit), Push nach Rückfrage
+
 ## 2026-11-20: Projektordner aufgeräumt
 
 Agent und Umgebung: Claude (Claude Code), lokal mit Git
